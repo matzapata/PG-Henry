@@ -21,3 +21,32 @@ model User {
   is_banned   Boolean  @default(false)
   last_access DateTime @default(now())
 }
+
+model Tournament {
+  id                   String              @unique @default(uuid())
+  name                 String              @unique
+  description          String          
+  user_limit           Int
+  creator_user_id      String
+  status               Status              @default(INCOMING)
+  type                 TournamentType      @default(PUBLIC)
+  pool                 Int                 @default(0)
+  logo_url             String
+
+}
+
+enum TournamentType{
+  PRIVATE
+  PUBLIC
+}
+enum Status{
+  INCOMING
+  INPROGRESS
+  CONCLUDED
+}
+
+model teams {
+  id               String          @unique @default(uuid())
+  name             String          @unique
+  shield_url       String          @default("https://i.pinimg.com/originals/d6/d2/09/d6d209b706faef3a58030445c271088f.png")
+}
