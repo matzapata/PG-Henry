@@ -54,6 +54,7 @@ enum Status{
 }
 
 
+
 model User_Tournament{
   id               String          @unique @default(uuid())
   user             User            @relation(fields: [user_id], references: [id])
