@@ -125,3 +125,5 @@ yarn-debug.log*
 yarn-error.log*
 
 build
+
+prisma/migrations

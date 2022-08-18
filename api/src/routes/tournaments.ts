@@ -1,4 +1,4 @@
-import { prisma } from "../db";
+import prisma from "../db";
 import * as express from "express";
 import { Status, TournamentType } from "@prisma/client";
 
@@ -6,7 +6,7 @@ const router: express.Router = express.Router();
 
 router.get("/", async (req: express.Request, res: express.Response) => {
   try {
-    const { page, status, type } = req.query;
+    const { page, status, type, name } = req.query;
     let pageN = Number(page) - 1;
     let paginado: number;
     page ? (paginado = pageN * 5) : (paginado = 0);
@@ -15,8 +15,14 @@ router.get("/", async (req: express.Request, res: express.Response) => {
       take: 5,
       skip: paginado,
       where: {
+        name: {
+          startsWith: typeof name === "string" ? name : "",
+        },
         status: status as Status,
         type: type as TournamentType,
+      },
+      orderBy: {
+        name: "asc",
       },
     });
     res.send(result);
