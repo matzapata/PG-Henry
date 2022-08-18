@@ -10,28 +10,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
 model User {
-  id          String   @unique @default(uuid())
-  username    String   @unique
-  full_name   String
-  email       String   @unique
-  password    String
-  is_admin    Boolean  @default(false)
-  is_active   Boolean  @default(true)
-  is_banned   Boolean  @default(false)
-  last_access DateTime @default(now())
+  id                    String                   @unique @default(uuid())
+  username              String                   @unique
+  full_name             String
+  email                 String                   @unique
+  password              String       
+  is_admin              Boolean                  @default(false)
+  is_active             Boolean                  @default(true)
+  is_banned             Boolean                  @default(false)
+  last_access           DateTime                 @default(now())
+  tournament_userid     User_Tournament[]
+  predictions_userid    Predictions[]
 }
 
+
+
 model Tournament {
-  id               String          @unique @default(uuid())
-  name             String          @unique
-  description      String          @default("")
-  user_limit       Int
-  creator_user_id  String
-  is_public        Boolean
-  status           Status          @default(INCOMING)
-  type             TournamentType
-  pool             Int             @default(0)
+  id                   String              @unique @default(uuid())
+  name                 String              @unique
+  description          String          
+  user_limit           Int
+  creator_user_id      String
+  status               Status              @default(INCOMING)
+  type                 TournamentType      @default(PUBLIC)
+  pool                 Int                 @default(0)
+  logo_url             String
+  tournament_id        User_Tournament[]
+  predictions_id       Predictions[]
+  matches_id           Matches[]
 }
 
 enum TournamentType{
@@ -44,18 +53,60 @@ enum Status{
   CONCLUDED
 }
 
-model teams {
+
+
+model User_Tournament{
   id               String          @unique @default(uuid())
-  name             String          @unique
-  shield_url       String          @default("https://i.pinimg.com/originals/d6/d2/09/d6d209b706faef3a58030445c271088f.png")
+  user             User            @relation(fields: [user_id], references: [id])
+  user_id          String          @unique
+  tournament       Tournament      @relation(fields: [tournament_id], references: [id])
+  tournament_id    String          @unique
+  score            Int
+  winner_team_id   String
+
+  @@id([user_id, tournament_id])
 }
 
 
 
-// model User_Tournament{
-//   id          String          @unique @default(uuid())
-//   user        User            @relation(fields: [user_id], references: [id])
-//   user_id     String          @unique
+model Teams {
+  id               String          @unique @default(uuid())
+  name             String          @unique
+  shield_url       String      
+  id_team_a        Matches[]       @relation("team_a")
+  id_team_b        Matches[]       @relation("team_b")
+}
 
-//   @@id([user_id])
-// }
+
+
+model Predictions{
+  id               String          @unique @default(uuid())
+  user             User            @relation(fields: [user_id], references: [id])
+  user_id          String          @unique
+  match_id         Int             @unique
+  scores_a         Int
+  scores_b         Int
+  tournament       Tournament      @relation(fields: [tournament_id], references: [id])
+  tournament_id    String
+  matches          Matches[]
+
+  @@id([user_id,tournament_id])
+}
+
+
+
+model Matches {
+matches_id         Predictions      @relation(fields: [id], references: [id])
+id                 String
+id_a               Teams            @relation(name:"team_a", fields: [team_a_id], references: [id])
+team_a_id          String
+id_b               Teams            @relation(name:"team_b", fields: [team_b_id], references: [id])
+team_b_id          String
+scores_a           Int
+scores_b           Int
+date               DateTime
+tournament         Tournament       @relation(fields: [tournament_id], references: [id])
+tournament_id      String
+
+@@id([id,team_a_id,team_b_id ])
+}
