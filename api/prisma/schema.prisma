@@ -17,9 +17,10 @@ model User {
   username              String                   @unique
   full_name             String
   email                 String                   @unique
-  password              String       
+  password              String    
+  birth_date            DateTime
   is_admin              Boolean                  @default(false)
-  is_active             Boolean                  @default(true)
+  is_active             Boolean                  @default(false)
   is_banned             Boolean                  @default(false)
   last_access           DateTime                 @default(now())
   tournament_userid     User_Tournament[]
