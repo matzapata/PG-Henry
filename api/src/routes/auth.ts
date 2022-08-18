@@ -3,6 +3,9 @@ import { isAdmin, protectedRoute } from "../middleware/auth";
 import { signAccessToken } from "../utils/jwt";
 import * as bcrypt from "bcryptjs";
 import db from "../db";
+import * as crypto from "crypto";
+import sendEmail from "../utils/sendEmail";
+import "dotenv/config";
 
 const router: express.Router = express.Router();
 
@@ -13,15 +16,23 @@ router.post("/signup", async (req: express.Request, res: express.Response) => {
       return res.status(400).send("Missing required parameters.");
 
     const hashedPassword = bcrypt.hashSync(password, 8);
-    await db.user.create({
+    const verification_token = crypto.randomBytes(32).toString("hex");
+    const user = await db.user.create({
       data: {
         email,
         username,
         full_name,
+        verification_token,
         birth_date: new Date(birth_date),
         password: hashedPassword,
       },
     });
+
+    await sendEmail(
+      email,
+      "Verify Email",
+      `Click to verify: ${process.env.BASE_URL}/auth/verify/${user.id}/${user.verification_token}`
+    );
 
     res.status(200).send({ message: "User created successfully" });
   } catch (e: any) {
@@ -40,6 +51,8 @@ router.post("/signin", async (req: express.Request, res: express.Response) => {
 
     const user = await db.user.findUnique({ where: { email } });
     if (!user) return res.status(400).send({ message: "User not registered" });
+    if (!user.is_active)
+      return res.status(400).send({ message: "Pending email verification" });
 
     const checkPassword = bcrypt.compareSync(password, user.password);
     if (!checkPassword)
@@ -72,6 +85,29 @@ router.post("/refresh", protectedRoute, async function (req, res) {
     message: "Token refreshed",
     token,
   });
+});
+
+router.get("/verify/:user_id/:token", async (req, res) => {
+  try {
+    const { user_id, token } = req.params;
+
+    const user = await db.user.findFirst({
+      where: { id: user_id, verification_token: token },
+    });
+    if (!user) return res.status(400).send({ message: "Invalid link" });
+
+    await db.user.update({
+      where: { id: user_id },
+      data: {
+        is_active: true,
+        verification_token: "",
+      },
+    });
+
+    res.send({ message: "Email verified successfully" });
+  } catch (err: any) {
+    res.status(400).send({ message: err.message });
+  }
 });
 
 router.get("/protected", protectedRoute, function (req, res) {
