@@ -9,8 +9,10 @@ const router: express.Router = express.Router();
 router.post("/signup", async (req: express.Request, res: express.Response) => {
   try {
     const { username, full_name, birth_date, email, password } = req.body;
-    const hashedPassword = bcrypt.hashSync(password, 8);
+    if ([username, full_name, birth_date, email, password].includes(undefined))
+      return res.status(400).send("Missing required parameters.");
 
+    const hashedPassword = bcrypt.hashSync(password, 8);
     await db.user.create({
       data: {
         email,
@@ -33,6 +35,9 @@ router.post("/signup", async (req: express.Request, res: express.Response) => {
 router.post("/signin", async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
+    if ([email, password].includes(undefined))
+      return res.status(400).send("Missing required parameters.");
+
     const user = await db.user.findUnique({ where: { email } });
     if (!user) return res.status(400).send({ message: "User not registered" });
 
