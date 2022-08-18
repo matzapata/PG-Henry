@@ -23,7 +23,10 @@ router.post("/signup", async (req: express.Request, res: express.Response) => {
 
     res.status(200).send({ message: "User created successfully" });
   } catch (e: any) {
-    res.status(400).send({ message: e.message });
+    let message = e.message;
+    if (e.code === "P2002") message = `${e.meta.target[0]} already exists.`;
+
+    res.status(400).send({ message });
   }
 });
 

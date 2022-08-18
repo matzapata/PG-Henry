@@ -1,30 +1,28 @@
-import * as jwt from "jsonwebtoken";
 import "dotenv/config";
 import * as express from "express";
 import db from "../db";
+import { verifyAccessToken } from "../utils/jwt";
+import { JwtPayload } from "../types/auth";
 
-export function protectedRoute(
+export async function protectedRoute(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-): express.Response | void {
+): Promise<express.Response | void> {
   const token = req.headers["x-access-token"];
   if (!token) return res.status(403).send({ message: "No token provided!" });
 
-  jwt.verify(
-    token as string,
-    process.env.JWT_SECRET_KEY as jwt.Secret,
-    (err: Error | null, decoded: any) => {
-      if (err) return res.status(401).send({ message: "Unauthorized" });
-
-      req.user = {
-        id: decoded.payload.id,
-        email: decoded.payload.email,
-        username: decoded.payload.username,
-      };
-      next();
-    }
-  );
+  try {
+    const decoded = (await verifyAccessToken(token as string)) as JwtPayload;
+    req.user = {
+      id: decoded.payload.id,
+      email: decoded.payload.email,
+      username: decoded.payload.username,
+    };
+    next();
+  } catch (e) {
+    return res.status(401).send({ message: "Unauthorized" });
+  }
 }
 
 export async function isAdmin(

@@ -5,7 +5,7 @@
         "lib": ["ESNext", "DOM"],
         "strict": true,
         "typeRoots": [
-            "types",
+            "./src/types",
             "./node_modules/@types"
         ]
     }
