@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import {
   Flex,
@@ -15,6 +15,8 @@ import {
   FormControl,
   FormHelperText,
   InputRightElement,
+  Checkbox,
+  CheckboxGroup,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 
@@ -75,19 +77,18 @@ const App = () => {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText display="flex" justifyContent="space-between">
-                  <div>
-                    <input type="checkbox" name="" />
-                    <span> Mantener sesion</span>
-                  </div>
+                  <Checkbox>Mantener sesion</Checkbox>
                   <Link>Olvidaste tu contraseña?</Link>
                 </FormHelperText>
               </FormControl>
               <Button
                 borderRadius={0}
+                id="login"
                 type="submit"
                 variant="solid"
                 colorScheme="purple"
                 width="full"
+                // onClick={login}
               >
                 Iniciar
               </Button>
