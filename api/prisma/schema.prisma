@@ -75,6 +75,7 @@ model Teams {
   shield_url       String      
   id_team_a        Matches[]       @relation("team_a")
   id_team_b        Matches[]       @relation("team_b")
+  
 }
 
 
@@ -108,5 +109,5 @@ date               DateTime
 tournament         Tournament       @relation(fields: [tournament_id], references: [id])
 tournament_id      String
 
-@@id([id,team_a_id,team_b_id ])
+@@id([id,team_a_id,team_b_id ])   
 }
