@@ -32,11 +32,7 @@ export async function isAdmin(
   res: express.Response,
   next: express.NextFunction
 ): Promise<express.Response<any, Record<string, any>> | void> {
-  const user = await db.user.findUnique({
-    where: {
-      id: req.user.id,
-    },
-  });
+  const user = await db.user.findUnique({ where: { id: req.user.id } });
   if (user?.is_admin) next();
   else return res.status(403).send({ message: "Require Admin Role!" });
 }

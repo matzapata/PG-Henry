@@ -54,6 +54,18 @@ router.post("/signin", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.post("/refresh", protectedRoute, async function (req, res) {
+  const token = await signAccessToken({
+    id: req.user.id,
+    email: req.user.email,
+    username: req.user.username,
+  });
+  res.status(200).send({
+    message: "Token refreshed",
+    token,
+  });
+});
+
 router.get("/protected", protectedRoute, function (req, res) {
   res.send({ message: "Authorized" });
 });

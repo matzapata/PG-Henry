@@ -8,7 +8,7 @@ export function signAccessToken(
     jwt.sign(
       { payload },
       process.env.JWT_SECRET_KEY as jwt.Secret,
-      {},
+      { expiresIn: "2days" },
       (err, token) => {
         if (err) reject(err);
         resolve(token);
