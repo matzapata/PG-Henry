@@ -16,6 +16,7 @@ model User {
   full_name   String
   email       String   @unique
   password    String
+  birth_date  DateTime
   is_admin    Boolean  @default(false)
   is_active   Boolean  @default(true)
   is_banned   Boolean  @default(false)

@@ -8,14 +8,15 @@ const router: express.Router = express.Router();
 
 router.post("/signup", async (req: express.Request, res: express.Response) => {
   try {
-    const { username, fullName, email, password } = req.body;
+    const { username, full_name, birth_date, email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 8);
 
     await db.user.create({
       data: {
         email,
         username,
-        full_name: fullName,
+        full_name,
+        birth_date: new Date(birth_date),
         password: hashedPassword,
       },
     });
