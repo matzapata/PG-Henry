@@ -77,7 +77,7 @@ const App = () => {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText display="flex" justifyContent="space-between">
-                  <Checkbox>Mantener sesion</Checkbox>
+                  <Checkbox>Mantener sesión</Checkbox>
                   <Link>Olvidaste tu contraseña?</Link>
                 </FormHelperText>
               </FormControl>
