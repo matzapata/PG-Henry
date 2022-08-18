@@ -15,7 +15,7 @@ export function protectedRoute(
     token as string,
     process.env.JWT_SECRET_KEY as jwt.Secret,
     (err: Error | null, decoded: any) => {
-      if (err) return res.status(401).send("Unauthorized");
+      if (err) return res.status(401).send({ message: "Unauthorized" });
 
       req.user = {
         id: decoded.payload.id,
@@ -38,5 +38,5 @@ export async function isAdmin(
     },
   });
   if (user?.is_admin) next();
-  else return res.status(403).send("Require Admin Role!");
+  else return res.status(403).send({ message: "Require Admin Role!" });
 }
