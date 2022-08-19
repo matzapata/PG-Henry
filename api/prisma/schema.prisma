@@ -28,7 +28,6 @@ model User {
 }
 
 
-
 model Tournament {
   id                   String              @unique @default(uuid())
   name                 String              @unique
