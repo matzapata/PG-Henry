@@ -1,0 +1,32 @@
+[
+    {
+        "id": "torneoUno",
+        "name": "Champions League",
+        "description": "La Liga de Campeones de la UEFA, conocida en sus orígenes como Copa de Europa, es el torneo internacional oficial de fútbol más prestigioso a nivel de clubes entre los organizados por la Unión de Asociaciones Europeas de Fútbol",
+        "user_limit": 1000,
+        "creator_user_id": 1234,
+        "status": "INPROGRESS",
+        "type": "PUBLIC",
+        "pool": 0
+    },
+    {
+        "id": "torneoDos",
+        "name": "Copa Libertadores",
+        "description": "Copa Conmebol Libertadores, ​es un torneo anual internacional oficial de futbol organizado por la Confederacion Sudamericana de Futbol, creado en 1960 bajo la denominacion de Copa de Campeones de America o Copa Campeones de America",
+        "user_limit": 1000,
+        "creator_user_id": 12345,
+        "status": "CONCLUDED",
+        "type": "PUBLIC",
+        "pool": 0
+    },
+    {
+        "id": "torneoTres",
+        "name": "Torneo Henry",
+        "description": "Torneo para alumnos y staff de Henry",
+        "user_limit": 500,
+        "creator_user_id": 123456,
+        "status": "INCOMING",
+        "type": "PRIVATE",
+        "pool": 0
+    }
+]
