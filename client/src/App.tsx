@@ -7,7 +7,6 @@ import NotFound from "./pages/NotFound";
 import Tournaments from "./pages/Tournaments";
 import Login from "./components/Login/Login";
 
-
 function App() {
   return (
     <Switch>
