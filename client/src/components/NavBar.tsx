@@ -5,7 +5,14 @@ import Logo from "./Logo";
 
 export default function NavBar() {
   return (
-    <Flex justify="space-between" alignItems="center" px="8" py="2">
+    <Flex
+      justify="space-between"
+      alignItems="center"
+      px={[4, 10]}
+      py="4"
+      borderBottom="1px"
+      borderColor="gray.300"
+    >
       <Flex alignItems="center">
         <Logo />
         <Text fontSize="lg" fontWeight="medium" ml="2">
