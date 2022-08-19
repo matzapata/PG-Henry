@@ -116,7 +116,7 @@ function FormSignUp() {
     password: "",
     passwordConfirm: "",
   });
-  const redir = useHistory();
+  const history = useHistory();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -124,7 +124,7 @@ function FormSignUp() {
       validate({ ...input, [e.currentTarget.name]: e.currentTarget.value })
     );
 
-    fetch("http://localhost:8080/api/auth/signup", {
+    fetch(`${process.env.REACT_APP_API_URL}/auth/signup`, {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain",
@@ -133,8 +133,7 @@ function FormSignUp() {
       body: JSON.stringify(input),
     })
       .then((res) => {
-        console.log(res);
-        res.ok && redir.push("/login");
+        res.ok && history.push("/auth/login");
       })
       .catch((e) => {
         alert("Error");

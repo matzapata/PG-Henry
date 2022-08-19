@@ -1,8 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import FormSingUp from "./components/formSingUp";
+import FormSingUp from "./pages/SingUp";
 import Home from "./pages/Home";
-import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Tournaments from "./pages/Tournaments";
 import Login from "./pages/Login";
@@ -12,9 +11,8 @@ function App() {
     <Switch>
       <Route exact path="/torneos" component={Tournaments} />
       <Route exact path="/auth/login" component={Login} />
-      <Route exact path="/about" component={About} />
+      <Route exact path="/auth/singup" component={FormSingUp} />
       <Route exact path="/" component={Home} />
-      <Route exact path="/singup" component={FormSingUp} />
       <Route path="*" component={NotFound} />
     </Switch>
   );
