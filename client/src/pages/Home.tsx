@@ -7,7 +7,7 @@ function Home() {
   const { logout, isAuthenticated } = useAuth0();
   return (
     <div>
-      <Link to="/login">
+      <Link to="/auth/login">
         <Button
           display="flex"
           borderRadius={0}
