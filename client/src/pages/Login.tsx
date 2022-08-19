@@ -17,8 +17,11 @@ import {
   InputRightElement,
   Checkbox,
   CheckboxGroup,
+  Image,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { Auth0Client } from "@auth0/auth0-spa-js";
+// import { userLogin } from "../../redux/actions/userActions";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -27,6 +30,36 @@ const App = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
+  let auth0: Auth0Client | null = null;
+  useEffect(() => {
+    const initialize = async () => {
+      auth0 = new Auth0Client({
+        domain: "dev-8nfj3ijq.us.auth0.com",
+        client_id: "R4ZFyhpGGh2eKHFvO0MXWAWmdS6YB9oA",
+        redirect_uri: "http://localhost:3000",
+      });
+      try {
+        await auth0.getTokenSilently();
+        console.log(auth0.getTokenSilently());
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    initialize();
+  }, []);
+
+  const login = async () => {
+    try {
+      await auth0?.loginWithRedirect();
+    } catch (e) {}
+    const isAuth = await auth0?.isAuthenticated();
+    const user = await auth0?.getUser();
+    console.log(user, isAuth, "auth response");
+    if (isAuth) {
+      const user = await auth0?.getUser();
+    }
+  };
 
   return (
     <Flex
@@ -77,7 +110,7 @@ const App = () => {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText display="flex" justifyContent="space-between">
-                  <Checkbox>Mantener sesión</Checkbox>
+                  <Checkbox id="checkbox">Mantener sesión</Checkbox>
                   <Link>Olvidaste tu contraseña?</Link>
                 </FormHelperText>
               </FormControl>
@@ -88,17 +121,33 @@ const App = () => {
                 variant="solid"
                 colorScheme="purple"
                 width="full"
-                // onClick={login}
               >
                 Iniciar
+              </Button>
+              <Button
+                display="flex"
+                borderRadius={0}
+                id="auth0_login"
+                type="submit"
+                variant="solid"
+                colorScheme="gray"
+                width="full"
+                onClick={login}
+              >
+                <Image
+                  src="https://miro.medium.com/max/2400/1*kofg5S-_kcyij3HL-uCnZA.png"
+                  alt="logo_auth0"
+                  width="50px"
+                />
+                <span>Ingresar con Auth0</span>
               </Button>
             </Stack>
           </form>
         </Box>
       </Stack>
       <Box>
-        Aun no tienes una cuenta?{" "}
-        <Link color="#4D4BCC" href="#">
+        Aun no tienes una cuenta?
+        <Link color="#4D4BCC" href="http://localhost:3000/signup">
           Crear una
         </Link>
       </Box>
