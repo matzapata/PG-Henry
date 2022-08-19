@@ -60,6 +60,55 @@ const App = () => {
       const user = await auth0?.getUser();
     }
   };
+  interface Inputs {
+    email: string;
+    password: string;
+  }
+
+  const validarCampos = (state: Inputs) => {
+    const errores: Inputs = {
+      email: "",
+      password: "",
+    };
+
+    if (!/[a-z0-9-_.]+@[a-z]+\.[a-z]{2,3}/gi.test(state.email))
+      errores.email = "Email invalido";
+    else if (/[a-z0-9-_.]+@[a-z]+\.[a-z]{2,3}/gi.test(state.email))
+      errores.email = "Email valido";
+
+    return errores;
+  };
+
+  const [errores, setErrors] = useState<Inputs>({
+    email: "",
+    password: "",
+  });
+
+  const [state, setState] = useState<Inputs>({
+    email: "",
+    password: "",
+  });
+
+  const cambiosEnInput = (e: React.FormEvent<HTMLInputElement>) => {
+    setState({ ...state, [e.currentTarget.name]: e.currentTarget.value });
+    setErrors(
+      validarCampos({ ...state, [e.currentTarget.name]: e.currentTarget.value })
+    );
+    console.log(errores);
+  };
+
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (errores.email !== "Email valido") {
+      alert("Ingresa un correo valido");
+    }
+
+    fetch("http://localhost:8080/auth/signin", {
+      method: "POST",
+      body: JSON.stringify(state),
+    }).then((r) => console.log(r));
+    console.log(state);
+  };
 
   return (
     <Flex
@@ -91,7 +140,12 @@ const App = () => {
                   <InputLeftElement pointerEvents="none">
                     <CFaUserAlt color="gray.300" />
                   </InputLeftElement>
-                  <Input type="email" placeholder="Correo electronico" />
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="Correo electronico"
+                    onChange={cambiosEnInput}
+                  />
                 </InputGroup>
               </FormControl>
               <FormControl>
@@ -102,6 +156,8 @@ const App = () => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Contraseña"
+                    onChange={cambiosEnInput}
+                    name="password"
                   />
                   <InputRightElement width="4.5rem">
                     <Button h="1.75rem" size="sm" onClick={handleShowClick}>
@@ -121,6 +177,7 @@ const App = () => {
                 variant="solid"
                 colorScheme="purple"
                 width="full"
+                onClick={(e) => handleSubmit(e)}
               >
                 Iniciar
               </Button>
@@ -132,7 +189,10 @@ const App = () => {
                 variant="solid"
                 colorScheme="gray"
                 width="full"
-                onClick={login}
+                onClick={(e) => {
+                  e.preventDefault;
+                  login();
+                }}
               >
                 <Image
                   src="https://miro.medium.com/max/2400/1*kofg5S-_kcyij3HL-uCnZA.png"
