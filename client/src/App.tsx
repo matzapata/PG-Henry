@@ -11,7 +11,7 @@ function App() {
     <Switch>
       <Route exact path="/torneos" component={Tournaments} />
       <Route exact path="/auth/login" component={Login} />
-      <Route exact path="/auth/singup" component={FormSingUp} />
+      <Route exact path="/auth/signup" component={FormSingUp} />
       <Route exact path="/" component={Home} />
       <Route path="*" component={NotFound} />
     </Switch>
