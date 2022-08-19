@@ -27,13 +27,13 @@ function Home() {
         id="auth0_login"
         type="submit"
         variant="solid"
-        colorScheme="red"
+        colorScheme="blue"
         width="150px"
         onClick={() => logout({ returnTo: window.location.origin })}
       >
         <span>Logout</span>
       </Button>
-      {isAuthenticated ? "MENSAJE LOGEADO" : "LOGEATE PARA VER EL MENSAJE"}
+      {isAuthenticated ? "MENSAJE SECRETO" : "LOGEATE PARA VER EL MENSAJE"}
     </div>
   );
 }
