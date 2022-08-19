@@ -16,7 +16,6 @@ import {
   FormHelperText,
   InputRightElement,
   Checkbox,
-  CheckboxGroup,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 
@@ -25,71 +24,91 @@ const CFaLock = chakra(FaLock);
 
 const App = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+    keepSessionOpen: false,
+  });
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+  };
+  const onChange = (e: any) => {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <Flex
       flexDirection="column"
       width="100wh"
       height="100vh"
-      backgroundColor="gray.200"
       justifyContent="center"
       alignItems="center"
     >
       <Stack
-        flexDir="column"
         mb="2"
+        flexDir="column"
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar bg="#4D4BCC" />
-        <Heading color="#4D4BCC">Iniciar Sesión</Heading>
+        <Avatar bg="purple.500" />
+        <Heading color="purple.500">Iniciar Sesión</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
-          <form>
+          <form onSubmit={onSubmit}>
             <Stack
-              spacing={4}
               p="1rem"
+              spacing={4}
+              borderRadius="4"
               backgroundColor="whiteAlpha.900"
-              boxShadow="md"
             >
               <FormControl>
                 <InputGroup>
                   <InputLeftElement pointerEvents="none">
                     <CFaUserAlt color="gray.300" />
                   </InputLeftElement>
-                  <Input type="email" placeholder="Correo electronico" />
+                  <Input
+                    type="email"
+                    name="email"
+                    onChange={onChange}
+                    placeholder="Correo electronico"
+                  />
                 </InputGroup>
               </FormControl>
+
               <FormControl>
                 <InputGroup>
                   <InputLeftElement pointerEvents="none" color="gray.300">
                     <CFaLock color="gray.300" />
                   </InputLeftElement>
                   <Input
+                    name="password"
+                    onChange={onChange}
                     type={showPassword ? "text" : "password"}
                     placeholder="Contraseña"
                   />
                   <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                    <Button
+                      h="1.75rem"
+                      size="sm"
+                      backgroundColor="white"
+                      mr="0.5"
+                      onClick={handleShowClick}
+                    >
                       {showPassword ? "Ocultar" : "Mostrar"}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText display="flex" justifyContent="space-between">
                   <Checkbox>Mantener sesión</Checkbox>
-                  <Link>Olvidaste tu contraseña?</Link>
                 </FormHelperText>
               </FormControl>
-              <Button
-                borderRadius={0}
-                id="login"
-                type="submit"
-                variant="solid"
-                colorScheme="purple"
-                width="full"
-                // onClick={login}
-              >
+
+              <Button type="submit" colorScheme="purple" width="full">
                 Iniciar
               </Button>
             </Stack>
@@ -98,7 +117,7 @@ const App = () => {
       </Stack>
       <Box>
         Aun no tienes una cuenta?{" "}
-        <Link color="#4D4BCC" href="#">
+        <Link color="#4D4BCC" href="/auth/signup">
           Crear una
         </Link>
       </Box>

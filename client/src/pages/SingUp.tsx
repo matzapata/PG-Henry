@@ -1,6 +1,5 @@
 import {
   FormControl,
-  FormLabel,
   FormErrorMessage,
   Text,
   Box,
@@ -9,9 +8,10 @@ import {
   Flex,
   Stack,
   Heading,
+  Link,
 } from "@chakra-ui/react";
-import { Link, useHistory } from "react-router-dom";
-import React, { Fragment, useState } from "react";
+import { Link as ReactLink, useHistory } from "react-router-dom";
+import React, { useState } from "react";
 
 interface Inputs {
   full_name: string;
@@ -150,129 +150,110 @@ function FormSignUp() {
 
   return (
     <Flex
-      flexDirection="column"
       width="100wh"
-      height="100vh"
-      backgroundColor="gray.200"
-      justifyContent="center"
       alignItems="center"
+      flexDirection="column"
+      justifyContent="center"
     >
-      <Stack
-        flexDir="column"
-        mb="2"
-        justifyContent="center"
-        alignItems="center"
-      ></Stack>
-      <Fragment>
-        <Heading color="#4D4BCC">Crear cuenta</Heading>
-        <Box minW={{ base: "90%", md: "468px" }}>
-          <form onSubmit={handleSubmit}>
-            <Stack
-              spacing={4}
-              p="1rem"
-              backgroundColor="whiteAlpha.900"
-              boxShadow="md"
+      <Heading color="purple.500" my="10">
+        Crear cuenta
+      </Heading>
+      <Box minW={{ base: "90%", md: "468px" }}>
+        <form onSubmit={handleSubmit}>
+          <Stack p="1rem" spacing={2}>
+            <FormControl isInvalid={errors.full_name !== "Completado"}>
+              <Input
+                type="text"
+                name="full_name"
+                value={input.full_name}
+                onChange={cambiosEnInput}
+                placeholder="Nombre completo"
+              />
+              <FormErrorMessage>{errors.full_name}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.username !== "Completado"}>
+              <Input
+                type="text"
+                name="username"
+                value={input.username}
+                onChange={cambiosEnInput}
+                placeholder="Nombre de usuario"
+              />
+              <FormErrorMessage>{errors.username}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.email !== "Completado"}>
+              <Input
+                type="text"
+                name="email"
+                value={input.email}
+                onChange={cambiosEnInput}
+                placeholder="Email"
+              />
+              <FormErrorMessage>{errors.email}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.birth_date !== "Completado"}>
+              <Input
+                type="date"
+                name="birth_date"
+                value={input.birth_date}
+                onChange={cambiosEnInput}
+                placeholder="Fecha de nacimiento"
+              />
+              <FormErrorMessage>{errors.birth_date}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.password !== "Completado"}>
+              <Input
+                type="text"
+                name="password"
+                value={input.password}
+                onChange={cambiosEnInput}
+                placeholder="Contraseña"
+              />
+              <FormErrorMessage>{errors.password}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.passwordConfirm !== "Completado"}>
+              <Input
+                type="password"
+                name="passwordConfirm"
+                onChange={cambiosEnInput}
+                value={input.passwordConfirm}
+                placeholder="Confirmar contraseña"
+              />
+
+              <FormErrorMessage>{errors.passwordConfirm}</FormErrorMessage>
+            </FormControl>
+            <Text fontSize="15px">
+              ¿Ya tienes una cuenta?{" "}
+              <Link as={ReactLink} to={"/auth/login"}>
+                Ingresar
+              </Link>
+            </Text>
+
+            <Button
+              mt={4}
+              colorScheme="purple"
+              type="submit"
+              disabled={
+                errors.username === "Completado" &&
+                errors.username === "Completado" &&
+                errors.email === "Completado" &&
+                errors.birth_date === "Completado" &&
+                errors.password === "Completado" &&
+                errors.passwordConfirm === "Completado"
+                  ? false
+                  : true
+              }
             >
-              <FormControl isInvalid={errors.full_name !== "Completado"}>
-                <FormLabel>Nombre</FormLabel>
-                <Input
-                  type="text"
-                  name="full_name"
-                  value={input.full_name}
-                  onChange={cambiosEnInput}
-                />
-                {errors.email !== "Completado" && (
-                  <FormErrorMessage>{errors.full_name}</FormErrorMessage>
-                )}
-              </FormControl>
-              <FormControl isInvalid={errors.username !== "Completado"}>
-                <FormLabel>Nombre de usuario</FormLabel>
-                <Input
-                  type="text"
-                  name="username"
-                  value={input.username}
-                  onChange={cambiosEnInput}
-                />
-                {errors.username !== "Completado" && (
-                  <FormErrorMessage>{errors.username}</FormErrorMessage>
-                )}
-              </FormControl>
-
-              <FormControl isInvalid={errors.email !== "Completado"}>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="text"
-                  name="email"
-                  value={input.email}
-                  onChange={cambiosEnInput}
-                />
-                {errors.email !== "Completado" && (
-                  <FormErrorMessage>{errors.email}</FormErrorMessage>
-                )}
-              </FormControl>
-
-              <FormControl isInvalid={errors.birth_date !== "Completado"}>
-                <FormLabel>Fecha de nacimiento</FormLabel>
-                <Input
-                  type="date"
-                  name="birth_date"
-                  value={input.birth_date}
-                  onChange={cambiosEnInput}
-                />
-                {errors.birth_date !== "Completado" && (
-                  <FormErrorMessage>{errors.birth_date}</FormErrorMessage>
-                )}
-              </FormControl>
-              <FormControl isInvalid={errors.password !== "Completado"}>
-                <FormLabel>Contraseña</FormLabel>
-                <Input
-                  type="text"
-                  name="password"
-                  value={input.password}
-                  onChange={cambiosEnInput}
-                />
-                {errors.password !== "Completado" && (
-                  <FormErrorMessage>{errors.password}</FormErrorMessage>
-                )}
-              </FormControl>
-
-              <FormControl isInvalid={errors.passwordConfirm !== "Completado"}>
-                <FormLabel>Confirmar contraseña</FormLabel>
-                <Input
-                  type="text"
-                  name="passwordConfirm"
-                  value={input.passwordConfirm}
-                  onChange={cambiosEnInput}
-                />
-                {errors.password !== "Completado" && (
-                  <FormErrorMessage>{errors.passwordConfirm}</FormErrorMessage>
-                )}
-              </FormControl>
-              <Text fontSize="15px" color="black">
-                ¿Ya tienes una cuenta? <Link to={"/login"}>Ingresar</Link>
-              </Text>
-
-              <Button
-                mt={4}
-                colorScheme="teal"
-                type="submit"
-                disabled={
-                  errors.username === "Completado" &&
-                  errors.username === "Completado" &&
-                  errors.email === "Completado" &&
-                  errors.birth_date === "Completado" &&
-                  errors.password === "Completado" &&
-                  errors.passwordConfirm === "Completado"
-                    ? false
-                    : true
-                }
-              >
-                Enviar
-              </Button>
-            </Stack>
-          </form>
-        </Box>
-      </Fragment>
+              Enviar
+            </Button>
+          </Stack>
+        </form>
+      </Box>
     </Flex>
   );
 }
