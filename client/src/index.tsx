@@ -8,6 +8,7 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import { ChakraProvider } from "@chakra-ui/react";
 import chakraTheme from "./utils/chakraTheme";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,7 +19,13 @@ root.render(
     <BrowserRouter>
       <Provider store={store}>
         <ChakraProvider theme={chakraTheme}>
-          <App />
+          <Auth0Provider
+            domain="dev-8nfj3ijq.us.auth0.com"
+            clientId="R4ZFyhpGGh2eKHFvO0MXWAWmdS6YB9oA"
+            redirectUri={`${window.location.origin}`}
+          >
+            <App />
+          </Auth0Provider>
         </ChakraProvider>
       </Provider>
     </BrowserRouter>
