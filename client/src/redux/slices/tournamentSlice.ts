@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import tournaments from "../../utils/tournaments.json";
+//import tournaments from "../../utils/tournaments.json";
+import axios from "axios";
 
 type Tournament = {
   id: string;
@@ -22,8 +23,9 @@ const initialState: InitialState = {
 
 export const fetchTournaments = createAsyncThunk(
   "tournaments/fetchTournaments",
-  () => {
-    return tournaments;
+  async () => {
+    const result = await axios(`${process.env.REACT_APP_API_URL}/tournaments`);
+    return result.data;
   }
 );
 
@@ -38,6 +40,7 @@ const tournamentSlice = createSlice({
     builder.addCase(
       fetchTournaments.fulfilled,
       (state, action: PayloadAction<Tournament[]>) => {
+        // console.log(action.payload);
         state.loading = false;
         state.tournaments = action.payload;
         state.error = "";
