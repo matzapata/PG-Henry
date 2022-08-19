@@ -5,16 +5,12 @@ import { fetchTournaments } from "../redux/slices/tournamentSlice";
 import { Container, Text, Button } from "@chakra-ui/react";
 
 function Tournaments(): JSX.Element {
-  const currentTournamets = useAppSelector(
-    (state) => state.tournaments.tournaments
-  );
+  const currentTournamets = useAppSelector((state) => state.tournaments);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchTournaments());
   }, []);
-
-  console.log(currentTournamets);
 
   return (
     <Container>
@@ -26,8 +22,12 @@ function Tournaments(): JSX.Element {
       <Button colorScheme="teal" size="md">
         Crear Torneo
       </Button>
-      {currentTournamets &&
-        currentTournamets.map((el) => (
+      {currentTournamets.loading && <Text>Loading...</Text>}
+      {!currentTournamets.loading && currentTournamets.error ? (
+        <Text>Error: {currentTournamets.error}</Text>
+      ) : null}
+      {!currentTournamets.loading &&
+        currentTournamets.tournaments.map((el) => (
           <TournamentCard
             key={el.id}
             id={el.id}
