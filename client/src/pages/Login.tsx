@@ -18,11 +18,14 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { login } from "../redux/slices/authThunk";
+import { useAppDispatch } from "../redux/hooks";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-const App = () => {
+function Login() {
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [state, setState] = useState({
     email: "",
@@ -30,11 +33,11 @@ const App = () => {
     keepSessionOpen: false,
   });
 
-  const handleShowClick = () => setShowPassword(!showPassword);
-
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    dispatch(login({ email: state.email, password: state.password }));
   };
+
   const onChange = (e: any) => {
     setState({
       ...state,
@@ -97,7 +100,7 @@ const App = () => {
                       size="sm"
                       backgroundColor="white"
                       mr="0.5"
-                      onClick={handleShowClick}
+                      onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? "Ocultar" : "Mostrar"}
                     </Button>
@@ -117,12 +120,12 @@ const App = () => {
       </Stack>
       <Box>
         Aun no tienes una cuenta?{" "}
-        <Link color="#4D4BCC" href="/auth/signup">
+        <Link color="purple.500" href="/auth/signup">
           Crear una
         </Link>
       </Box>
     </Flex>
   );
-};
+}
 
-export default App;
+export default Login;
