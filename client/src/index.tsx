@@ -3,11 +3,12 @@ import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import { ChakraProvider } from "@chakra-ui/react";
 import chakraTheme from "./utils/chakraTheme";
+import history from "./utils/history";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -15,13 +16,13 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <Router history={history}>
       <Provider store={store}>
         <ChakraProvider theme={chakraTheme}>
           <App />
         </ChakraProvider>
       </Provider>
-    </BrowserRouter>
+    </Router>
   </React.StrictMode>
 );
 
