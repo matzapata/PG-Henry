@@ -4,6 +4,7 @@ import TournamentFilter from "../components/TournamentFilter";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { fetchTournaments } from "../redux/slices/tournamentSlice";
 import { Container, Text, Button } from "@chakra-ui/react";
+import TournametsSearchBar from "../components/TournamentSearchBar";
 
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
@@ -24,6 +25,7 @@ function Tournaments(): JSX.Element {
       <Button colorScheme="teal" size="md">
         Crear Torneo
       </Button>
+      <TournametsSearchBar />
       {currentTournamets.loading && <Text>Loading...</Text>}
       {!currentTournamets.loading && currentTournamets.error ? (
         <Text>Error: {currentTournamets.error}</Text>

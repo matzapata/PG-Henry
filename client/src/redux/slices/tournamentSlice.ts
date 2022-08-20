@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-//import tournaments from "../../utils/tournaments.json";
 import axios from "axios";
 
 type Tournament = {
@@ -26,6 +25,17 @@ export const fetchTournaments = createAsyncThunk(
   async () => {
     const result = await axios(`${process.env.REACT_APP_API_URL}/tournaments`);
     return result.data;
+  }
+);
+
+
+export const fetchByName = createAsyncThunk(
+  "tournaments/fetchByName",
+  async (name: string) => {
+    const result = await axios(
+      `${process.env.REACT_APP_API_URL}/tournaments?name=` + name
+    );
+        return result.data;
   }
 );
 
@@ -63,6 +73,19 @@ const tournamentSlice = createSlice({
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
     });
+
+    builder.addCase(fetchByName.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      fetchByName.fulfilled,
+   (state, action: PayloadAction<Tournament[]>) => {
+        state.loading = false;
+        state.tournaments = action.payload;
+        state.error = "";
+      }
+    );
+
     builder.addCase(fetchFilterTournaments.pending, (state) => {
       state.loading = true;
     });
@@ -74,6 +97,13 @@ const tournamentSlice = createSlice({
         state.error = "";
       }
     );
+    builder.addCase(fetchByName.rejected, (state, action) => {
+     state.loading = false;
+      state.tournaments = [];
+      state.error = action.error.message || "Algo salio mal";
+    });
+  },
+});
     builder.addCase(fetchFilterTournaments.rejected, (state, action) => {
       state.loading = false;
       state.tournaments = [];
