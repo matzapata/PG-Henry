@@ -1,3 +1,4 @@
+import { filter } from "@chakra-ui/react";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -23,16 +24,8 @@ const initialState: InitialState = {
 export const fetchTournaments = createAsyncThunk(
   "tournaments/fetchTournaments",
   async () => {
-    const result = await axios(`${process.env.REACT_APP_API_URL}/tournaments`);
-    return result.data;
-  }
-);
-
-export const fetchByName = createAsyncThunk(
-  "tournaments/fetchByName",
-  async (name: string) => {
     const result = await axios(
-      `${process.env.REACT_APP_API_URL}/tournaments?name=` + name
+      `${process.env.REACT_APP_API_URL}/tournaments?sort=asc`
     );
     return result.data;
   }
@@ -40,13 +33,19 @@ export const fetchByName = createAsyncThunk(
 
 export const fetchFilterTournaments = createAsyncThunk(
   "tournaments/fetchFilterTournaments",
-  async (filters: { type: string; stat: string }) => {
+  async (filters: {
+    type: string;
+    stat: string;
+    sort: string;
+    name: string;
+  }) => {
     const result = await axios(
       `${process.env.REACT_APP_API_URL}/tournaments?${
         filters.type ? "type=" + filters.type : ""
-      }&${filters.stat ? "status=" + filters.stat : ""}`
+      }&${filters.stat ? "status=" + filters.stat : ""}&${
+        filters.sort ? "sort=" + filters.sort : ""
+      }&${filters.name ? "name=" + filters.name : ""}`
     );
-    console.log(result.data);
     return result.data;
   }
 );
@@ -72,19 +71,6 @@ const tournamentSlice = createSlice({
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
     });
-
-    builder.addCase(fetchByName.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(
-      fetchByName.fulfilled,
-      (state, action: PayloadAction<Tournament[]>) => {
-        state.loading = false;
-        state.tournaments = action.payload;
-        state.error = "";
-      }
-    );
-
     builder.addCase(fetchFilterTournaments.pending, (state) => {
       state.loading = true;
     });
@@ -96,11 +82,6 @@ const tournamentSlice = createSlice({
         state.error = "";
       }
     );
-    builder.addCase(fetchByName.rejected, (state, action) => {
-      state.loading = false;
-      state.tournaments = [];
-      state.error = action.error.message || "Algo salio mal";
-    });
     builder.addCase(fetchFilterTournaments.rejected, (state, action) => {
       state.loading = false;
       state.tournaments = [];
