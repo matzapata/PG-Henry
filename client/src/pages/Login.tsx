@@ -16,7 +16,6 @@ import {
   FormHelperText,
   InputRightElement,
   Checkbox,
-  CheckboxGroup,
   Image,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
@@ -35,9 +34,9 @@ const App = () => {
   useEffect(() => {
     const initialize = async () => {
       auth0 = new Auth0Client({
-        domain: "dev-8nfj3ijq.us.auth0.com",
-        client_id: "R4ZFyhpGGh2eKHFvO0MXWAWmdS6YB9oA",
-        redirect_uri: "http://localhost:3000",
+        domain: `${process.env.REACT_APP_AUTH0_DOMAIN}`,
+        client_id: `${process.env.REACT_APP_AUTH0_CLIENT_ID}`,
+        redirect_uri: `${process.env.REACT_APP_API_URL}`,
       });
       try {
         await auth0.getTokenSilently();
@@ -58,6 +57,7 @@ const App = () => {
     console.log(user, isAuth, "auth response");
     if (isAuth) {
       const user = await auth0?.getUser();
+      console.log(user);
     }
   };
   interface Inputs {
