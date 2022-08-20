@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-//import tournaments from "../../utils/tournaments.json";
 import axios from "axios";
 
 type Tournament = {
@@ -29,6 +28,16 @@ export const fetchTournaments = createAsyncThunk(
   }
 );
 
+export const fetchByName = createAsyncThunk(
+  "tournaments/fetchByName",
+  async (name: string) => {
+    const result = await axios(
+      `${process.env.REACT_APP_API_URL}/tournaments?name=` + name
+    );
+    return result.data;
+  }
+);
+
 const tournamentSlice = createSlice({
   name: "tournaments",
   initialState,
@@ -40,13 +49,28 @@ const tournamentSlice = createSlice({
     builder.addCase(
       fetchTournaments.fulfilled,
       (state, action: PayloadAction<Tournament[]>) => {
-        // console.log(action.payload);
         state.loading = false;
         state.tournaments = action.payload;
         state.error = "";
       }
     );
     builder.addCase(fetchTournaments.rejected, (state, action) => {
+      state.loading = false;
+      state.tournaments = [];
+      state.error = action.error.message || "Algo salio mal";
+    });
+    builder.addCase(fetchByName.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      fetchByName.fulfilled,
+      (state, action: PayloadAction<Tournament[]>) => {
+        state.loading = false;
+        state.tournaments = action.payload;
+        state.error = "";
+      }
+    );
+    builder.addCase(fetchByName.rejected, (state, action) => {
       state.loading = false;
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
