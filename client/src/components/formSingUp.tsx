@@ -134,7 +134,7 @@ function FormSignUp() {
     })
       .then((res) => {
         console.log(res);
-        res.ok && redir.push("/login");
+        res.ok && redir.push("/auth/login");
       })
       .catch((e) => {
         alert("Error");
@@ -163,8 +163,7 @@ function FormSignUp() {
         mb="2"
         justifyContent="center"
         alignItems="center"
-      ></Stack>
-      <Fragment>
+      >
         <Heading color="#4D4BCC">Crear cuenta</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
           <form onSubmit={handleSubmit}>
@@ -249,9 +248,6 @@ function FormSignUp() {
                   <FormErrorMessage>{errors.passwordConfirm}</FormErrorMessage>
                 )}
               </FormControl>
-              <Text fontSize="15px" color="black">
-                ¿Ya tienes una cuenta? <Link to={"/login"}>Ingresar</Link>
-              </Text>
 
               <Button
                 mt={4}
@@ -273,7 +269,27 @@ function FormSignUp() {
             </Stack>
           </form>
         </Box>
-      </Fragment>
+
+        <Box>
+          <Flex flexDirection="row" justifyContent="space-between;">
+            {/*  <Text onClick={volver}>
+              <FontAwesomeIcon icon={faAngleLeft} />
+              Atras
+            </Text> */}
+            <Text>
+              ¿Ya tienes una cuenta?{" "}
+              <Link
+                style={{ textDecoration: "underline", color: "blue" }}
+                to={"/auth/login"}
+                color="#4D4BCC"
+                href="#"
+              >
+                Iniciar
+              </Link>
+            </Text>
+          </Flex>
+        </Box>
+      </Stack>
     </Flex>
   );
 }
