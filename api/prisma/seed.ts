@@ -110,6 +110,10 @@ async function seed() {
 
   for (let i = 0; i < 200; i++) users.push(createRandomUser());
   await client.user.createMany({ data: users, skipDuplicates: true });
+
+  await client.tournament.create({
+    data: createRandomTournament(users[0].id),
+  });
 }
 
 seed();
