@@ -28,14 +28,13 @@ export const fetchTournaments = createAsyncThunk(
   }
 );
 
-
 export const fetchByName = createAsyncThunk(
   "tournaments/fetchByName",
   async (name: string) => {
     const result = await axios(
       `${process.env.REACT_APP_API_URL}/tournaments?name=` + name
     );
-        return result.data;
+    return result.data;
   }
 );
 
@@ -79,7 +78,7 @@ const tournamentSlice = createSlice({
     });
     builder.addCase(
       fetchByName.fulfilled,
-   (state, action: PayloadAction<Tournament[]>) => {
+      (state, action: PayloadAction<Tournament[]>) => {
         state.loading = false;
         state.tournaments = action.payload;
         state.error = "";
@@ -98,12 +97,10 @@ const tournamentSlice = createSlice({
       }
     );
     builder.addCase(fetchByName.rejected, (state, action) => {
-     state.loading = false;
+      state.loading = false;
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
     });
-  },
-});
     builder.addCase(fetchFilterTournaments.rejected, (state, action) => {
       state.loading = false;
       state.tournaments = [];
