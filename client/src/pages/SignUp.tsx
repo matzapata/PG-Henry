@@ -152,7 +152,7 @@ function FormSignUp() {
     );
 
     try {
-      await api.post("/api/auth/signup", input);
+      await api.post("/auth/signup", input);
       history.push("/auth/login");
     } catch (e: any) {
       setSignUpError(e.response.data.message);

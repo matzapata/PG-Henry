@@ -26,7 +26,7 @@ export const fetchTournaments = createAsyncThunk(
   "tournaments/fetchTournaments",
   async () => {
     const result = await axios(
-      `${process.env.REACT_APP_API_URL}/api/tournaments?sort=asc`
+      `${process.env.REACT_APP_API_URL}/tournaments?sort=asc`
     );
     return result.data;
   }
@@ -41,7 +41,7 @@ export const fetchFilterTournaments = createAsyncThunk(
     name: string;
   }) => {
     const result = await axios(
-      `${process.env.REACT_APP_API_URL}/api/tournaments?${
+      `${process.env.REACT_APP_API_URL}/tournaments?${
         filters.type ? "type=" + filters.type : ""
       }&${filters.stat ? "status=" + filters.stat : ""}&${
         filters.sort ? "sort=" + filters.sort : ""
