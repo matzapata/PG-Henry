@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import TournamentCard from "../components/TournamentCard";
+import TournamentFilter from "../components/TournamentFilter";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { fetchTournaments } from "../redux/slices/tournamentSlice";
 import { Container, Text, Button } from "@chakra-ui/react";
 
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
+  console.log(currentTournamets.tournaments);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,6 +28,7 @@ function Tournaments(): JSX.Element {
       {!currentTournamets.loading && currentTournamets.error ? (
         <Text>Error: {currentTournamets.error}</Text>
       ) : null}
+      <TournamentFilter />
       {!currentTournamets.loading &&
         currentTournamets.tournaments.map((el) => (
           <TournamentCard

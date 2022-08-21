@@ -36,9 +36,19 @@ model Tournament {
   type            TournamentType    @default(PUBLIC)
   pool            Int               @default(0)
   logo_url        String
+  stage           TournamentStage
   tournament_id   User_Tournament[]
   predictions_id  Predictions[]
   matches_id      Matches[]
+}
+
+enum TournamentStage {
+  FASEGROUP
+  ROUNDOF32
+  ROUNDOF16
+  QUARTERFINAL
+  SEMIFINAL
+  FINAL
 }
 
 enum TournamentType {

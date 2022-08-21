@@ -10,11 +10,13 @@ import {
   Heading,
   Link,
   Avatar,
+  Icon,
 } from "@chakra-ui/react";
 import { Link as ReactLink, useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../redux/hooks";
 import api from "../services/api";
+import { FaExclamationCircle } from "react-icons/fa";
 
 interface Inputs {
   full_name: string;
@@ -250,11 +252,16 @@ function FormSignUp() {
                   : true
               }
             >
-              Enviar
+              Crear cuenta
             </Button>
-            <Text color="red.500" fontWeight={500}>
-              {signUpError}
-            </Text>
+            {signUpError && (
+              <Flex mt="4" alignItems="center">
+                <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+                <Text as="span" color="red.500" fontWeight="500">
+                  {signUpError}
+                </Text>
+              </Flex>
+            )}
           </Stack>
         </form>
       </Box>

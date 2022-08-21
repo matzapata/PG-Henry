@@ -1,5 +1,6 @@
+import { filter } from "@chakra-ui/react";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import tournaments from "../../utils/tournaments.json";
+import axios from "axios";
 
 type Tournament = {
   id: string;
@@ -22,8 +23,30 @@ const initialState: InitialState = {
 
 export const fetchTournaments = createAsyncThunk(
   "tournaments/fetchTournaments",
-  () => {
-    return tournaments;
+  async () => {
+    const result = await axios(
+      `${process.env.REACT_APP_API_URL}/tournaments?sort=asc`
+    );
+    return result.data;
+  }
+);
+
+export const fetchFilterTournaments = createAsyncThunk(
+  "tournaments/fetchFilterTournaments",
+  async (filters: {
+    type: string;
+    stat: string;
+    sort: string;
+    name: string;
+  }) => {
+    const result = await axios(
+      `${process.env.REACT_APP_API_URL}/tournaments?${
+        filters.type ? "type=" + filters.type : ""
+      }&${filters.stat ? "status=" + filters.stat : ""}&${
+        filters.sort ? "sort=" + filters.sort : ""
+      }&${filters.name ? "name=" + filters.name : ""}`
+    );
+    return result.data;
   }
 );
 
@@ -44,6 +67,22 @@ const tournamentSlice = createSlice({
       }
     );
     builder.addCase(fetchTournaments.rejected, (state, action) => {
+      state.loading = false;
+      state.tournaments = [];
+      state.error = action.error.message || "Algo salio mal";
+    });
+    builder.addCase(fetchFilterTournaments.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      fetchFilterTournaments.fulfilled,
+      (state, action: PayloadAction<Tournament[]>) => {
+        state.loading = false;
+        state.tournaments = action.payload;
+        state.error = "";
+      }
+    );
+    builder.addCase(fetchFilterTournaments.rejected, (state, action) => {
       state.loading = false;
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
