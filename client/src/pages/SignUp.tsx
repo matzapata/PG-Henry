@@ -27,7 +27,7 @@ interface Inputs {
   passwordConfirm: string;
 }
 
-function validate(input: Inputs) {
+function validate(input: Inputs, submit = false) {
   const errors: Inputs = {
     full_name: "",
     username: "",
@@ -71,18 +71,25 @@ function validate(input: Inputs) {
     )
       errors.birth_date = " Fecha inválida";
 
-    const tiempoTranscurrido = Date.now();
-    const hoyN = new Date(tiempoTranscurrido);
+    const index = input.birth_date.toString().indexOf("-");
+    if (input.birth_date.slice(0, index).length > 4) {
+      errors.birth_date = " Año inválido";
+    } else {
+      if (Number(input.birth_date.slice(0, index)) < 1901)
+        errors.birth_date = "No creo que seas tan viejo";
+      const tiempoTranscurrido = Date.now();
+      const hoyN = new Date(tiempoTranscurrido);
 
-    const hoy = hoyN.toLocaleDateString();
-    const yyyy = (Number(hoy.slice(5)) - 18).toString();
-    let mm = hoy.slice(-6, 4);
-    if (mm.length === 1) mm = "0" + mm;
-    let dd = hoy.slice(0, 2);
-    if (dd.length === 1) dd = "0" + dd;
-    const fecha = yyyy + "-" + mm + "-" + dd;
-    if (fecha < input.birth_date)
-      errors.birth_date = " Tienes que ser mayor de 18 años";
+      const hoy = hoyN.toLocaleDateString();
+      const yyyy = (Number(hoy.slice(5)) - 18).toString();
+      let mm = hoy.slice(-6, 4);
+      if (mm.length === 1) mm = "0" + mm;
+      let dd = hoy.slice(0, 2);
+      if (dd.length === 1) dd = "0" + dd;
+      const fecha = yyyy + "-" + mm + "-" + dd;
+      if (fecha < input.birth_date)
+        errors.birth_date = " Tienes que ser mayor de 18 años";
+    }
   }
 
   if (!!input.password.length) {
@@ -99,6 +106,16 @@ function validate(input: Inputs) {
       errors.passwordConfirm = " Error en la confirmación";
     if (input.passwordConfirm.length > 50)
       errors.passwordConfirm = "Cantidad de caracteres superada!!";
+  }
+
+  if (submit) {
+    if (errors.full_name === "") errors.full_name = "Campo Requerido";
+    if (errors.username === "") errors.username = "Campo Requerido";
+    if (errors.email === "") errors.email = "Campo Requerido";
+    if (errors.birth_date === "") errors.birth_date = "Campo Requerido";
+    if (errors.password === "") errors.password = "Campo Requerido";
+    if (errors.passwordConfirm === "")
+      errors.passwordConfirm = "Campo Requerido";
   }
 
   return errors;
@@ -128,14 +145,29 @@ function FormSignUp() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors(
-      validate({ ...input, [e.currentTarget.name]: e.currentTarget.value })
+      validate(
+        {
+          ...input,
+          [e.currentTarget.name]: e.currentTarget.value,
+        },
+        true
+      )
     );
 
-    try {
-      await api.post("/auth/signup", input);
-      history.push("/auth/login");
-    } catch (e: any) {
-      setSignUpError(e.response.data.message);
+    if (
+      errors.full_name === "Completado" &&
+      errors.username === "Completado" &&
+      errors.email === "Completado" &&
+      errors.birth_date === "Completado" &&
+      errors.password === "Completado" &&
+      errors.passwordConfirm === "Completado"
+    ) {
+      try {
+        await api.post("/auth/signup", input);
+        history.push("/auth/login");
+      } catch (e: any) {
+        setSignUpError(e.response.data.message);
+      }
     }
   };
 
@@ -172,7 +204,13 @@ function FormSignUp() {
       <Box minW={{ base: "90%", md: "468px" }}>
         <form onSubmit={handleSubmit}>
           <Stack p="4" spacing="4" bgColor="white" borderRadius="4">
-            <FormControl isInvalid={errors.full_name !== "Completado"}>
+            <FormControl
+              isInvalid={
+                errors.full_name === "Completado" || errors.full_name === ""
+                  ? false
+                  : true
+              }
+            >
               <Input
                 type="text"
                 name="full_name"
@@ -183,7 +221,13 @@ function FormSignUp() {
               <FormErrorMessage>{errors.full_name}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.username !== "Completado"}>
+            <FormControl
+              isInvalid={
+                errors.username === "Completado" || errors.username === ""
+                  ? false
+                  : true
+              }
+            >
               <Input
                 type="text"
                 name="username"
@@ -194,7 +238,13 @@ function FormSignUp() {
               <FormErrorMessage>{errors.username}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.email !== "Completado"}>
+            <FormControl
+              isInvalid={
+                errors.email === "Completado" || errors.email === ""
+                  ? false
+                  : true
+              }
+            >
               <Input
                 type="text"
                 name="email"
@@ -205,7 +255,13 @@ function FormSignUp() {
               <FormErrorMessage>{errors.email}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.birth_date !== "Completado"}>
+            <FormControl
+              isInvalid={
+                errors.birth_date === "Completado" || errors.birth_date === ""
+                  ? false
+                  : true
+              }
+            >
               <Input
                 type="date"
                 name="birth_date"
@@ -216,7 +272,13 @@ function FormSignUp() {
               <FormErrorMessage>{errors.birth_date}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.password !== "Completado"}>
+            <FormControl
+              isInvalid={
+                errors.password === "Completado" || errors.password === ""
+                  ? false
+                  : true
+              }
+            >
               <Input
                 type="password"
                 name="password"
@@ -227,7 +289,14 @@ function FormSignUp() {
               <FormErrorMessage>{errors.password}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.passwordConfirm !== "Completado"}>
+            <FormControl
+              isInvalid={
+                errors.passwordConfirm === "Completado" ||
+                errors.passwordConfirm === ""
+                  ? false
+                  : true
+              }
+            >
               <Input
                 type="password"
                 name="passwordConfirm"
@@ -243,7 +312,7 @@ function FormSignUp() {
               mt={4}
               colorScheme="teal"
               type="submit"
-              disabled={
+              /* disabled={
                 errors.username === "Completado" &&
                 errors.username === "Completado" &&
                 errors.email === "Completado" &&
@@ -252,7 +321,7 @@ function FormSignUp() {
                 errors.passwordConfirm === "Completado"
                   ? false
                   : true
-              }
+              } */
             >
               Crear cuenta
             </Button>
