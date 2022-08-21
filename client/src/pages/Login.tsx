@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import {
   Flex,
-  Heading,
+  Text,
   Input,
   Button,
   InputGroup,
@@ -16,7 +16,6 @@ import {
   FormHelperText,
   InputRightElement,
   Checkbox,
-  CheckboxGroup,
   Image,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
@@ -115,7 +114,7 @@ const App = () => {
       flexDirection="column"
       width="100wh"
       height="100vh"
-      backgroundColor="gray.200"
+      backgroundColor="#082032"
       justifyContent="center"
       alignItems="center"
     >
@@ -125,11 +124,19 @@ const App = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar bg="#4D4BCC" />
-        <Heading color="#4D4BCC">Iniciar Sesión</Heading>
+        <Avatar size="xl" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
+        <Text
+          bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+          bgClip="text"
+          fontSize="7xl"
+          fontWeight="bold"
+        >
+          Iniciar Sesión
+        </Text>
         <Box minW={{ base: "90%", md: "468px" }}>
           <form>
             <Stack
+              borderRadius="10px"
               spacing={4}
               p="1rem"
               backgroundColor="whiteAlpha.900"
@@ -144,6 +151,7 @@ const App = () => {
                     name="email"
                     type="email"
                     placeholder="Correo electronico"
+                    borderColor="#B9D2D2"
                     onChange={cambiosEnInput}
                   />
                 </InputGroup>
@@ -156,39 +164,54 @@ const App = () => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Contraseña"
+                    borderColor="#B9D2D2"
                     onChange={cambiosEnInput}
                     name="password"
                   />
-                  <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                  <InputRightElement width="4.5rem" pr="5px">
+                    <Button
+                      _hover={{
+                        color: "#082032",
+                      }}
+                      h="1.75rem"
+                      size="sm"
+                      onClick={handleShowClick}
+                      bgColor="#4FBDBA"
+                      color="#F7F7F7"
+                    >
                       {showPassword ? "Ocultar" : "Mostrar"}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText display="flex" justifyContent="space-between">
-                  <Checkbox id="checkbox">Mantener sesión</Checkbox>
+                  <Checkbox id="checkbox" borderColor="#B9D2D2">
+                    Mantener sesión
+                  </Checkbox>
                   <Link>Olvidaste tu contraseña?</Link>
                 </FormHelperText>
               </FormControl>
               <Button
-                borderRadius={0}
+                _hover={{
+                  color: "#082032",
+                }}
                 id="login"
                 type="submit"
-                variant="solid"
-                colorScheme="purple"
+                bgColor="#4FBDBA"
+                color="#F7F7F7"
                 width="full"
                 onClick={(e) => handleSubmit(e)}
               >
                 Iniciar
               </Button>
               <Button
+                _hover={{
+                  color: "#082032",
+                }}
                 display="flex"
-                borderRadius={0}
                 id="auth0_login"
                 type="submit"
-                variant="solid"
-                colorScheme="gray"
-                width="full"
+                bgColor="#4FBDBA"
+                color="#F7F7F7"
                 onClick={(e) => {
                   e.preventDefault;
                   login();
@@ -205,9 +228,9 @@ const App = () => {
           </form>
         </Box>
       </Stack>
-      <Box>
+      <Box color="#F7F7F7">
         Aun no tienes una cuenta?
-        <Link color="#4D4BCC" href="http://localhost:3000/signup">
+        <Link color="#AEFEFF" ml="2px" href="http://localhost:3000/registrarse">
           Crear una
         </Link>
       </Box>

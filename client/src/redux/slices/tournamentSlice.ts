@@ -7,6 +7,7 @@ type Tournament = {
   name: string;
   status: string;
   type: string;
+  logo_url: string;
 };
 
 type InitialState = {

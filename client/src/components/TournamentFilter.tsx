@@ -2,12 +2,13 @@ import React from "react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import {
-  Container,
   Input,
   IconButton,
   Box,
-  Flex,
   Button,
+  Select,
+  Stack,
+  color,
 } from "@chakra-ui/react";
 import { useAppDispatch } from "../redux/hooks";
 import {
@@ -39,11 +40,11 @@ function TournamentFilter(): JSX.Element {
     });
   }
 
-  function handleFilter(e: React.MouseEvent<HTMLButtonElement>) {
+  function handleFilter() {
     dispatch(fetchFilterTournaments(filter));
   }
 
-  function handleSubmit(e: React.MouseEvent<HTMLElement>) {
+  function handleSubmit() {
     dispatch(fetchFilterTournaments(filter));
     setFilter({
       ...filter,
@@ -51,7 +52,7 @@ function TournamentFilter(): JSX.Element {
     });
   }
 
-  function deleteFilter(e: React.MouseEvent<HTMLButtonElement>) {
+  function deleteFilter() {
     dispatch(fetchTournaments());
     setFilter({
       stat: "",
@@ -72,59 +73,93 @@ function TournamentFilter(): JSX.Element {
   }
 
   return (
-    <Container>
-      <Flex minWidth="max-content" alignItems="center" gap="2">
-        <Box p="2">
-          <Input
-            name="searchname"
-            placeholder="Buscar torneo..."
-            value={filter.searchname}
-            size="md"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </Box>
-
+    <Box p="20px" backdropFilter="auto" backdropBrightness="0.5">
+      <Stack direction="row" spacing="5px">
+        <Input
+          name="searchname"
+          placeholder="Buscar torneo..."
+          value={filter.searchname}
+          color="#F7F7F7"
+          borderColor="#4FBDBA"
+          w="30%"
+          type="text"
+          onChange={handleInputChange}
+        />
         <IconButton
           aria-label="Search database"
+          bgColor="#4FBDBA"
           icon={<SearchIcon />}
           type="submit"
           onClick={handleSubmit}
         />
-      </Flex>
-
-      <select id="status" name="stat" onChange={handleChange}>
-        <option id="alls" value="">
-          Todos
-        </option>
-        <option value="INPROGRESS">En progreso</option>
-        <option value="CONCLUDED">Finalizado</option>
-        <option value="INCOMING">Próximos</option>
-      </select>
-      <select id="types" name="type" onChange={handleChange}>
-        <option id="allt" value="">
-          Todos
-        </option>
-        <option value="PRIVATE">Privados</option>
-        <option value="PUBLIC">Públicos</option>
-      </select>
-      <select id="sorts" name="sort" onChange={handleChange}>
-        <option id="allsorts" value="asc">
-          Ascendente
-        </option>
-        <option value="desc">Descendente</option>
-        <option value="mostpopular">Más popular</option>
-        <option value="leastpopular">Menos popular</option>
-      </select>
-
-      <Button colorScheme="teal" size="md" onClick={handleFilter}>
-        Aplicar filtros
-      </Button>
-
-      <Button colorScheme="teal" size="md" onClick={deleteFilter}>
-        Cargar todos
-      </Button>
-    </Container>
+        <Select
+          w="20%"
+          color="#F7F7F7"
+          borderColor="#4FBDBA"
+          id="status"
+          name="stat"
+          onChange={handleChange}
+        >
+          <option id="alls" value="">
+            Todos
+          </option>
+          <option value="INPROGRESS">En progreso</option>
+          <option value="CONCLUDED">Finalizado</option>
+          <option value="INCOMING">Próximos</option>
+        </Select>
+        <Select
+          w="20%"
+          color="#F7F7F7"
+          borderColor="#4FBDBA"
+          id="types"
+          name="type"
+          onChange={handleChange}
+        >
+          <option id="allt" value="">
+            Todos
+          </option>
+          <option value="PRIVATE">Privados</option>
+          <option value="PUBLIC">Públicos</option>
+        </Select>
+        <Select
+          w="20%"
+          color="#F7F7F7"
+          borderColor="#4FBDBA"
+          id="sorts"
+          name="sort"
+          onChange={handleChange}
+        >
+          <option id="allsorts" value="asc">
+            Ascendente
+          </option>
+          <option value="desc">Descendente</option>
+          <option value="mostpopular">Más popular</option>
+          <option value="leastpopular">Menos popular</option>
+        </Select>
+        <Button
+          _hover={{
+            color: "#082032",
+          }}
+          bgColor="#4FBDBA"
+          color="#F7F7F7"
+          size="md"
+          onClick={handleFilter}
+        >
+          Aplicar filtros
+        </Button>
+        <Button
+          _hover={{
+            color: "#082032",
+          }}
+          bgColor="#4FBDBA"
+          color="#F7F7F7"
+          size="md"
+          onClick={deleteFilter}
+        >
+          Cargar todos
+        </Button>
+      </Stack>
+    </Box>
   );
 }
 

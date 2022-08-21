@@ -11,10 +11,10 @@ function App() {
   return (
     <Switch>
       <Route exact path="/torneos" component={Tournaments} />
-      <Route exact path="/auth/login" component={Login} />
+      <Route exact path="/auth/ingresar" component={Login} />
       <Route exact path="/about" component={About} />
       <Route exact path="/" component={Home} />
-      <Route exact path="/signup" component={FormSignUp} />
+      <Route exact path="/registrarse" component={FormSignUp} />
       <Route path="*" component={NotFound} />
     </Switch>
   );

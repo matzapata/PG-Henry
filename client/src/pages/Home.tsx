@@ -1,40 +1,21 @@
 import React from "react";
-import { Button } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import { Box, Button } from "@chakra-ui/react";
+/* import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react"; */
+import NavBar from "../components/UnloggedNav";
 
 function Home() {
-  const { logout, isAuthenticated } = useAuth0();
   return (
-    <div>
-      <Link to="/auth/login">
-        <Button
-          display="flex"
-          borderRadius={0}
-          id="auth0_login"
-          type="submit"
-          variant="solid"
-          colorScheme="red"
-          width="150px"
-        >
-          <span>Login</span>
-        </Button>
-      </Link>
-
-      <Button
-        display="flex"
-        borderRadius={0}
-        id="auth0_login"
-        type="submit"
-        variant="solid"
-        colorScheme="blue"
-        width="150px"
-        onClick={() => logout({ returnTo: window.location.origin })}
-      >
-        <span>Logout</span>
-      </Button>
-      {isAuthenticated ? "MENSAJE SECRETO" : "LOGEATE PARA VER EL MENSAJE"}
-    </div>
+    <Box
+      maxW="100vw"
+      h="950px"
+      /* bgColor="#082032" */
+      bgSize="cover"
+      bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+      p="0"
+    >
+      <NavBar />
+    </Box>
   );
 }
 
