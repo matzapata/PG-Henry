@@ -11,7 +11,7 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { Link, useHistory } from "react-router-dom";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 
 interface Inputs {
   full_name: string;
@@ -154,7 +154,7 @@ function FormSignUp() {
       flexDirection="column"
       width="100wh"
       height="100vh"
-      backgroundColor="gray.200"
+      backgroundColor="#082032"
       justifyContent="center"
       alignItems="center"
     >
@@ -164,18 +164,28 @@ function FormSignUp() {
         justifyContent="center"
         alignItems="center"
       >
-        <Heading color="#4D4BCC">Crear cuenta</Heading>
+        <Heading
+          bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+          bgClip="text"
+          fontSize="7xl"
+          fontWeight="bold"
+        >
+          Crear cuenta
+        </Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
           <form onSubmit={handleSubmit}>
             <Stack
               spacing={4}
               p="1rem"
               backgroundColor="whiteAlpha.900"
+              borderRadius="20px"
               boxShadow="md"
             >
               <FormControl isInvalid={errors.full_name !== "Completado"}>
-                <FormLabel>Nombre</FormLabel>
+                {/* <FormLabel>Nombre</FormLabel> */}
                 <Input
+                  color="#B9D2D2"
+                  placeholder="Nombre"
                   type="text"
                   name="full_name"
                   value={input.full_name}
@@ -186,8 +196,10 @@ function FormSignUp() {
                 )}
               </FormControl>
               <FormControl isInvalid={errors.username !== "Completado"}>
-                <FormLabel>Nombre de usuario</FormLabel>
+                {/* <FormLabel>Nombre de usuario</FormLabel> */}
                 <Input
+                  color="#B9D2D2"
+                  placeholder="Nombre de usuario"
                   type="text"
                   name="username"
                   value={input.username}
@@ -199,10 +211,12 @@ function FormSignUp() {
               </FormControl>
 
               <FormControl isInvalid={errors.email !== "Completado"}>
-                <FormLabel>Email</FormLabel>
+                {/* <FormLabel>Email</FormLabel> */}
                 <Input
                   type="text"
                   name="email"
+                  color="#B9D2D2"
+                  placeholder="Email"
                   value={input.email}
                   onChange={cambiosEnInput}
                 />
@@ -212,10 +226,12 @@ function FormSignUp() {
               </FormControl>
 
               <FormControl isInvalid={errors.birth_date !== "Completado"}>
-                <FormLabel>Fecha de nacimiento</FormLabel>
+                {/* <FormLabel>Fecha de nacimiento</FormLabel> */}
                 <Input
                   type="date"
                   name="birth_date"
+                  color="#B9D2D2"
+                  placeholder="Fecha de nacimiento"
                   value={input.birth_date}
                   onChange={cambiosEnInput}
                 />
@@ -224,10 +240,12 @@ function FormSignUp() {
                 )}
               </FormControl>
               <FormControl isInvalid={errors.password !== "Completado"}>
-                <FormLabel>Contraseña</FormLabel>
+                {/* <FormLabel>Contraseña</FormLabel> */}
                 <Input
                   type="text"
                   name="password"
+                  color="#B9D2D2"
+                  placeholder="Contraseña"
                   value={input.password}
                   onChange={cambiosEnInput}
                 />
@@ -237,10 +255,12 @@ function FormSignUp() {
               </FormControl>
 
               <FormControl isInvalid={errors.passwordConfirm !== "Completado"}>
-                <FormLabel>Confirmar contraseña</FormLabel>
+                {/* <FormLabel color="#B9D2D2">Confirmar contraseña</FormLabel> */}
                 <Input
                   type="text"
                   name="passwordConfirm"
+                  color="#B9D2D2"
+                  placeholder="Confirmar contraseña"
                   value={input.passwordConfirm}
                   onChange={cambiosEnInput}
                 />
@@ -250,8 +270,12 @@ function FormSignUp() {
               </FormControl>
 
               <Button
+                _hover={{
+                  color: "#082032",
+                }}
                 mt={4}
-                colorScheme="teal"
+                bgColor="#4FBDBA"
+                color="#F7F7F7"
                 type="submit"
                 disabled={
                   errors.username === "Completado" &&
@@ -276,12 +300,11 @@ function FormSignUp() {
               <FontAwesomeIcon icon={faAngleLeft} />
               Atras
             </Text> */}
-            <Text>
+            <Text color="#F7F7F7">
               ¿Ya tienes una cuenta?{" "}
               <Link
-                style={{ textDecoration: "underline", color: "blue" }}
-                to={"/auth/login"}
-                color="#4D4BCC"
+                style={{ textDecoration: "none", color: "#AEFEFF" }}
+                to={"/auth/ingresar"}
                 href="#"
               >
                 Iniciar
