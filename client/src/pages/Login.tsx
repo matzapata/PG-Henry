@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import {
   Flex,
-  Heading,
+  Text,
   Input,
   Button,
   InputGroup,
@@ -16,7 +16,6 @@ import {
   InputRightElement,
   Checkbox,
   Image,
-  Text,
   Icon,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock, FaExclamationCircle } from "react-icons/fa";
@@ -80,11 +79,18 @@ function Login() {
     });
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    auth0.isAuthenticated().then((isAuth0Authenticated) => {
+      if (isAuthenticated || isAuth0Authenticated) history.push("/");
+    });
+  }, [isAuthenticated]);
+
   return (
     <Flex
       flexDirection="column"
       width="100wh"
       height="100vh"
+      bgColor="primary"
       justifyContent="center"
       alignItems="center"
     >
@@ -95,16 +101,18 @@ function Login() {
         alignItems="center"
         width="100%"
       >
-        <Avatar bg="purple.500" />
-        <Heading color="purple.500">Iniciar Sesión</Heading>
-        <Box minW={{ base: "95%", md: "468px" }}>
+        <Avatar size="lg" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
+        <Text
+          bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+          bgClip="text"
+          fontSize="5xl"
+          fontWeight="bold"
+        >
+          Iniciar Sesión
+        </Text>
+        <Box minW={{ base: "90%", md: "468px" }}>
           <form onSubmit={onSubmit}>
-            <Stack
-              p="1rem"
-              spacing={4}
-              borderRadius="4"
-              backgroundColor="whiteAlpha.900"
-            >
+            <Stack p="4" spacing="4" borderRadius="4" backgroundColor="white">
               <FormControl>
                 <InputGroup>
                   <InputLeftElement pointerEvents="none">
@@ -147,7 +155,7 @@ function Login() {
               <Button
                 width="full"
                 type="submit"
-                colorScheme="purple"
+                colorScheme="teal"
                 isLoading={authLoading}
                 disabled={state.email === "" || state.password === ""}
               >
@@ -158,6 +166,8 @@ function Login() {
                 width="full"
                 display="flex"
                 colorScheme="gray"
+                border="1px"
+                borderColor="gray.300"
                 onClick={auth0Login}
               >
                 <Image src="/img/auth0.png" alt="logo_auth0" width="50px" />
@@ -167,9 +177,9 @@ function Login() {
           </form>
         </Box>
       </Stack>
-      <Box>
+      <Box color="text">
         Aun no tienes una cuenta?{" "}
-        <Link as={ReactLink} color="purple.500" to="/auth/signup">
+        <Link as={ReactLink} color="teal.400" to="/auth/signup">
           Crear una
         </Link>
       </Box>

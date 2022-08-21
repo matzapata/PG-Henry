@@ -156,14 +156,22 @@ function FormSignUp() {
       alignItems="center"
       flexDirection="column"
       justifyContent="center"
+      bgColor="primary"
+      py="20"
     >
-      <Avatar bg="purple.500" mt="10" />
-      <Heading color="purple.500" mb="10">
+      <Avatar size="lg" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
+      <Heading
+        bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+        bgClip="text"
+        fontSize="5xl"
+        fontWeight="bold"
+        mb="4"
+      >
         Crear cuenta
       </Heading>
       <Box minW={{ base: "90%", md: "468px" }}>
         <form onSubmit={handleSubmit}>
-          <Stack p="1rem" spacing={4}>
+          <Stack p="4" spacing="4" bgColor="white" borderRadius="4">
             <FormControl isInvalid={errors.full_name !== "Completado"}>
               <Input
                 type="text"
@@ -230,16 +238,10 @@ function FormSignUp() {
 
               <FormErrorMessage>{errors.passwordConfirm}</FormErrorMessage>
             </FormControl>
-            <Text fontSize="15px">
-              ¿Ya tienes una cuenta?{" "}
-              <Link color="purple.500" as={ReactLink} to={"/auth/login"}>
-                Ingresar
-              </Link>
-            </Text>
 
             <Button
               mt={4}
-              colorScheme="purple"
+              colorScheme="teal"
               type="submit"
               disabled={
                 errors.username === "Completado" &&
@@ -264,6 +266,18 @@ function FormSignUp() {
             )}
           </Stack>
         </form>
+        <Text fontSize="15px" mt="4" textAlign="center" color="text">
+          ¿Ya tienes una cuenta?{" "}
+          <Link
+            color="teal.400"
+            textDecoration="underline"
+            fontWeight="500"
+            as={ReactLink}
+            to={"/auth/login"}
+          >
+            Ingresar
+          </Link>
+        </Text>
       </Box>
     </Flex>
   );
