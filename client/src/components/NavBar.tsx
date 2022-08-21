@@ -1,13 +1,15 @@
 import React from "react";
-import { Button, Flex, Text, Link } from "@chakra-ui/react";
+import { Button, Flex, Text, Link, Box } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { signOut } from "../redux/slices/authThunk";
 import Logo from "./Logo";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function NavBar() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
   const dispatch = useAppDispatch();
+  const { logout, isAuthenticated } = useAuth0();
 
   return (
     <Flex
@@ -23,7 +25,7 @@ export default function NavBar() {
         <Text fontSize="lg" fontWeight="medium" ml="2" mr={["4", "8"]}>
           ProdeMaster
         </Text>
-        {isLoggedIn && (
+        {(isLoggedIn || isAuthenticated) && (
           <>
             <Link color="purple.500" mx="4" as={ReactLink} to="/torneos">
               Torneos
@@ -31,18 +33,41 @@ export default function NavBar() {
           </>
         )}
       </Flex>
-      {isLoggedIn ? (
-        <Button
-          onClick={() => dispatch(signOut())}
-          colorScheme="purple"
-          size="sm"
-        >
-          Salir
-        </Button>
+      {isLoggedIn || isAuthenticated ? (
+        <Box width="150px" display="flex" justifyContent="space-evenly">
+          <Button colorScheme="purple" size="sm">
+            Perfil
+          </Button>
+          <Button
+            onClick={() => {
+              if (isLoggedIn) dispatch(signOut());
+              else if (isAuthenticated) logout();
+            }}
+            colorScheme="purple"
+            size="sm"
+          >
+            Salir
+          </Button>
+        </Box>
       ) : (
-        <Button as={ReactLink} to="/auth/login" colorScheme="purple" size="sm">
-          Ingresar
-        </Button>
+        <Box width="200px" display="flex" justifyContent="space-evenly">
+          <Button
+            as={ReactLink}
+            to="/auth/signup"
+            colorScheme="purple"
+            size="sm"
+          >
+            Registrate
+          </Button>
+          <Button
+            as={ReactLink}
+            to="/auth/login"
+            colorScheme="purple"
+            size="sm"
+          >
+            Ingresar
+          </Button>
+        </Box>
       )}
     </Flex>
   );

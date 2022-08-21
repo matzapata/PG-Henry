@@ -7,6 +7,7 @@ import { AxiosError, HeadersDefaults } from "axios";
 type LoginPayload = {
   email: string;
   password: string;
+  check?: boolean;
 };
 
 interface AxiosDefaultHeaders extends HeadersDefaults {
