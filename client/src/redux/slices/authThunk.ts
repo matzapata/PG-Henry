@@ -7,6 +7,7 @@ import { AxiosError, HeadersDefaults } from "axios";
 type LoginPayload = {
   email: string;
   password: string;
+  check?: boolean;
 };
 
 interface AxiosDefaultHeaders extends HeadersDefaults {
@@ -17,7 +18,7 @@ export const login = createAsyncThunk(
   "auth/login",
   async (payload: LoginPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/signin", payload);
+      const response = await api.post("/api/auth/signin", payload);
       api.defaults.headers = {
         ...api.defaults.headers,
         "x-access-token": response.data.token,
@@ -40,7 +41,7 @@ export const refreshToken = createAsyncThunk("auth/refreshToken", async () => {
     ...api.defaults.headers,
     "x-access-token": token,
   } as AxiosDefaultHeaders;
-  const response = await api.post("/auth/refresh");
+  const response = await api.post("/api/auth/refresh");
 
   setToken(response.data.token);
   api.defaults.headers = {
