@@ -3,11 +3,12 @@ import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "./utils/chakraTheme";
+import chakraTheme from "./utils/chakraTheme";
+import history from "./utils/history";
 import { Auth0Provider } from "@auth0/auth0-react";
 
 const root = ReactDOM.createRoot(
@@ -16,19 +17,19 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <Router history={history}>
       <Provider store={store}>
-        <ChakraProvider theme={theme}>
+        <ChakraProvider theme={chakraTheme}>
           <Auth0Provider
-            domain="dev-8nfj3ijq.us.auth0.com"
-            clientId="R4ZFyhpGGh2eKHFvO0MXWAWmdS6YB9oA"
-            redirectUri={`${window.location.origin}`}
+            domain={process.env.REACT_APP_AUTH0_DOMAIN as string}
+            clientId={process.env.REACT_APP_AUTH0_CLIENT_ID as string}
+            redirectUri={process.env.REACT_APP_CLIENT_URL as string}
           >
             <App />
           </Auth0Provider>
         </ChakraProvider>
       </Provider>
-    </BrowserRouter>
+    </Router>
   </React.StrictMode>
 );
 
