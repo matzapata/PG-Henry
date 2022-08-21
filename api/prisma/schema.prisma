@@ -24,6 +24,7 @@ model User {
   verification_token String           
   tournament_userid  User_Tournament[]
   predictions_userid Predictions[]
+  creator            Tournament[]
 }
 
 model Tournament {
@@ -31,6 +32,7 @@ model Tournament {
   name            String            @unique
   description     String
   user_limit      Int
+  creator_id      User              @relation(fields: [creator_user_id], references: [id])
   creator_user_id String
   status          Status            @default(INCOMING)
   type            TournamentType    @default(PUBLIC)
@@ -65,9 +67,9 @@ enum Status {
 model User_Tournament {
   id             String     @unique @default(uuid())
   user           User       @relation(fields: [user_id], references: [id])
-  user_id        String     @unique
+  user_id        String     
   tournament     Tournament @relation(fields: [tournament_id], references: [id])
-  tournament_id  String     @unique
+  tournament_id  String     
   score          Int
   winner_team_id String
 
@@ -85,20 +87,20 @@ model Teams {
 model Predictions {
   id            String     @unique @default(uuid())
   user          User       @relation(fields: [user_id], references: [id])
-  user_id       String     @unique
-  match_id      Int        @unique
+  user_id       String     
+  match_id      Matches    @relation(fields: [match], references: [id])
+  match         String
   scores_a      Int
   scores_b      Int
   tournament    Tournament @relation(fields: [tournament_id], references: [id])
   tournament_id String
-  matches       Matches[]
+  
 
-  @@id([user_id, tournament_id])
+  @@id([user_id, tournament_id,match])
 }
 
 model Matches {
-  matches_id    Predictions @relation(fields: [id], references: [id])
-  id            String
+  id            String      @unique @default(uuid())
   id_a          Teams       @relation(name: "team_a", fields: [team_a_id], references: [id])
   team_a_id     String
   id_b          Teams       @relation(name: "team_b", fields: [team_b_id], references: [id])
@@ -108,6 +110,7 @@ model Matches {
   date          DateTime
   tournament    Tournament  @relation(fields: [tournament_id], references: [id])
   tournament_id String
+  match_id      Predictions[]
 
-  @@id([id, team_a_id, team_b_id])
+  @@id([team_a_id, team_b_id])
 }
