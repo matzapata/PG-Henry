@@ -9,6 +9,7 @@ import LoginPage from "./pages/Login";
 import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
+import PrivateRoute from "./utils/routePrivate";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -18,7 +19,7 @@ function App() {
 
   return (
     <Switch>
-      <Route exact path="/torneos" component={TournamentsPage} />
+      <PrivateRoute exact path="/torneos" component={TournamentsPage} />
       <Route exact path="/auth/login" component={LoginPage} />
       <Route exact path="/auth/signup" component={SignUpPage} />
       <Route exact path="/" component={HomePage} />
