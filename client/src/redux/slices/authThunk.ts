@@ -24,7 +24,7 @@ export const login = createAsyncThunk(
         "x-access-token": response.data.token,
       } as AxiosDefaultHeaders;
 
-      if (payload.check) setToken(response.data.token);
+      setToken(response.data.token);
       history.push("/");
       return response.data;
     } catch (e: any) {
