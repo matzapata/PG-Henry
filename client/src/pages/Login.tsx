@@ -17,6 +17,7 @@ import {
   Checkbox,
   Image,
   Icon,
+  Divider,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock, FaExclamationCircle } from "react-icons/fa";
 import { login } from "../redux/slices/authThunk";
@@ -29,6 +30,7 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 function Login() {
+  const [check, setCheck] = useState(false);
   const history = useHistory();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.token);
@@ -52,7 +54,7 @@ function Login() {
     if (!isEmail(state.email)) return alert("Invalid email");
     else if (state.password === "") return alert("Invalid password");
 
-    dispatch(login({ email: state.email, password: state.password }));
+    dispatch(login({ email: state.email, password: state.password, check }));
   };
 
   const onChange = (e: any) => {
@@ -80,10 +82,8 @@ function Login() {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    auth0.isAuthenticated().then((isAuth0Authenticated) => {
-      if (isAuthenticated || isAuth0Authenticated) history.push("/");
-    });
-  }, [isAuthenticated]);
+    console.log(check);
+  }, [check]);
 
   return (
     <Flex
@@ -112,7 +112,13 @@ function Login() {
         </Text>
         <Box minW={{ base: "90%", md: "468px" }}>
           <form onSubmit={onSubmit}>
-            <Stack p="4" spacing="4" borderRadius="4" backgroundColor="white">
+            <Stack
+              p="4"
+              spacing="4"
+              borderRadius="4"
+              backgroundColor="white"
+              paddingTop="30px"
+            >
               <FormControl>
                 <InputGroup>
                   <InputLeftElement pointerEvents="none">
@@ -150,7 +156,14 @@ function Login() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <Checkbox mt="2">Mantener sesión iniciada</Checkbox>
+                <Checkbox
+                  onChange={() => {
+                    setCheck(!check);
+                  }}
+                  mt="2"
+                >
+                  Mantener sesión iniciada
+                </Checkbox>
               </FormControl>
               <Button
                 width="full"
@@ -161,6 +174,7 @@ function Login() {
               >
                 Ingresar
               </Button>
+              <Divider />
               <Button
                 type="button"
                 width="full"
@@ -169,6 +183,7 @@ function Login() {
                 border="1px"
                 borderColor="gray.300"
                 onClick={auth0Login}
+                marginTop="0px"
               >
                 <Image src="/img/auth0.png" alt="logo_auth0" width="50px" />
                 <span>Ingresar con Auth0</span>
