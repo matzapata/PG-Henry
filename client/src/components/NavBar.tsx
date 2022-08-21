@@ -1,9 +1,14 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button, Flex, Text, Link } from "@chakra-ui/react";
+import { Link as ReactLink } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { signOut } from "../redux/slices/authThunk";
 import Logo from "./Logo";
 
 export default function NavBar() {
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const dispatch = useAppDispatch();
+
   return (
     <Flex
       justify="space-between"
@@ -15,13 +20,30 @@ export default function NavBar() {
     >
       <Flex alignItems="center">
         <Logo />
-        <Text fontSize="lg" fontWeight="medium" ml="2">
+        <Text fontSize="lg" fontWeight="medium" ml="2" mr={["4", "8"]}>
           ProdeMaster
         </Text>
+        {isLoggedIn && (
+          <>
+            <Link color="purple.500" mx="4" as={ReactLink} to="/torneos">
+              Torneos
+            </Link>
+          </>
+        )}
       </Flex>
-      <Button as={Link} to="/auth/login" colorScheme="purple" size="sm">
-        Ingresar
-      </Button>
+      {isLoggedIn ? (
+        <Button
+          onClick={() => dispatch(signOut())}
+          colorScheme="purple"
+          size="sm"
+        >
+          Salir
+        </Button>
+      ) : (
+        <Button as={ReactLink} to="/auth/login" colorScheme="purple" size="sm">
+          Ingresar
+        </Button>
+      )}
     </Flex>
   );
 }

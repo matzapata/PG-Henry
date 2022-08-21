@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, signOut } from "./authThunk";
+import { login, refreshToken, signOut } from "./authThunk";
 
 const initialState = {
   token: null,
   loading: false,
-  userData: {},
+  error: "",
 };
 
 const authSlice = createSlice({
@@ -12,6 +12,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Login
     builder.addCase(login.pending, (state) => {
       state.loading = true;
     });
@@ -19,30 +20,30 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.loading = false;
     });
-    builder.addCase(login.rejected, (state) => {
-      state.loading = false;
-    });
-    builder.addCase(signOut.fulfilled, (state) => {
-      state.loading = false;
-      state.userData = {};
+    builder.addCase(login.rejected, (state, action) => {
       state.token = null;
+      state.loading = false;
+      state.error = action.payload as string;
     });
 
-    // [login.rejected]: (state, action) => {
-    // [fetchUserData.pending]: (state, action) => {
-    //   state.loading = true;
-    // },
-    // [fetchUserData.fulfilled]: (state, action) => {
-    //   const { accessToken, user } = action.payload;
-    //   state.token = accessToken;
-    //   state.userData = user;
-    //   state.loading = false;
-    // },
-    // [fetchUserData.rejected]: (state, action) => {
-    //   state.loading = false;
-    //   state.userData = {};
-    //   state.token = null;
-    // },
+    // RefreshToken
+    builder.addCase(refreshToken.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(refreshToken.fulfilled, (state, action) => {
+      state.token = action.payload.token;
+      state.loading = false;
+    });
+    builder.addCase(refreshToken.rejected, (state) => {
+      state.token = null;
+      state.loading = false;
+    });
+
+    // SignOut
+    builder.addCase(signOut.fulfilled, (state) => {
+      state.loading = false;
+      state.token = null;
+    });
   },
 });
 

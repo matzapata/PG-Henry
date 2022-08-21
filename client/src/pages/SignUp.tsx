@@ -9,9 +9,12 @@ import {
   Stack,
   Heading,
   Link,
+  Avatar,
 } from "@chakra-ui/react";
 import { Link as ReactLink, useHistory } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppSelector } from "../redux/hooks";
+import api from "../services/api";
 
 interface Inputs {
   full_name: string;
@@ -100,6 +103,9 @@ function validate(input: Inputs) {
 }
 
 function FormSignUp() {
+  const history = useHistory();
+  const isAuthenticated = useAppSelector((state) => state.auth.token);
+  const [signUpError, setSignUpError] = useState("");
   const [errors, setErrors] = useState<Inputs>({
     full_name: "",
     username: "",
@@ -116,29 +122,19 @@ function FormSignUp() {
     password: "",
     passwordConfirm: "",
   });
-  const history = useHistory();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors(
       validate({ ...input, [e.currentTarget.name]: e.currentTarget.value })
     );
 
-    fetch(`${process.env.REACT_APP_API_URL}/auth/signup`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json, text/plain",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(input),
-    })
-      .then((res) => {
-        res.ok && history.push("/auth/login");
-      })
-      .catch((e) => {
-        alert("Error");
-        console.log(e);
-      });
+    try {
+      await api.post("/auth/signup", input);
+      history.push("/auth/login");
+    } catch (e: any) {
+      setSignUpError(e.response.data.message);
+    }
   };
 
   const cambiosEnInput = (e: React.FormEvent<HTMLInputElement>) => {
@@ -148,6 +144,10 @@ function FormSignUp() {
     );
   };
 
+  useEffect(() => {
+    if (isAuthenticated) history.push("/");
+  }, [isAuthenticated]);
+
   return (
     <Flex
       width="100wh"
@@ -155,12 +155,13 @@ function FormSignUp() {
       flexDirection="column"
       justifyContent="center"
     >
-      <Heading color="purple.500" my="10">
+      <Avatar bg="purple.500" mt="10" />
+      <Heading color="purple.500" mb="10">
         Crear cuenta
       </Heading>
       <Box minW={{ base: "90%", md: "468px" }}>
         <form onSubmit={handleSubmit}>
-          <Stack p="1rem" spacing={2}>
+          <Stack p="1rem" spacing={4}>
             <FormControl isInvalid={errors.full_name !== "Completado"}>
               <Input
                 type="text"
@@ -207,7 +208,7 @@ function FormSignUp() {
 
             <FormControl isInvalid={errors.password !== "Completado"}>
               <Input
-                type="text"
+                type="password"
                 name="password"
                 value={input.password}
                 onChange={cambiosEnInput}
@@ -229,7 +230,7 @@ function FormSignUp() {
             </FormControl>
             <Text fontSize="15px">
               ¿Ya tienes una cuenta?{" "}
-              <Link as={ReactLink} to={"/auth/login"}>
+              <Link color="purple.500" as={ReactLink} to={"/auth/login"}>
                 Ingresar
               </Link>
             </Text>
@@ -251,6 +252,9 @@ function FormSignUp() {
             >
               Enviar
             </Button>
+            <Text color="red.500" fontWeight={500}>
+              {signUpError}
+            </Text>
           </Stack>
         </form>
       </Box>

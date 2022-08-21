@@ -4,10 +4,18 @@ import { Route, Switch } from "react-router-dom";
 import HomePage from "./pages/Home";
 import NotFoundPage from "./pages/NotFound";
 import TournamentsPage from "./pages/Tournaments";
-import SignUpPage from "./pages/SingUp";
+import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
+import { useAppDispatch } from "./redux/hooks";
+import { useEffect } from "react";
+import { refreshToken } from "./redux/slices/authThunk";
 
 function App() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(refreshToken());
+  }, []);
+
   return (
     <Switch>
       <Route exact path="/torneos" component={TournamentsPage} />
