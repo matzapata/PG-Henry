@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, GridItem, Image, Stack, Text } from "@chakra-ui/react";
 
 interface CardProps {
   id: string;
@@ -18,17 +18,17 @@ function TournamentCard({
   logo,
 }: CardProps): JSX.Element {
   return (
-    <Box
+    <GridItem
       _hover={{
         bgColor: "#04879C",
       }}
       boxShadow="dark-lg"
       transition="200ms ease"
-      bgColor="#395B64"
+      backgroundColor="rgba(57,91,100,0.7)"
       borderRadius="20px"
       display={"flex"}
       p="5px"
-      w="40%"
+      w="auto"
     >
       <Image src={logo} w="10rem" h="10rem" fit="cover" borderRadius={"20px"} />
       <Link to={`/tournaments/${id}`}>
@@ -52,7 +52,7 @@ function TournamentCard({
           )}
         </Stack>
       </Link>
-    </Box>
+    </GridItem>
   );
 }
 

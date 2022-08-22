@@ -96,6 +96,7 @@ function TournamentFilter(): JSX.Element {
           w="20%"
           color="#F7F7F7"
           borderColor="#4FBDBA"
+          placeholder="Estado"
           id="status"
           name="stat"
           onChange={handleChange}
@@ -111,6 +112,7 @@ function TournamentFilter(): JSX.Element {
           w="20%"
           color="#F7F7F7"
           borderColor="#4FBDBA"
+          placeholder="Acceso"
           id="types"
           name="type"
           onChange={handleChange}
