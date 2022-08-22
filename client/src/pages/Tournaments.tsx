@@ -3,9 +3,19 @@ import TournamentCard from "../components/TournamentCard";
 import TournamentFilter from "../components/TournamentFilter";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { fetchTournaments } from "../redux/slices/tournamentSlice";
-import { Container, Text, Button, Box, Divider, Stack } from "@chakra-ui/react";
+import {
+  Container,
+  Text,
+  Button,
+  Box,
+  Divider,
+  Stack,
+  Grid,
+  GridItem,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import Logo from "../components/Logo";
 
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
@@ -34,9 +44,12 @@ function Tournaments(): JSX.Element {
         justifyContent="space-between"
         p="20px"
       >
-        <Text fontSize="50px" fontWeight="extrabold" color="#F7F7F7">
-          TORNEOS
-        </Text>
+        <Stack flexDir="row" alignItems="center">
+          <Logo />
+          <Text fontSize="30px" fontWeight="bold" color="#F7F7F7" ml="40px">
+            Torneos
+          </Text>
+        </Stack>
         {/* <Text fontSize="20px" pt="10px" p="20px" color="#F7F7F7">
           Busca entre los mejores torneos mundiales y nacionales, o crea el tuyo
           propio!
@@ -75,7 +88,7 @@ function Tournaments(): JSX.Element {
       {!currentTournamets.loading && currentTournamets.error ? (
         <Text>Error: {currentTournamets.error}</Text>
       ) : null}
-      <Stack direction="row" p="20px">
+      <Grid templateColumns="repeat(3, 3fr)" gap={10} m="20px" pt="50px">
         {!currentTournamets.loading &&
           currentTournamets.tournaments.map((el) => (
             <TournamentCard
@@ -87,7 +100,7 @@ function Tournaments(): JSX.Element {
               logo={el.logo_url}
             />
           ))}
-      </Stack>
+      </Grid>
     </Container>
   );
 }

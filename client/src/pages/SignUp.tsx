@@ -205,6 +205,7 @@ function FormSignUp() {
   return (
     <Flex
       width="100wh"
+      height="100vh"
       alignItems="center"
       flexDirection="column"
       justifyContent="center"

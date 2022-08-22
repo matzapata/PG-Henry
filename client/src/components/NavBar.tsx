@@ -22,12 +22,25 @@ export default function NavBar() {
     >
       <Flex alignItems="center">
         <Logo />
-        <Text fontSize="lg" fontWeight="medium" ml="2" mr={["4", "8"]}>
+        <Text
+          fontSize="30px"
+          fontWeight="bold"
+          color="#F7F7F7"
+          ml="2"
+          mr={["4", "10"]}
+        >
           ProdeMaster
         </Text>
         {(isLoggedIn || isAuthenticated) && (
           <>
-            <Link color="purple.500" mx="4" as={ReactLink} to="/torneos">
+            <Link
+              color="#F7F7F7"
+              fontSize="20px"
+              fontWeight="medium"
+              mx="4"
+              as={ReactLink}
+              to="/torneos"
+            >
               Torneos
             </Link>
           </>
@@ -35,7 +48,7 @@ export default function NavBar() {
       </Flex>
       {isLoggedIn || isAuthenticated ? (
         <Box width="150px" display="flex" justifyContent="space-evenly">
-          <Button colorScheme="purple" size="sm">
+          <Button bgColor="#4FBDBA" color="#F7F7F7" size="md" mr={3}>
             Perfil
           </Button>
           <Button
@@ -43,8 +56,9 @@ export default function NavBar() {
               if (isLoggedIn) dispatch(signOut());
               else if (isAuthenticated) logout();
             }}
-            colorScheme="purple"
-            size="sm"
+            bgColor="#4FBDBA"
+            color="#F7F7F7"
+            size="md"
           >
             Salir
           </Button>
@@ -54,16 +68,19 @@ export default function NavBar() {
           <Button
             as={ReactLink}
             to="/auth/signup"
-            colorScheme="purple"
-            size="sm"
+            bgColor="#4FBDBA"
+            color="#F7F7F7"
+            size="md"
+            mr={3}
           >
             Registrate
           </Button>
           <Button
             as={ReactLink}
             to="/auth/login"
-            colorScheme="purple"
-            size="sm"
+            bgColor="#4FBDBA"
+            color="#F7F7F7"
+            size="md"
           >
             Ingresar
           </Button>
