@@ -1,4 +1,10 @@
-import { MatchStage, PrismaClient, User } from "@prisma/client";
+import {
+  MatchStage,
+  PrismaClient,
+  Status,
+  TournamentType,
+  User,
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import * as bcrypt from "bcryptjs";
 
@@ -72,16 +78,20 @@ function createRandomPrediction(
   };
 }
 
-function createRandomTournament(creatorUserId: string) {
-  const type = getRandom(["PRIVATE", "PUBLIC"]);
-  const password = type === "PRIVATE" ? "password" : undefined;
+function createRandomTournament(
+  creatorUserId: string,
+  status: undefined | Status,
+  type: undefined | TournamentType
+) {
   return {
-    type,
-    password,
+    type: type ? type : getRandom(["PRIVATE", "PUBLIC"]),
+    password: "password", // constant to ease development
     name: faker.company.name(),
     description: faker.lorem.sentences(),
-    user_limit: faker.datatype.number({ min: 2, max: 100 }),
-    status: getRandom(["INCOMING", "INPROGRESS", "CONCLUDED"]),
+    user_limit: faker.datatype.number({ min: 4, max: 100 }),
+    status: status
+      ? status
+      : getRandom(["INCOMING", "INPROGRESS", "CONCLUDED"]),
     pool: faker.datatype.number(),
     logo_url: faker.image.abstract(),
     creator: { connect: { id: creatorUserId } },
@@ -103,26 +113,13 @@ function createRandomMatch(
   };
 }
 
-async function seed() {
-  await dropDb();
-
-  const users: User[] = [];
-
-  // Create users
-  for (let i = 0; i < 100; i++) users.push(createRandomUser());
-  await client.user.createMany({
-    data: users,
-    skipDuplicates: true,
-  });
-
+async function createFinalOnlyTournament() {
   // Create tournament user creator
-  const creatorUser = await client.user.create({
-    data: createRandomUser(),
-  });
+  const creatorUser = await client.user.create({ data: createRandomUser() });
 
   // Create tournament
   const tournament = await client.tournament.create({
-    data: createRandomTournament(creatorUser.id),
+    data: createRandomTournament(creatorUser.id, "INCOMING", "PUBLIC"),
   });
 
   // Create tournament teams or get teams ids
@@ -134,16 +131,34 @@ async function seed() {
     data: createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL"),
   });
 
-  // Subscribe user to tournament
-  const clientUser = await client.user.create({ data: createRandomUser() });
-  await client.userTournament.create({
-    data: createUserTournament(clientUser.id, team_a.id, tournament.id),
+  // Create pool of subscribed users and predictions
+  for (let i = 0; i < 50; i++) {
+    // Subscribe user to tournament
+    const clientUser = await client.user.create({ data: createRandomUser() });
+    await client.userTournament.create({
+      data: createUserTournament(clientUser.id, team_a.id, tournament.id),
+    });
+
+    // Create user prediction
+    await client.predictions.create({
+      data: createRandomPrediction(clientUser.id, finalMatch.id, tournament.id),
+    });
+  }
+}
+
+async function seed() {
+  await dropDb();
+
+  const users: User[] = [];
+
+  // Create inactive users as to they don't participate in any tournament
+  for (let i = 0; i < 50; i++) users.push(createRandomUser());
+  await client.user.createMany({
+    data: users,
+    skipDuplicates: true,
   });
 
-  // Create user prediction
-  await client.predictions.create({
-    data: createRandomPrediction(clientUser.id, finalMatch.id, tournament.id),
-  });
+  await createFinalOnlyTournament();
 }
 
 seed();
