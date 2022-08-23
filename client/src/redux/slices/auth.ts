@@ -3,6 +3,7 @@ import { login, refreshToken, signOut } from "./authThunk";
 
 const initialState = {
   token: null,
+  decoded: null,
   loading: false,
   error: "",
 };
@@ -18,10 +19,12 @@ const authSlice = createSlice({
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.token = action.payload.token;
+      state.decoded = action.payload.decoded.payload;
       state.loading = false;
     });
     builder.addCase(login.rejected, (state, action) => {
       state.token = null;
+      state.decoded = null;
       state.loading = false;
       state.error = action.payload as string;
     });
@@ -32,10 +35,12 @@ const authSlice = createSlice({
     });
     builder.addCase(refreshToken.fulfilled, (state, action) => {
       state.token = action.payload.token;
+      state.decoded = action.payload.decoded.payload;
       state.loading = false;
     });
     builder.addCase(refreshToken.rejected, (state) => {
       state.token = null;
+      state.decoded = null;
       state.loading = false;
     });
 
@@ -43,6 +48,7 @@ const authSlice = createSlice({
     builder.addCase(signOut.fulfilled, (state) => {
       state.loading = false;
       state.token = null;
+      state.decoded = null;
     });
   },
 });
