@@ -6,6 +6,8 @@ import NotFoundPage from "./pages/NotFound";
 import TournamentsPage from "./pages/Tournaments";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
+import Perfil from "./pages/Perfil";
+import UploadFile from "./components/UploadFile";
 import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
@@ -22,6 +24,8 @@ function App() {
       <PrivateRoute exact path="/torneos" component={TournamentsPage} />
       <Route exact path="/auth/login" component={LoginPage} />
       <Route exact path="/auth/signup" component={SignUpPage} />
+      <Route exact path="/auth/perfil" component={Perfil} />
+      <Route exact path="/upload" component={UploadFile} />
       <Route exact path="/" component={HomePage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
