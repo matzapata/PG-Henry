@@ -13,6 +13,7 @@ import {
   AvatarBadge,
   IconButton,
   Center,
+  Container,
 } from "@chakra-ui/react";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -28,10 +29,13 @@ export default function UserProfileEdit(): JSX.Element {
     <>
       {isAuthenticated ? (
         <Flex
-          minH={"100vh"}
+          h="900px"
+          p="0"
+          bgSize="cover"
+          bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+          maxW={"100vw"}
           align={"center"}
           justify={"center"}
-          bg={useColorModeValue("gray.50", "gray.800")}
         >
           <Stack
             spacing={4}
