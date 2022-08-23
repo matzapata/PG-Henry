@@ -23,8 +23,7 @@ function App() {
       <PrivateRoute exact path="/torneos" component={TournamentsPage} />
       <Route exact path="/auth/login" component={LoginPage} />
       <Route exact path="/auth/signup" component={SignUpPage} />
-      <Route exact path="/auth/perfil" component={Perfil} />
-      <Route exact path="/upload" component={UploadFile} />
+      <PrivateRoute exact path="/auth/perfil" component={Perfil} />
       <Route exact path="/" component={HomePage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
