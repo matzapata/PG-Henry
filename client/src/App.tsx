@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-
 import HomePage from "./pages/Home";
 import NotFoundPage from "./pages/NotFound";
 import TournamentsPage from "./pages/Tournaments";
@@ -12,7 +11,6 @@ import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
 import PrivateRoute from "./utils/routePrivate";
-import Perfil from "./pages/Perfil";
 
 function App() {
   const dispatch = useAppDispatch();
