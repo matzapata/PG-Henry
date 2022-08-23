@@ -23,9 +23,9 @@ router.get("/", async (req: express.Request, res: express.Response) => {
       },
       orderBy:
         sort === "asc" || sort === "desc"
-          ? { name: sort as any }
+          ? { name: sort }
           : {
-              tournament_id: {
+              tournament: {
                 _count: sort === "mostpopular" ? "desc" : "asc",
               },
             },
