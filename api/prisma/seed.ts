@@ -23,6 +23,7 @@ async function dropDb() {
   await client.userTournament.deleteMany({});
   await client.predictions.deleteMany({});
   await client.matches.deleteMany({});
+  await client.teams.deleteMany({});
   await client.tournament.deleteMany({});
   await client.user.deleteMany({});
 }
@@ -70,8 +71,8 @@ function createRandomPrediction(
   tournamentId: string
 ) {
   return {
-    scores_a: faker.datatype.number({ min: 0, max: 8 }),
-    scores_b: faker.datatype.number({ min: 0, max: 8 }),
+    score_a: faker.datatype.number({ min: 0, max: 8 }),
+    score_b: faker.datatype.number({ min: 0, max: 8 }),
     match: { connect: { id: matchId } },
     user: { connect: { id: userId } },
     tournament: { connect: { id: tournamentId } },
@@ -102,29 +103,36 @@ function createRandomMatch(
   teamAId: string,
   teamBId: string,
   tournamentId: string,
-  stage: MatchStage
+  stage: MatchStage,
+  score_a?: number,
+  score_b?: number
 ) {
   return {
     stage,
     date: faker.date.future(),
+    score_a,
+    score_b,
     team_a: { connect: { id: teamAId } },
     team_b: { connect: { id: teamBId } },
     tournament: { connect: { id: tournamentId } },
   };
 }
 
-async function createFinalOnlyTournament(dbUsers: User[]) {
+async function createFinalOnlyTournament(dbUsers: User[], status: Status) {
   const creatorUser = getRandom(dbUsers);
 
   const tournament = await client.tournament.create({
-    data: createRandomTournament(creatorUser.id, "INCOMING", "PUBLIC"),
+    data: createRandomTournament(creatorUser.id, status, "PUBLIC"),
   });
 
   const team_a = await client.teams.create({ data: createRandomTeam() });
   const team_b = await client.teams.create({ data: createRandomTeam() });
 
   const finalMatch = await client.matches.create({
-    data: createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL"),
+    data:
+      status === "INCOMING"
+        ? createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL")
+        : createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL", 1, 0),
   });
 
   for (let i = 0; i < 50; i++) {
@@ -149,11 +157,11 @@ async function createFinalOnlyTournament(dbUsers: User[]) {
   }
 }
 
-async function createSemifinalTournament(dbUsers: User[]) {
+async function createSemifinalTournament(dbUsers: User[], status: Status) {
   const creatorUser = getRandom(dbUsers);
 
   const tournament = await client.tournament.create({
-    data: createRandomTournament(creatorUser.id, "INCOMING", "PUBLIC"),
+    data: createRandomTournament(creatorUser.id, status, "PUBLIC"),
   });
 
   const team_a = await client.teams.create({ data: createRandomTeam() });
@@ -162,7 +170,17 @@ async function createSemifinalTournament(dbUsers: User[]) {
   const team_d = await client.teams.create({ data: createRandomTeam() });
 
   const abMatch = await client.matches.create({
-    data: createRandomMatch(team_a.id, team_b.id, tournament.id, "SEMIFINAL"),
+    data:
+      status === "INCOMING"
+        ? createRandomMatch(team_a.id, team_b.id, tournament.id, "SEMIFINAL")
+        : createRandomMatch(
+            team_a.id,
+            team_b.id,
+            tournament.id,
+            "SEMIFINAL",
+            1,
+            0
+          ),
   });
   const cdMatch = await client.matches.create({
     data: createRandomMatch(team_c.id, team_d.id, tournament.id, "SEMIFINAL"),
@@ -200,10 +218,11 @@ async function createSemifinalTournament(dbUsers: User[]) {
 }
 
 async function seed() {
+  console.log("Seeding...");
+
   await dropDb();
 
   const users: User[] = [];
-
   for (let i = 0; i < 1000; i++) users.push(createRandomUser());
   await client.user.createMany({
     data: users,
@@ -212,10 +231,14 @@ async function seed() {
 
   const dbUsers = await client.user.findMany({});
 
-  for (let i = 0; i < 10; i++) {
-    await createFinalOnlyTournament(dbUsers);
-    await createSemifinalTournament(dbUsers);
+  for (let i = 0; i < 5; i++) {
+    await createFinalOnlyTournament(dbUsers, "INCOMING");
+    await createFinalOnlyTournament(dbUsers, "INPROGRESS");
+    await createSemifinalTournament(dbUsers, "INCOMING");
+    await createSemifinalTournament(dbUsers, "INPROGRESS");
   }
+
+  console.log("Done");
 }
 
 seed();

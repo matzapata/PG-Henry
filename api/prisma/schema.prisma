@@ -89,8 +89,8 @@ model Teams {
 
 model Predictions {
   id       String @unique @default(uuid())
-  scores_a Int
-  scores_b Int
+  score_a Int
+  score_b Int
 
   match         Matches    @relation(fields: [match_id], references: [id])
   match_id      String
@@ -104,8 +104,8 @@ model Predictions {
 
 model Matches {
   id       String     @unique @default(uuid())
-  scores_a Int?
-  scores_b Int?
+  score_a Int?
+  score_b Int?
   date     DateTime
   stage    MatchStage
 
