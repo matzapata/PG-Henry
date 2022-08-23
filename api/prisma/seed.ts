@@ -113,41 +113,44 @@ function createRandomMatch(
   };
 }
 
-async function createFinalOnlyTournament() {
-  // Create tournament user creator
-  const creatorUser = await client.user.create({ data: createRandomUser() });
+async function createFinalOnlyTournament(dbUsers: User[]) {
+  const creatorUser = getRandom(dbUsers);
 
-  // Create tournament
   const tournament = await client.tournament.create({
     data: createRandomTournament(creatorUser.id, "INCOMING", "PUBLIC"),
   });
 
-  // Create tournament teams or get teams ids
   const team_a = await client.teams.create({ data: createRandomTeam() });
   const team_b = await client.teams.create({ data: createRandomTeam() });
 
-  // Create tournament matches and connect them with tournament
   const finalMatch = await client.matches.create({
     data: createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL"),
   });
 
-  // Create pool of subscribed users and predictions
   for (let i = 0; i < 50; i++) {
-    // Subscribe user to tournament
-    const clientUser = await client.user.create({ data: createRandomUser() });
-    await client.userTournament.create({
-      data: createUserTournament(clientUser.id, team_a.id, tournament.id),
-    });
+    try {
+      const clientUser = getRandom(dbUsers);
+      if (clientUser.id === creatorUser.id) continue;
 
-    // Create user prediction
-    await client.predictions.create({
-      data: createRandomPrediction(clientUser.id, finalMatch.id, tournament.id),
-    });
+      await client.userTournament.create({
+        data: createUserTournament(clientUser.id, team_a.id, tournament.id),
+      });
+
+      await client.predictions.create({
+        data: createRandomPrediction(
+          clientUser.id,
+          finalMatch.id,
+          tournament.id
+        ),
+      });
+    } catch (e) {
+      // Some constrains may be violated because of how faker works. We'll just skip those.
+    }
   }
 }
 
-async function createSemifinalTournament() {
-  const creatorUser = await client.user.create({ data: createRandomUser() });
+async function createSemifinalTournament(dbUsers: User[]) {
+  const creatorUser = getRandom(dbUsers);
 
   const tournament = await client.tournament.create({
     data: createRandomTournament(creatorUser.id, "INCOMING", "PUBLIC"),
@@ -170,7 +173,9 @@ async function createSemifinalTournament() {
 
   for (let i = 0; i < 50; i++) {
     try {
-      const clientUser = await client.user.create({ data: createRandomUser() });
+      const clientUser = getRandom(dbUsers);
+      if (clientUser.id === creatorUser.id) continue;
+
       await client.userTournament.create({
         data: createUserTournament(clientUser.id, team_a.id, tournament.id),
       });
@@ -190,7 +195,6 @@ async function createSemifinalTournament() {
       });
     } catch (e) {
       // Some unique constrain may be violated because of the faker random algorithm. In that case we'll just ignore it and keep going
-      console.log(e);
     }
   }
 }
@@ -200,15 +204,18 @@ async function seed() {
 
   const users: User[] = [];
 
-  // Create inactive users as to they don't participate in any tournament
-  for (let i = 0; i < 15; i++) users.push(createRandomUser());
+  for (let i = 0; i < 1000; i++) users.push(createRandomUser());
   await client.user.createMany({
     data: users,
     skipDuplicates: true,
   });
 
-  await createFinalOnlyTournament();
-  await createSemifinalTournament();
+  const dbUsers = await client.user.findMany({});
+
+  for (let i = 0; i < 10; i++) {
+    await createFinalOnlyTournament(dbUsers);
+    await createSemifinalTournament(dbUsers);
+  }
 }
 
 seed();
