@@ -6,23 +6,29 @@ const router: express.Router = express.Router();
 
 router.get("/", async (req: express.Request, res: express.Response) => {
   try {
-    const { page, status, type, name } = req.query;
+    const { page, status, type, name, sort } = req.query;
     const pageN = Number(page) - 1;
-    const paginado = page ? pageN * 5 : 0;
+    const paginado = page ? pageN * 9 : 0;
 
     const result = await prisma.tournament.findMany({
-      take: 5,
+      take: 9,
       skip: paginado,
       where: {
         name: {
           startsWith: typeof name === "string" ? name : "",
+          mode: "insensitive",
         },
         status: status as Status,
         type: type as TournamentType,
       },
-      orderBy: {
-        name: "asc",
-      },
+      orderBy:
+        sort === "asc" || sort === "desc"
+          ? { name: sort as any }
+          : {
+              tournament_id: {
+                _count: sort === "mostpopular" ? "desc" : "asc",
+              },
+            },
     });
     res.send(result);
   } catch (error) {

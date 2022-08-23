@@ -1,21 +1,29 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import FormSignUp from "./components/formSingUp";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import NotFound from "./pages/NotFound";
-import Tournaments from "./pages/Tournaments";
-import Login from "./pages/Login";
+
+import HomePage from "./pages/Home";
+import NotFoundPage from "./pages/NotFound";
+import TournamentsPage from "./pages/Tournaments";
+import SignUpPage from "./pages/SignUp";
+import LoginPage from "./pages/Login";
+import { useAppDispatch } from "./redux/hooks";
+import { useEffect } from "react";
+import { refreshToken } from "./redux/slices/authThunk";
+import PrivateRoute from "./utils/routePrivate";
 
 function App() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(refreshToken());
+  }, []);
+
   return (
     <Switch>
-      <Route exact path="/torneos" component={Tournaments} />
-      <Route exact path="/auth/login" component={Login} />
-      <Route exact path="/about" component={About} />
-      <Route exact path="/" component={Home} />
-      <Route exact path="/signup" component={FormSignUp} />
-      <Route path="*" component={NotFound} />
+      <PrivateRoute exact path="/torneos" component={TournamentsPage} />
+      <Route exact path="/auth/login" component={LoginPage} />
+      <Route exact path="/auth/signup" component={SignUpPage} />
+      <Route exact path="/" component={HomePage} />
+      <Route path="*" component={NotFoundPage} />
     </Switch>
   );
 }

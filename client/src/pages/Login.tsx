@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import {
   Flex,
-  Heading,
+  Text,
   Input,
   Button,
   InputGroup,
@@ -13,127 +13,111 @@ import {
   Link,
   Avatar,
   FormControl,
-  FormHelperText,
   InputRightElement,
   Checkbox,
-  CheckboxGroup,
   Image,
+  Icon,
+  Divider,
 } from "@chakra-ui/react";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaUserAlt, FaLock, FaExclamationCircle } from "react-icons/fa";
+import { login } from "../redux/slices/authThunk";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { Link as ReactLink, useHistory } from "react-router-dom";
 import { Auth0Client } from "@auth0/auth0-spa-js";
-// import { userLogin } from "../../redux/actions/userActions";
+import { isEmail } from "../utils/validations";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-const App = () => {
+function Login() {
+  const [check, setCheck] = useState(false);
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.token);
+  const authError = useAppSelector((state) => state.auth.error);
+  const authLoading = useAppSelector((state) => state.auth.loading);
+  const auth0 = new Auth0Client({
+    domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
+    client_id: process.env.REACT_APP_AUTH0_CLIENT_ID as string,
+    redirect_uri: process.env.REACT_APP_CLIENT_URL,
+  });
+
   const [showPassword, setShowPassword] = useState(false);
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+    keepSessionOpen: false,
+  });
 
-  const handleShowClick = () => setShowPassword(!showPassword);
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isEmail(state.email)) return alert("Invalid email");
+    else if (state.password === "") return alert("Invalid password");
 
-  let auth0: Auth0Client | null = null;
-  useEffect(() => {
-    const initialize = async () => {
-      auth0 = new Auth0Client({
-        domain: "dev-8nfj3ijq.us.auth0.com",
-        client_id: "R4ZFyhpGGh2eKHFvO0MXWAWmdS6YB9oA",
-        redirect_uri: "http://localhost:3000",
-      });
-      try {
-        await auth0.getTokenSilently();
-        console.log(auth0.getTokenSilently());
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    initialize();
-  }, []);
+    dispatch(login({ email: state.email, password: state.password, check }));
+  };
 
-  const login = async () => {
+  const onChange = (e: any) => {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const auth0Login = async () => {
     try {
       await auth0?.loginWithRedirect();
-    } catch (e) {}
-    const isAuth = await auth0?.isAuthenticated();
-    const user = await auth0?.getUser();
-    console.log(user, isAuth, "auth response");
-    if (isAuth) {
-      const user = await auth0?.getUser();
+      const isAuth = await auth0.isAuthenticated();
+      const user = await auth0.getUser();
+      console.log(user, isAuth, "auth response");
+    } catch (e) {
+      console.log(e);
     }
   };
-  interface Inputs {
-    email: string;
-    password: string;
-  }
 
-  const validarCampos = (state: Inputs) => {
-    const errores: Inputs = {
-      email: "",
-      password: "",
-    };
+  useEffect(() => {
+    auth0.isAuthenticated().then((isAuth0Authenticated) => {
+      if (isAuthenticated || isAuth0Authenticated) history.push("/");
+    });
+  }, [isAuthenticated]);
 
-    if (!/[a-z0-9-_.]+@[a-z]+\.[a-z]{2,3}/gi.test(state.email))
-      errores.email = "Email invalido";
-    else if (/[a-z0-9-_.]+@[a-z]+\.[a-z]{2,3}/gi.test(state.email))
-      errores.email = "Email valido";
-
-    return errores;
-  };
-
-  const [errores, setErrors] = useState<Inputs>({
-    email: "",
-    password: "",
-  });
-
-  const [state, setState] = useState<Inputs>({
-    email: "",
-    password: "",
-  });
-
-  const cambiosEnInput = (e: React.FormEvent<HTMLInputElement>) => {
-    setState({ ...state, [e.currentTarget.name]: e.currentTarget.value });
-    setErrors(
-      validarCampos({ ...state, [e.currentTarget.name]: e.currentTarget.value })
-    );
-    console.log(errores);
-  };
-
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    if (errores.email !== "Email valido") {
-      alert("Ingresa un correo valido");
-    }
-
-    fetch("http://localhost:8080/auth/signin", {
-      method: "POST",
-      body: JSON.stringify(state),
-    }).then((r) => console.log(r));
-    console.log(state);
-  };
+  useEffect(() => {
+    console.log(check);
+  }, [check]);
 
   return (
     <Flex
       flexDirection="column"
       width="100wh"
       height="100vh"
-      backgroundColor="gray.200"
+      bgColor="primary"
       justifyContent="center"
       alignItems="center"
     >
       <Stack
-        flexDir="column"
         mb="2"
+        flexDir="column"
         justifyContent="center"
         alignItems="center"
+        width="100%"
       >
-        <Avatar bg="#4D4BCC" />
-        <Heading color="#4D4BCC">Iniciar Sesión</Heading>
+        <Avatar size="lg" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
+        <Text
+          bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+          bgClip="text"
+          fontSize="5xl"
+          fontWeight="bold"
+        >
+          Iniciar Sesión
+        </Text>
         <Box minW={{ base: "90%", md: "468px" }}>
-          <form>
+          <form onSubmit={onSubmit}>
             <Stack
-              spacing={4}
-              p="1rem"
-              backgroundColor="whiteAlpha.900"
-              boxShadow="md"
+              p="4"
+              spacing="4"
+              borderRadius="4"
+              backgroundColor="white"
+              paddingTop="30px"
             >
               <FormControl>
                 <InputGroup>
@@ -141,78 +125,89 @@ const App = () => {
                     <CFaUserAlt color="gray.300" />
                   </InputLeftElement>
                   <Input
-                    name="email"
                     type="email"
+                    name="email"
+                    onChange={onChange}
                     placeholder="Correo electronico"
-                    onChange={cambiosEnInput}
                   />
                 </InputGroup>
               </FormControl>
+
               <FormControl>
                 <InputGroup>
                   <InputLeftElement pointerEvents="none" color="gray.300">
                     <CFaLock color="gray.300" />
                   </InputLeftElement>
                   <Input
+                    name="password"
+                    onChange={onChange}
                     type={showPassword ? "text" : "password"}
                     placeholder="Contraseña"
-                    onChange={cambiosEnInput}
-                    name="password"
                   />
                   <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                    <Button
+                      h="1.75rem"
+                      size="sm"
+                      backgroundColor="white"
+                      mr="0.5"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
                       {showPassword ? "Ocultar" : "Mostrar"}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <FormHelperText display="flex" justifyContent="space-between">
-                  <Checkbox id="checkbox">Mantener sesión</Checkbox>
-                  <Link>Olvidaste tu contraseña?</Link>
-                </FormHelperText>
+                <Checkbox
+                  onChange={() => {
+                    setCheck(!check);
+                  }}
+                  mt="2"
+                >
+                  Mantener sesión iniciada
+                </Checkbox>
               </FormControl>
               <Button
-                borderRadius={0}
-                id="login"
-                type="submit"
-                variant="solid"
-                colorScheme="purple"
                 width="full"
-                onClick={(e) => handleSubmit(e)}
+                type="submit"
+                colorScheme="teal"
+                isLoading={authLoading}
+                disabled={state.email === "" || state.password === ""}
               >
-                Iniciar
+                Ingresar
               </Button>
+              <Divider />
               <Button
-                display="flex"
-                borderRadius={0}
-                id="auth0_login"
-                type="submit"
-                variant="solid"
-                colorScheme="gray"
+                type="button"
                 width="full"
-                onClick={(e) => {
-                  e.preventDefault;
-                  login();
-                }}
+                display="flex"
+                colorScheme="gray"
+                border="1px"
+                borderColor="gray.300"
+                onClick={auth0Login}
+                marginTop="0px"
               >
-                <Image
-                  src="https://miro.medium.com/max/2400/1*kofg5S-_kcyij3HL-uCnZA.png"
-                  alt="logo_auth0"
-                  width="50px"
-                />
+                <Image src="/img/auth0.png" alt="logo_auth0" width="50px" />
                 <span>Ingresar con Auth0</span>
               </Button>
             </Stack>
           </form>
         </Box>
       </Stack>
-      <Box>
-        Aun no tienes una cuenta?
-        <Link color="#4D4BCC" href="http://localhost:3000/signup">
+      <Box color="text">
+        Aun no tienes una cuenta?{" "}
+        <Link as={ReactLink} color="teal.400" to="/auth/signup">
           Crear una
         </Link>
       </Box>
+      {authError && (
+        <Flex mt="4" alignItems="center">
+          <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+          <Text as="span" color="red.500" fontWeight="500">
+            {authError}
+          </Text>
+        </Flex>
+      )}
     </Flex>
   );
-};
+}
 
-export default App;
+export default Login;
