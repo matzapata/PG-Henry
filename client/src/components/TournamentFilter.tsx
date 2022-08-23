@@ -24,9 +24,6 @@ function TournamentFilter(): JSX.Element {
     name: "",
     searchname: "",
   });
-  const [state, setState] = useState({
-    selectedValue: "",
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useAppDispatch();
   const currentTournaments = useAppSelector((state) => state.tournaments);
@@ -41,6 +38,7 @@ function TournamentFilter(): JSX.Element {
       [e.target.name]: e.target.value,
     });
   }
+
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFilter({
       ...filter,
@@ -51,6 +49,7 @@ function TournamentFilter(): JSX.Element {
 
   function handleFilter() {
     dispatch(fetchFilterTournaments(filter));
+    console.log(filter);
   }
 
   function handleSubmit() {
@@ -77,15 +76,6 @@ function TournamentFilter(): JSX.Element {
       name: "",
       searchname: "",
     });
-    const select: any = document.querySelector("#status");
-    const option = select?.querySelector("#alls");
-    select.value = option.value;
-    const select2: any = document.querySelector("#types");
-    const option2 = select2?.querySelector("#allt");
-    select2.value = option2.value;
-    const select3: any = document.querySelector("#sorts");
-    const option3 = select3?.querySelector("#allsorts");
-    select3.value = option3.value;
   }
 
   return (
@@ -115,7 +105,7 @@ function TournamentFilter(): JSX.Element {
           placeholder="Estado"
           id="status"
           name="stat"
-          value={state.selectedValue}
+          value={filter.stat}
           onChange={handleChange}
         >
           <option id="alls" value="">
@@ -132,7 +122,7 @@ function TournamentFilter(): JSX.Element {
           placeholder="Acceso"
           id="types"
           name="type"
-          value={state.selectedValue}
+          value={filter.type}
           onChange={handleChange}
         >
           <option id="allt" value="">
@@ -147,7 +137,7 @@ function TournamentFilter(): JSX.Element {
           borderColor="#4FBDBA"
           id="sorts"
           name="sort"
-          value={state.selectedValue}
+          value={filter.sort}
           onChange={handleChange}
         >
           <option id="allsorts" value="asc">
