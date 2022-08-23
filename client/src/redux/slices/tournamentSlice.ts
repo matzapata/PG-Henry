@@ -1,5 +1,6 @@
 import { filter } from "@chakra-ui/react";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import api from "../../services/api";
 import axios from "axios";
 
 type Tournament = {
@@ -25,7 +26,7 @@ const initialState: InitialState = {
 export const fetchTournaments = createAsyncThunk(
   "tournaments/fetchTournaments",
   async () => {
-    const result = await axios(
+    const result = await api.get(
       `${process.env.REACT_APP_API_URL}/tournaments?sort=asc`
     );
     return result.data;
@@ -41,7 +42,7 @@ export const fetchFilterTournaments = createAsyncThunk(
     name: string;
     page?: number;
   }) => {
-    const result = await axios(
+    const result = await api.get(
       `${process.env.REACT_APP_API_URL}/tournaments?${
         filters.type ? "type=" + filters.type : ""
       }&${filters.stat ? "status=" + filters.stat : ""}&${

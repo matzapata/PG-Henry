@@ -24,6 +24,9 @@ function TournamentFilter(): JSX.Element {
     name: "",
     searchname: "",
   });
+  const [state, setState] = useState({
+    selectedValue: "",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useAppDispatch();
   const currentTournaments = useAppSelector((state) => state.tournaments);
@@ -112,6 +115,7 @@ function TournamentFilter(): JSX.Element {
           placeholder="Estado"
           id="status"
           name="stat"
+          value={state.selectedValue}
           onChange={handleChange}
         >
           <option id="alls" value="">
@@ -128,6 +132,7 @@ function TournamentFilter(): JSX.Element {
           placeholder="Acceso"
           id="types"
           name="type"
+          value={state.selectedValue}
           onChange={handleChange}
         >
           <option id="allt" value="">
@@ -142,6 +147,7 @@ function TournamentFilter(): JSX.Element {
           borderColor="#4FBDBA"
           id="sorts"
           name="sort"
+          value={state.selectedValue}
           onChange={handleChange}
         >
           <option id="allsorts" value="asc">
@@ -178,8 +184,7 @@ function TournamentFilter(): JSX.Element {
           name="backbutton"
           disabled={currentPage === 1 ? true : false}
         >
-          {" "}
-          atra{" "}
+          atra
         </Button>
         <Box bgColor="#4FBDBA">{currentPage}</Box>
         <Button
@@ -187,7 +192,6 @@ function TournamentFilter(): JSX.Element {
           name="fowardbutton"
           disabled={currentTournaments.tournaments.length < 9 ? true : false}
         >
-          {" "}
           adelant
         </Button>
       </Stack>
