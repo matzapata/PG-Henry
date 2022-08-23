@@ -16,6 +16,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
       where: {
         name: {
           startsWith: typeof name === "string" ? name : "",
+          mode: "insensitive",
         },
         status: status as Status,
         type: type as TournamentType,
