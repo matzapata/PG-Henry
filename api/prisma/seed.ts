@@ -14,11 +14,11 @@ function getMultipleRandom(arr: Array<any>, num: number) {
 }
 
 async function dropDb() {
-  await client.user.deleteMany();
+  await client.userTournament.deleteMany();
+  await client.matches.deleteMany();
   await client.tournament.deleteMany();
   await client.predictions.deleteMany();
-  await client.matches.deleteMany();
-  await client.user_Tournament.deleteMany();
+  await client.user.deleteMany();
 }
 
 function createRandomUser() {
@@ -42,11 +42,9 @@ function createRandomTournament(creatorUserId: string) {
   const TOURNAMENT_TYPE: TournamentType[] = ["PRIVATE", "PUBLIC"];
   const STATUS: Status[] = ["INCOMING", "INPROGRESS", "CONCLUDED"];
   return {
-    id: faker.datatype.uuid(),
     name: faker.company.name(),
     description: faker.lorem.sentences(),
     user_limit: faker.datatype.number({ min: 2, max: 100 }),
-    creator_user_id: creatorUserId,
     status: getRandom(STATUS),
     type: getRandom(TOURNAMENT_TYPE),
     pool: faker.datatype.number(),
@@ -108,11 +106,63 @@ async function seed() {
 
   const users: User[] = [];
 
-  for (let i = 0; i < 200; i++) users.push(createRandomUser());
-  await client.user.createMany({ data: users, skipDuplicates: true });
+  // Create users
+  for (let i = 0; i < 100; i++) users.push(createRandomUser());
+  await client.user.createMany({
+    data: users,
+    skipDuplicates: true,
+  });
 
-  await client.tournament.create({
-    data: createRandomTournament(users[0].id),
+  // Create tournament user creator
+  const creatorUser = await client.user.create({
+    data: createRandomUser(),
+  });
+
+  // Create tournament
+  const tournament = await client.tournament.create({
+    data: {
+      name: "Tournament",
+      description: "Irure magna qui deserunt Lorem.",
+      logo_url: faker.image.avatar(),
+      type: "PUBLIC",
+      creator: { connect: { id: creatorUser.id } },
+    },
+  });
+
+  // Create tournament teams or get teams ids
+  const team_a = await client.teams.create({ data: createRandomTeam() });
+  const team_b = await client.teams.create({ data: createRandomTeam() });
+
+  // Create tournament matches and connect them with tournament
+  const finalMatch = await client.matches.create({
+    data: {
+      date: faker.date.future(),
+      stage: "FINAL",
+      team_a: { connect: { id: team_a.id } },
+      team_b: { connect: { id: team_b.id } },
+      tournament: { connect: { id: tournament.id } },
+    },
+  });
+
+  // Subscribe user to tournament
+  const clientUser = await client.user.create({ data: createRandomUser() });
+  await client.userTournament.create({
+    data: {
+      winner: { connect: { id: team_a.id } },
+      user: { connect: { id: clientUser.id } },
+      tournament: { connect: { id: tournament.id } },
+    },
+  });
+
+  // Create user prediction
+  await client.predictions.create({
+    data: {
+      scores_a: 1,
+      scores_b: 0,
+      match: { connect: { id: finalMatch.id } },
+      user: { connect: { id: clientUser.id } },
+      tournament: { connect: { id: tournament.id } },
+    },
   });
 }
 

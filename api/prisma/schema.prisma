@@ -11,40 +11,42 @@ datasource db {
 }
 
 model User {
-  id                 String            @unique @default(uuid())
-  username           String            @unique
+  id                 String   @unique @default(uuid())
+  username           String   @unique
   full_name          String
-  email              String            @unique
+  email              String   @unique
   password           String
   birth_date         DateTime
-  is_admin           Boolean           @default(false)
-  is_active          Boolean           @default(false)
-  is_banned          Boolean           @default(false)
-  last_access        DateTime          @default(now())
-  verification_token String           
-  tournament_userid  User_Tournament[]
+  is_admin           Boolean  @default(false)
+  is_active          Boolean  @default(false)
+  is_banned          Boolean  @default(false)
+  last_access        DateTime @default(now())
+  verification_token String
+
+  tournament_userid  UserTournament[]
   predictions_userid Predictions[]
   creator            Tournament[]
 }
 
 model Tournament {
-  id              String            @unique @default(uuid())
-  name            String            @unique
-  description     String
-  user_limit      Int
-  creator_id      User              @relation(fields: [creator_user_id], references: [id])
+  id          String         @unique @default(uuid())
+  name        String         @unique
+  description String
+  user_limit  Int?
+  status      Status         @default(INCOMING)
+  type        TournamentType @default(PUBLIC)
+  password    String?
+  pool        Int            @default(0)
+  logo_url    String
+
+  creator         User             @relation(fields: [creator_user_id], references: [id])
   creator_user_id String
-  status          Status            @default(INCOMING)
-  type            TournamentType    @default(PUBLIC)
-  pool            Int               @default(0)
-  logo_url        String
-  stage           TournamentStage
-  tournament_id   User_Tournament[]
-  predictions_id  Predictions[]
-  matches_id      Matches[]
+  matches         Matches[]
+  predictions     Predictions[]
+  tournament      UserTournament[]
 }
 
-enum TournamentStage {
+enum MatchStage {
   FASEGROUP
   ROUNDOF32
   ROUNDOF16
@@ -64,52 +66,58 @@ enum Status {
   CONCLUDED
 }
 
-model User_Tournament {
-  id             String     @unique @default(uuid())
-  user           User       @relation(fields: [user_id], references: [id])
-  user_id        String     
-  tournament     Tournament @relation(fields: [tournament_id], references: [id])
-  tournament_id  String     
-  score          Int
+model UserTournament {
+  id    String @unique @default(uuid())
+  score Int    @default(0)
+
+  winner         Teams      @relation(fields: [winner_team_id], references: [id])
   winner_team_id String
+  user           User       @relation(fields: [user_id], references: [id])
+  user_id        String
+  tournament     Tournament @relation(fields: [tournament_id], references: [id])
+  tournament_id  String
 
   @@id([user_id, tournament_id])
 }
 
 model Teams {
-  id         String    @unique @default(uuid())
-  name       String    @unique
+  id         String @unique @default(uuid())
+  name       String @unique
   shield_url String
-  id_team_a  Matches[] @relation("team_a")
-  id_team_b  Matches[] @relation("team_b")
+
+  id_team_a      Matches[]        @relation("team_a")
+  id_team_b      Matches[]        @relation("team_b")
+  UserTournament UserTournament[]
 }
 
 model Predictions {
-  id            String     @unique @default(uuid())
+  id       String @unique @default(uuid())
+  scores_a Int
+  scores_b Int
+
+  match         Matches    @relation(fields: [match_id], references: [id])
+  match_id      String
   user          User       @relation(fields: [user_id], references: [id])
-  user_id       String     
-  match_id      Matches    @relation(fields: [match], references: [id])
-  match         String
-  scores_a      Int
-  scores_b      Int
+  user_id       String
   tournament    Tournament @relation(fields: [tournament_id], references: [id])
   tournament_id String
-  
 
-  @@id([user_id, tournament_id,match])
+  @@id([user_id, tournament_id, match_id])
 }
 
 model Matches {
-  id            String      @unique @default(uuid())
-  id_a          Teams       @relation(name: "team_a", fields: [team_a_id], references: [id])
-  team_a_id     String
-  id_b          Teams       @relation(name: "team_b", fields: [team_b_id], references: [id])
-  team_b_id     String
-  scores_a      Int
-  scores_b      Int
-  date          DateTime
-  tournament    Tournament  @relation(fields: [tournament_id], references: [id])
+  id       String     @unique @default(uuid())
+  scores_a Int?
+  scores_b Int?
+  date     DateTime
+  stage    MatchStage
+
+  tournament    Tournament    @relation(fields: [tournament_id], references: [id])
   tournament_id String
+  team_a        Teams         @relation(name: "team_a", fields: [team_a_id], references: [id])
+  team_a_id     String
+  team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
+  team_b_id     String
   match_id      Predictions[]
 
   @@id([team_a_id, team_b_id])
