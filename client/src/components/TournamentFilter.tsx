@@ -49,7 +49,6 @@ function TournamentFilter(): JSX.Element {
 
   function handleFilter() {
     dispatch(fetchFilterTournaments(filter));
-    console.log(filter);
   }
 
   function handleSubmit() {
