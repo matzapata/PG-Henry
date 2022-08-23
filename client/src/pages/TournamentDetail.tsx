@@ -8,12 +8,12 @@ function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <>
+    <Box bgColor="primary">
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
       </Box>
-    </>
+    </Box>
   );
 }
 
