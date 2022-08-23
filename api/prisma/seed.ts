@@ -146,19 +146,69 @@ async function createFinalOnlyTournament() {
   }
 }
 
+async function createSemifinalTournament() {
+  const creatorUser = await client.user.create({ data: createRandomUser() });
+
+  const tournament = await client.tournament.create({
+    data: createRandomTournament(creatorUser.id, "INCOMING", "PUBLIC"),
+  });
+
+  const team_a = await client.teams.create({ data: createRandomTeam() });
+  const team_b = await client.teams.create({ data: createRandomTeam() });
+  const team_c = await client.teams.create({ data: createRandomTeam() });
+  const team_d = await client.teams.create({ data: createRandomTeam() });
+
+  const abMatch = await client.matches.create({
+    data: createRandomMatch(team_a.id, team_b.id, tournament.id, "SEMIFINAL"),
+  });
+  const cdMatch = await client.matches.create({
+    data: createRandomMatch(team_c.id, team_d.id, tournament.id, "SEMIFINAL"),
+  });
+  const finalMatch = await client.matches.create({
+    data: createRandomMatch(team_a.id, team_d.id, tournament.id, "FINAL"),
+  });
+
+  for (let i = 0; i < 50; i++) {
+    try {
+      const clientUser = await client.user.create({ data: createRandomUser() });
+      await client.userTournament.create({
+        data: createUserTournament(clientUser.id, team_a.id, tournament.id),
+      });
+
+      await client.predictions.create({
+        data: createRandomPrediction(clientUser.id, abMatch.id, tournament.id),
+      });
+      await client.predictions.create({
+        data: createRandomPrediction(clientUser.id, cdMatch.id, tournament.id),
+      });
+      await client.predictions.create({
+        data: createRandomPrediction(
+          clientUser.id,
+          finalMatch.id,
+          tournament.id
+        ),
+      });
+    } catch (e) {
+      // Some unique constrain may be violated because of the faker random algorithm. In that case we'll just ignore it and keep going
+      console.log(e);
+    }
+  }
+}
+
 async function seed() {
   await dropDb();
 
   const users: User[] = [];
 
   // Create inactive users as to they don't participate in any tournament
-  for (let i = 0; i < 50; i++) users.push(createRandomUser());
+  for (let i = 0; i < 15; i++) users.push(createRandomUser());
   await client.user.createMany({
     data: users,
     skipDuplicates: true,
   });
 
   await createFinalOnlyTournament();
+  await createSemifinalTournament();
 }
 
 seed();
