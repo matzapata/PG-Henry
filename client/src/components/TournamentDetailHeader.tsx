@@ -18,10 +18,15 @@ function TournamentDetailHeader({ id }: { id: string }) {
     (state) => state.tournaments.tournamentDetail
   );
   const loading = useAppSelector((state) => state.tournaments.loading);
+  const error = useAppSelector((state) => state.tournaments.error);
 
   useEffect(() => {
     dispatch(fetchTournamentDetail(id));
   }, [id]);
+
+  useEffect(() => {
+    if (error) alert(error);
+  }, [error]);
 
   return (
     <>
