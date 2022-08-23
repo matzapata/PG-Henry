@@ -1,4 +1,4 @@
-import { PrismaClient, Status, TournamentType, User } from "@prisma/client";
+import { MatchStage, PrismaClient, User } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import * as bcrypt from "bcryptjs";
 
@@ -14,11 +14,11 @@ function getMultipleRandom(arr: Array<any>, num: number) {
 }
 
 async function dropDb() {
-  await client.userTournament.deleteMany();
-  await client.matches.deleteMany();
-  await client.tournament.deleteMany();
-  await client.predictions.deleteMany();
-  await client.user.deleteMany();
+  await client.userTournament.deleteMany({});
+  await client.predictions.deleteMany({});
+  await client.matches.deleteMany({});
+  await client.tournament.deleteMany({});
+  await client.user.deleteMany({});
 }
 
 function createRandomUser() {
@@ -38,66 +38,68 @@ function createRandomUser() {
   };
 }
 
-function createRandomTournament(creatorUserId: string) {
-  const TOURNAMENT_TYPE: TournamentType[] = ["PRIVATE", "PUBLIC"];
-  const STATUS: Status[] = ["INCOMING", "INPROGRESS", "CONCLUDED"];
-  return {
-    name: faker.company.name(),
-    description: faker.lorem.sentences(),
-    user_limit: faker.datatype.number({ min: 2, max: 100 }),
-    status: getRandom(STATUS),
-    type: getRandom(TOURNAMENT_TYPE),
-    pool: faker.datatype.number(),
-    logo_url: faker.image.avatar(),
-  };
-}
-
 function createRandomTeam() {
   return {
     id: faker.datatype.uuid(),
     name: faker.company.name(),
-    shield_url: faker.image.avatar(),
+    shield_url: faker.image.abstract(),
+  };
+}
+
+function createUserTournament(
+  userId: string,
+  winnerTeamId: string,
+  tournamentId: string
+) {
+  return {
+    user: { connect: { id: userId } },
+    winner: { connect: { id: winnerTeamId } },
+    tournament: { connect: { id: tournamentId } },
   };
 }
 
 function createRandomPrediction(
-  matchId: string,
-  tournamentId: string,
-  userId: string
-) {
-  return {
-    id: faker.datatype.uuid(),
-    match_id: matchId,
-    scores_a: faker.datatype.number({ max: 5 }),
-    scores_b: faker.datatype.number({ max: 5 }),
-    tournament_id: tournamentId,
-    user_id: userId,
-  };
-}
-
-function createRandomMatch(teamA: string, teamB: string, tournamentId: string) {
-  return {
-    id: faker.datatype.uuid(),
-    date: faker.date.future(),
-    scores_a: faker.datatype.number({ max: 5 }),
-    scores_b: faker.datatype.number({ max: 5 }),
-    team_a_id: teamA,
-    team_b_id: teamB,
-    tournament_id: tournamentId,
-  };
-}
-
-function createRandomUserTournament(
-  tournamentId: string,
   userId: string,
-  teamId: string
+  matchId: string,
+  tournamentId: string
 ) {
   return {
-    id: faker.datatype.uuid(),
-    tournament_id: tournamentId,
-    user_id: userId,
-    score: faker.datatype.number(),
-    winner_team_id: teamId,
+    scores_a: faker.datatype.number({ min: 0, max: 8 }),
+    scores_b: faker.datatype.number({ min: 0, max: 8 }),
+    match: { connect: { id: matchId } },
+    user: { connect: { id: userId } },
+    tournament: { connect: { id: tournamentId } },
+  };
+}
+
+function createRandomTournament(creatorUserId: string) {
+  const type = getRandom(["PRIVATE", "PUBLIC"]);
+  const password = type === "PRIVATE" ? "password" : undefined;
+  return {
+    type,
+    password,
+    name: faker.company.name(),
+    description: faker.lorem.sentences(),
+    user_limit: faker.datatype.number({ min: 2, max: 100 }),
+    status: getRandom(["INCOMING", "INPROGRESS", "CONCLUDED"]),
+    pool: faker.datatype.number(),
+    logo_url: faker.image.abstract(),
+    creator: { connect: { id: creatorUserId } },
+  };
+}
+
+function createRandomMatch(
+  teamAId: string,
+  teamBId: string,
+  tournamentId: string,
+  stage: MatchStage
+) {
+  return {
+    stage,
+    date: faker.date.future(),
+    team_a: { connect: { id: teamAId } },
+    team_b: { connect: { id: teamBId } },
+    tournament: { connect: { id: tournamentId } },
   };
 }
 
@@ -120,13 +122,7 @@ async function seed() {
 
   // Create tournament
   const tournament = await client.tournament.create({
-    data: {
-      name: "Tournament",
-      description: "Irure magna qui deserunt Lorem.",
-      logo_url: faker.image.avatar(),
-      type: "PUBLIC",
-      creator: { connect: { id: creatorUser.id } },
-    },
+    data: createRandomTournament(creatorUser.id),
   });
 
   // Create tournament teams or get teams ids
@@ -135,34 +131,18 @@ async function seed() {
 
   // Create tournament matches and connect them with tournament
   const finalMatch = await client.matches.create({
-    data: {
-      date: faker.date.future(),
-      stage: "FINAL",
-      team_a: { connect: { id: team_a.id } },
-      team_b: { connect: { id: team_b.id } },
-      tournament: { connect: { id: tournament.id } },
-    },
+    data: createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL"),
   });
 
   // Subscribe user to tournament
   const clientUser = await client.user.create({ data: createRandomUser() });
   await client.userTournament.create({
-    data: {
-      winner: { connect: { id: team_a.id } },
-      user: { connect: { id: clientUser.id } },
-      tournament: { connect: { id: tournament.id } },
-    },
+    data: createUserTournament(clientUser.id, team_a.id, tournament.id),
   });
 
   // Create user prediction
   await client.predictions.create({
-    data: {
-      scores_a: 1,
-      scores_b: 0,
-      match: { connect: { id: finalMatch.id } },
-      user: { connect: { id: clientUser.id } },
-      tournament: { connect: { id: tournament.id } },
-    },
+    data: createRandomPrediction(clientUser.id, finalMatch.id, tournament.id),
   });
 }
 
