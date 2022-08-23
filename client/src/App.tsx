@@ -10,6 +10,7 @@ import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
 import PrivateRoute from "./utils/routePrivate";
+import TournamentDetailPage from "./pages/TournamentDetail";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -19,6 +20,11 @@ function App() {
 
   return (
     <Switch>
+      <PrivateRoute
+        exact
+        path="/torneos/:id"
+        component={TournamentDetailPage}
+      />
       <PrivateRoute exact path="/torneos" component={TournamentsPage} />
       <Route exact path="/auth/login" component={LoginPage} />
       <Route exact path="/auth/signup" component={SignUpPage} />
