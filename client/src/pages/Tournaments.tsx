@@ -19,7 +19,6 @@ import Logo from "../components/Logo";
 
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
-  console.log(currentTournamets.tournaments);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

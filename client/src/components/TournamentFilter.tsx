@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import {
@@ -10,7 +10,7 @@ import {
   Stack,
   color,
 } from "@chakra-ui/react";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   fetchFilterTournaments,
   fetchTournaments,
@@ -24,7 +24,13 @@ function TournamentFilter(): JSX.Element {
     name: "",
     searchname: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useAppDispatch();
+  const currentTournaments = useAppSelector((state) => state.tournaments);
+
+  useEffect(() => {
+    dispatch(fetchFilterTournaments({ ...filter, page: currentPage }));
+  }, [currentPage]);
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setFilter({
@@ -32,6 +38,7 @@ function TournamentFilter(): JSX.Element {
       [e.target.name]: e.target.value,
     });
   }
+
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFilter({
       ...filter,
@@ -52,6 +59,13 @@ function TournamentFilter(): JSX.Element {
     });
   }
 
+  function previousPage() {
+    setCurrentPage(currentPage === 1 ? 1 : currentPage - 1);
+  }
+  function nextPage() {
+    setCurrentPage(currentPage + 1);
+  }
+
   function deleteFilter() {
     dispatch(fetchTournaments());
     setFilter({
@@ -61,15 +75,6 @@ function TournamentFilter(): JSX.Element {
       name: "",
       searchname: "",
     });
-    const $select: any = document.querySelector("#status");
-    const $option = $select?.querySelector("#alls");
-    $select.value = $option.value;
-    const $select2: any = document.querySelector("#types");
-    const $option2 = $select2?.querySelector("#allt");
-    $select2.value = $option2.value;
-    const $select3: any = document.querySelector("#sorts");
-    const $option3 = $select3?.querySelector("#allsorts");
-    $select3.value = $option3.value;
   }
 
   return (
@@ -99,6 +104,7 @@ function TournamentFilter(): JSX.Element {
           placeholder="Estado"
           id="status"
           name="stat"
+          value={filter.stat}
           onChange={handleChange}
         >
           <option id="alls" value="">
@@ -115,6 +121,7 @@ function TournamentFilter(): JSX.Element {
           placeholder="Acceso"
           id="types"
           name="type"
+          value={filter.type}
           onChange={handleChange}
         >
           <option id="allt" value="">
@@ -129,6 +136,7 @@ function TournamentFilter(): JSX.Element {
           borderColor="#4FBDBA"
           id="sorts"
           name="sort"
+          value={filter.sort}
           onChange={handleChange}
         >
           <option id="allsorts" value="asc">
@@ -159,6 +167,21 @@ function TournamentFilter(): JSX.Element {
           onClick={deleteFilter}
         >
           Cargar todos
+        </Button>
+        <Button
+          onClick={previousPage}
+          name="backbutton"
+          disabled={currentPage === 1 ? true : false}
+        >
+          atra
+        </Button>
+        <Box bgColor="#4FBDBA">{currentPage}</Box>
+        <Button
+          onClick={nextPage}
+          name="fowardbutton"
+          disabled={currentTournaments.tournaments.length < 9 ? true : false}
+        >
+          adelant
         </Button>
       </Stack>
     </Box>
