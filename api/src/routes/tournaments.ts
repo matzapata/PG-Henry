@@ -36,4 +36,27 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get("/:id", async (req: express.Request, res: express.Response) => {
+  const { id } = req.params;
+  try {
+    const tournament = await prisma.tournament.findUnique({
+      where: { id: id },
+    });
+    if (tournament)
+      res.send({
+        id: tournament.id,
+        name: tournament.name,
+        description: tournament.description,
+        user_limit: tournament.user_limit,
+        status: tournament.status,
+        type: tournament.type,
+        pool: tournament.pool,
+        logo_url: tournament.logo_url,
+      });
+    else res.status(404).send("Not found.");
+  } catch (e: any) {
+    res.status(400).send({ message: e.message });
+  }
+});
+
 export default router;
