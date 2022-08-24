@@ -19,6 +19,7 @@ model User {
   is_banned          Boolean  @default(false)
   last_access        DateTime @default(now())
   verification_token String
+  url_avatar         String   @default("https://static.vecteezy.com/system/resources/previews/003/337/511/original/default-avatar-photo-placeholder-profile-icon-female-vector.jpg")
 
   tournament_userid  UserTournament[]
   predictions_userid Predictions[]
