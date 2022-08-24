@@ -31,7 +31,7 @@ router.put(
           },
           data: status,
         });
-        res.send(status);
+        res.status(200).send("La cuenta a sido eliminada correctamente");
       } else {
         throw new Error("is_active is not true");
       }
