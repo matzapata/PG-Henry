@@ -13,6 +13,11 @@ type ProfileInput = {
   password: string;
 };
 
+type DeleteUser = {
+  is_active: boolean;
+  id: string;
+};
+
 const initialState = {
   loading: false,
   error: "",
@@ -81,5 +86,20 @@ const userSlice = createSlice({
     });
   },
 });
+
+export const deleteActiveUser = createAsyncThunk(
+  "delete/user",
+  async (payload: DeleteUser, { rejectWithValue }) => {
+    try {
+      const { id, is_active } = payload;
+      const response = await api.put(`/users/${id}/status`, {
+        is_active: is_active,
+      });
+      if (response.data.status === 200) return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
 
 export default userSlice.reducer;
