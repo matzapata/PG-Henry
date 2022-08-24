@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Flex,
@@ -21,9 +21,20 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
 import { AdvancedImage } from "@cloudinary/react";
 import { CloudinaryImage } from "@cloudinary/url-gen";
+import axios from "axios";
+import { changePassword } from "../redux/slices/userSlices";
+
+type State = {
+  email: string;
+  password: string;
+};
 
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated } = useAuth0();
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useAppDispatch();
 
   return (
     <>
@@ -51,7 +62,6 @@ export default function UserProfileEdit(): JSX.Element {
               Editar Perfil
             </Heading>
             <FormControl id="userName">
-              <FormLabel>Imagen</FormLabel>
               <Stack direction={["column", "row"]} spacing={6}>
                 <Center>
                   <Avatar size="xl" src={user?.picture}>
@@ -71,7 +81,6 @@ export default function UserProfileEdit(): JSX.Element {
                     funcion={"Cambiar Avatar"}
                     titulo={"Subir Imagen"}
                   />
-                  {/* <Button w="full">Cambiar Imagen</Button> */}
                 </Center>
               </Stack>
             </FormControl>
@@ -89,6 +98,7 @@ export default function UserProfileEdit(): JSX.Element {
                 placeholder="Email"
                 _placeholder={{ color: "gray.500" }}
                 type="email"
+                onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
             <FormControl id="password" isRequired>
@@ -97,6 +107,7 @@ export default function UserProfileEdit(): JSX.Element {
                 placeholder="Contraseña"
                 _placeholder={{ color: "gray.500" }}
                 type="password"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
             <Stack spacing={6} direction={["column", "row"]}>
@@ -181,6 +192,7 @@ export default function UserProfileEdit(): JSX.Element {
                 placeholder="Email"
                 _placeholder={{ color: "gray.500" }}
                 type="email"
+                onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
             <FormControl id="password" isRequired>
@@ -189,6 +201,7 @@ export default function UserProfileEdit(): JSX.Element {
                 placeholder="Contraseña"
                 _placeholder={{ color: "gray.500" }}
                 type="password"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
             <Stack spacing={6} direction={["column", "row"]}>
@@ -209,6 +222,7 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={() => dispatch(changePassword({ email, password }))}
               >
                 Confirmar
               </Button>
