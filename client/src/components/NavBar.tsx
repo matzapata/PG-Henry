@@ -45,10 +45,27 @@ export default function NavBar() {
             </Link>
           </>
         )}
+        <Link
+          color="#F7F7F7"
+          fontSize="20px"
+          fontWeight="medium"
+          mx="4"
+          as={ReactLink}
+          to="/about"
+        >
+          Sobre Nosotros
+        </Link>
       </Flex>
       {isLoggedIn || isAuthenticated ? (
         <Box width="150px" display="flex" justifyContent="space-evenly">
-          <Button bgColor="#4FBDBA" color="#F7F7F7" size="md" mr={3}>
+          <Button
+            as={ReactLink}
+            bgColor="#4FBDBA"
+            color="#F7F7F7"
+            size="md"
+            mr={3}
+            to="/auth/perfil"
+          >
             Perfil
           </Button>
           <Button

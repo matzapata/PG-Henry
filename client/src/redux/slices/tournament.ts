@@ -1,9 +1,11 @@
-import { filter } from "@chakra-ui/react";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import api from "../../services/api";
-import axios from "axios";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  fetchTournaments,
+  fetchFilterTournaments,
+  fetchTournamentDetail,
+} from "./tournamentThunk";
 
-type Tournament = {
+export type Tournament = {
   id: string;
   name: string;
   status: string;
@@ -11,55 +13,37 @@ type Tournament = {
   logo_url: string;
 };
 
-type InitialState = {
+export type TournamentDetail = {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  type: string;
+  user_limit: number;
+  pool: number;
+  logo_url: string;
+};
+
+export type InitialState = {
+  tournamentDetail: TournamentDetail | null;
   tournaments: Tournament[];
   loading: boolean;
   error: string;
 };
 
 const initialState: InitialState = {
+  tournamentDetail: null,
   tournaments: [],
   loading: false,
   error: "",
 };
-
-export const fetchTournaments = createAsyncThunk(
-  "tournaments/fetchTournaments",
-  async () => {
-    const result = await api.get(
-      `${process.env.REACT_APP_API_URL}/tournaments?sort=asc`
-    );
-    return result.data;
-  }
-);
-
-export const fetchFilterTournaments = createAsyncThunk(
-  "tournaments/fetchFilterTournaments",
-  async (filters: {
-    type: string;
-    stat: string;
-    sort: string;
-    name: string;
-    page?: number;
-  }) => {
-    const result = await api.get(
-      `${process.env.REACT_APP_API_URL}/tournaments?${
-        filters.type ? "type=" + filters.type : ""
-      }&${filters.stat ? "status=" + filters.stat : ""}&${
-        filters.sort ? "sort=" + filters.sort : ""
-      }&${filters.name ? "name=" + filters.name : ""}&${
-        filters.page ? "page=" + filters.page : ""
-      }`
-    );
-    return result.data;
-  }
-);
 
 const tournamentSlice = createSlice({
   name: "tournaments",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Fetch tournamnets
     builder.addCase(fetchTournaments.pending, (state) => {
       state.loading = true;
     });
@@ -76,6 +60,8 @@ const tournamentSlice = createSlice({
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
     });
+
+    // Fetch filter tournaments
     builder.addCase(fetchFilterTournaments.pending, (state) => {
       state.loading = true;
     });
@@ -91,6 +77,19 @@ const tournamentSlice = createSlice({
       state.loading = false;
       state.tournaments = [];
       state.error = action.error.message || "Algo salio mal";
+    });
+
+    // Fetch tournament detail
+    builder.addCase(fetchTournamentDetail.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchTournamentDetail.fulfilled, (state, action) => {
+      state.loading = false;
+      state.tournamentDetail = action.payload;
+    });
+    builder.addCase(fetchTournamentDetail.rejected, (state) => {
+      state.loading = false;
+      state.tournamentDetail = null;
     });
   },
 });

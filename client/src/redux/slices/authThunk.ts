@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getToken, removeToken, setToken } from "../../utils/auth";
 import api from "../../services/api";
 import history from "../../utils/history";
-import { AxiosError, HeadersDefaults } from "axios";
+import { HeadersDefaults } from "axios";
+import jwtDecode from "jwt-decode";
 
 type LoginPayload = {
   email: string;
@@ -26,7 +27,10 @@ export const login = createAsyncThunk(
 
       if (payload.check) setToken(response.data.token);
       history.push("/");
-      return response.data;
+      return {
+        ...response.data,
+        decoded: jwtDecode(response.data.token),
+      };
     } catch (e: any) {
       return rejectWithValue(e.response.data.message);
     }
@@ -49,7 +53,10 @@ export const refreshToken = createAsyncThunk("auth/refreshToken", async () => {
     "x-access-token": response.data.token,
   } as AxiosDefaultHeaders;
 
-  return response.data;
+  return {
+    ...response.data,
+    decoded: jwtDecode(response.data.token),
+  };
 });
 
 export const signOut = createAsyncThunk("auth/signOut", async () => {

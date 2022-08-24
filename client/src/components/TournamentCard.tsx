@@ -31,7 +31,7 @@ function TournamentCard({
       w="auto"
     >
       <Image src={logo} w="10rem" h="10rem" fit="cover" borderRadius={"20px"} />
-      <Link to={`/tournaments/${id}`}>
+      <Link to={`/torneos/${id}`}>
         <Stack p="5px" spacing={3}>
           <Text fontSize="30px" fontWeight="bold" color="#AEFEFF">
             {name}
