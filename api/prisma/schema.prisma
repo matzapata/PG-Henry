@@ -14,6 +14,7 @@ model User {
   email              String   @unique
   password           String
   birth_date         DateTime
+  alias_mp           String?  @unique
   is_admin           Boolean  @default(false)
   is_active          Boolean  @default(false)
   is_banned          Boolean  @default(false)
@@ -34,7 +35,7 @@ model Tournament {
   type        TournamentType @default(PUBLIC)
   password    String?
   pool        Int            @default(0)
-  logo_url    String
+  logo_url    String?
 
   creator         User             @relation(fields: [creator_user_id], references: [id])
   creator_user_id String

@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/auth";
-import tournamentsReducer from "./slices/tournamentSlice";
+import tournamentsReducer from "./slices/tournament";
 
 export const store = configureStore({
   reducer: {

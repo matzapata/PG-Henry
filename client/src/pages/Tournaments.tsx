@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import TournamentCard from "../components/TournamentCard";
 import TournamentFilter from "../components/TournamentFilter";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { fetchTournaments } from "../redux/slices/tournamentSlice";
+import { fetchTournaments } from "../redux/slices/tournamentThunk";
 import {
   Container,
   Text,
@@ -11,7 +11,6 @@ import {
   Divider,
   Stack,
   Grid,
-  GridItem,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
@@ -35,7 +34,6 @@ function Tournaments(): JSX.Element {
       p="0"
     >
       <Box
-        /* bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" */
         h="80px"
         display="flex"
         flexDir="row"
@@ -49,10 +47,6 @@ function Tournaments(): JSX.Element {
             Torneos
           </Text>
         </Stack>
-        {/* <Text fontSize="20px" pt="10px" p="20px" color="#F7F7F7">
-          Busca entre los mejores torneos mundiales y nacionales, o crea el tuyo
-          propio!
-        </Text> */}
         <Box display="flex" flexDir="row">
           <Link to="/">
             <ArrowBackIcon color="#F7F7F7" fontSize="30px" pt="2px" />
@@ -77,10 +71,6 @@ function Tournaments(): JSX.Element {
           </Button>
         </Box>
       </Box>
-      {/*  <Text fontSize="20px" pt="10px" p="20px" color="#F7F7F7">
-        Busca entre los mejores torneos mundiales y nacionales, o crea el tuyo
-        propio!
-      </Text> */}
       <Divider />
       <TournamentFilter />
       {currentTournamets.loading && <Text>Loading...</Text>}
