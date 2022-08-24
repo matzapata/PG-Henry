@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Container, Heading, Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { useAppDispatch } from "../redux/hooks";
 import { fetchMercadoPago } from "../redux/slices/mercadopago";
 
