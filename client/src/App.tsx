@@ -10,6 +10,7 @@ import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
 import PrivateRoute from "./utils/routePrivate";
+import TournamentCreate from "./pages/TournamentCreate";
 import TournamentDetailPage from "./pages/TournamentDetail";
 import About from "./pages/About";
 
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <Switch>
+      <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
       <PrivateRoute
         exact
         path="/torneos/:id"
