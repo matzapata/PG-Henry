@@ -42,6 +42,7 @@ export const changePassword = createAsyncThunk(
       return response.data.msg;
     } catch (err: any) {
       console.log(err.response.data.error);
+      console.log(err);
       return rejectWithValue(err.response.data.error);
     }
   }
@@ -77,7 +78,7 @@ const userSlice = createSlice({
     builder.addCase(changePassword.rejected, (state, action) => {
       state.loading = false;
       state.user_detail = {};
-      state.error = action.error.message || "Algo salio mal";
+      state.error = "Ingresaste un email incorrecto." || "Algo salio mal";
     });
   },
 });
