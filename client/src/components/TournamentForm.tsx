@@ -33,7 +33,7 @@ import { Link } from "react-router-dom";
 import { check } from "prettier";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useHistory } from "react-router-dom";
-import teamSlice from "../redux/slices/teamSlice";
+//import teamSlice from "../redux/slices/teamSlice";
 
 /*model Tournament {
   id              String            @unique @default(uuid())
@@ -143,7 +143,7 @@ const validateTeamNames = (teams: Team[], newName: string) => {
 
 export default function TournamentForm(): JSX.Element {
   const history = useHistory();
-  const currentTeams = useAppSelector((state) => state.teams);
+  //const currentTeams = useAppSelector((state) => state.teams);
   const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [input, setInput] = useState<Inputs>({
