@@ -14,8 +14,10 @@ import {
   IconButton,
   Center,
   Container,
+  Icon,
+  Text,
 } from "@chakra-ui/react";
-import { SmallCloseIcon } from "@chakra-ui/icons";
+import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
@@ -23,6 +25,8 @@ import { AdvancedImage } from "@cloudinary/react";
 import { CloudinaryImage } from "@cloudinary/url-gen";
 import axios from "axios";
 import { changePassword } from "../redux/slices/userSlices";
+import { FaExclamationCircle } from "react-icons/fa";
+import { useHistory } from "react-router-dom";
 
 type State = {
   email: string;
@@ -32,9 +36,12 @@ type State = {
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const error = useAppSelector((state) => state.user.error);
+  const success = useAppSelector((state) => state.user.success);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   return (
     <>
@@ -99,6 +106,7 @@ export default function UserProfileEdit(): JSX.Element {
                 _placeholder={{ color: "gray.500" }}
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
+                value={email}
               />
             </FormControl>
             <FormControl id="password" isRequired>
@@ -108,6 +116,7 @@ export default function UserProfileEdit(): JSX.Element {
                 _placeholder={{ color: "gray.500" }}
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
+                value={password}
               />
             </FormControl>
             <Stack spacing={6} direction={["column", "row"]}>
@@ -117,6 +126,9 @@ export default function UserProfileEdit(): JSX.Element {
                 w="full"
                 _hover={{
                   bg: "red.500",
+                }}
+                onClick={() => {
+                  history.push("/");
                 }}
               >
                 Cancelar
@@ -132,6 +144,21 @@ export default function UserProfileEdit(): JSX.Element {
                 Confirmar
               </Button>
             </Stack>
+            {error ? (
+              <Flex mt="4" alignItems="center" justifyContent="center">
+                <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+                <Text as="span" color="red.500" fontWeight="500">
+                  {error}
+                </Text>
+              </Flex>
+            ) : success ? (
+              <Flex mt="4" alignItems="center" justifyContent="center">
+                <Icon as={CheckIcon} color="green.500" mr="2" />
+                <Text as="span" color="green.500" fontWeight="500">
+                  {success}
+                </Text>
+              </Flex>
+            ) : null}
           </Stack>
         </Flex>
       ) : (
@@ -158,7 +185,6 @@ export default function UserProfileEdit(): JSX.Element {
               Editar Perfil
             </Heading>
             <FormControl id="userName">
-              <FormLabel>Imagen</FormLabel>
               <Stack direction={["column", "row"]} spacing={6}>
                 <Center>
                   <Avatar size="xl" src="/img/sin_foto_perfil.png">
@@ -193,6 +219,7 @@ export default function UserProfileEdit(): JSX.Element {
                 _placeholder={{ color: "gray.500" }}
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
+                value={email}
               />
             </FormControl>
             <FormControl id="password" isRequired>
@@ -202,6 +229,7 @@ export default function UserProfileEdit(): JSX.Element {
                 _placeholder={{ color: "gray.500" }}
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
+                value={password}
               />
             </FormControl>
             <Stack spacing={6} direction={["column", "row"]}>
@@ -212,6 +240,7 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "red.500",
                 }}
+                onClick={() => history.push("/")}
               >
                 Cancelar
               </Button>
@@ -227,6 +256,21 @@ export default function UserProfileEdit(): JSX.Element {
                 Confirmar
               </Button>
             </Stack>
+            {error ? (
+              <Flex mt="4" alignItems="center" justifyContent="center">
+                <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+                <Text as="span" color="red.500" fontWeight="500">
+                  {error}
+                </Text>
+              </Flex>
+            ) : success ? (
+              <Flex mt="4" alignItems="center" justifyContent="center">
+                <Icon as={CheckIcon} color="green.500" mr="2" />
+                <Text as="span" color="green.500" fontWeight="500">
+                  {success}
+                </Text>
+              </Flex>
+            ) : null}
           </Stack>
         </Flex>
       )}
