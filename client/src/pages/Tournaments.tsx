@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import TournamentCard from "../components/TournamentCard";
 import TournamentFilter from "../components/TournamentFilter";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { useHistory } from "react-router-dom";
 import { fetchTournaments } from "../redux/slices/tournamentThunk";
 import {
   Container,
@@ -19,7 +20,7 @@ import Logo from "../components/Logo";
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
   const dispatch = useAppDispatch();
-
+  const history = useHistory();
   useEffect(() => {
     dispatch(fetchTournaments());
   }, []);
@@ -61,6 +62,7 @@ function Tournaments(): JSX.Element {
             Inicio
           </Text>
           <Button
+            onClick={() => history.push("torneos/crear")}
             _hover={{
               color: "#082032",
             }}
