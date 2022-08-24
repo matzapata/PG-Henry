@@ -12,14 +12,15 @@ class PaymentService {
           picture_url: "http://www.myapp.com/myimage.jpg",
           category_id: "category123",
           quantity: 1,
-          unit_price: 10,
+          unit_price: 1,
         },
       ],
       back_urls: {
-        failure: "/failure",
-        pending: "/pending",
-        success: "/success",
+        failure: "/feedback",
+        pending: "/feedback",
+        success: "/feedback",
       },
+      auto_return: "approved",
     };
 
     const payment = await axios.post(url, body, {
