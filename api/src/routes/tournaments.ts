@@ -36,4 +36,26 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get(
+  "/:id/ranking",
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+    if (id === undefined) return res.status(400).send("Missing parameters");
+
+    const ranking = await prisma.userTournament.findMany({
+      where: { tournament_id: id },
+      include: { user: { select: { full_name: true } } },
+      orderBy: { score: "desc" },
+    });
+    res.send(
+      ranking.map((ut) => {
+        return {
+          score: ut.score,
+          user: ut.user.full_name,
+        };
+      })
+    );
+  }
+);
+
 export default router;
