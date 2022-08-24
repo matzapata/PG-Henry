@@ -6,7 +6,6 @@ import TournamentsPage from "./pages/Tournaments";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import Perfil from "./pages/Perfil";
-import UploadFile from "./components/UploadFile";
 import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
