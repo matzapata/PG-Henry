@@ -6,6 +6,6 @@ export const fetchMercadoPago = createAsyncThunk(
   async () => {
     const result = await api.get(`/mercadopago/payment`);
     console.log(result.data);
-    // window.location.href = `${result.data.init_point}`;
+    window.location.href = `${result.data.init_point}`;
   }
 );

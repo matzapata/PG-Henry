@@ -7,8 +7,8 @@ class PaymentService {
     const body = {
       items: [
         {
-          title: "Comprar torneo",
-          description: "Con esta compra seras capaz de crear tu propio torneo",
+          title: "Unirse a un torneo",
+          description: "Con esta compra eres capaz de unirte a un torneo",
           picture_url: "http://www.myapp.com/myimage.jpg",
           category_id: "category123",
           quantity: 1,
@@ -16,9 +16,9 @@ class PaymentService {
         },
       ],
       back_urls: {
-        failure: "/feedback",
-        pending: "/feedback",
-        success: "/feedback",
+        failure: "/failure",
+        pending: "/pending",
+        success: "/success",
       },
       auto_return: "approved",
     };
@@ -29,6 +29,7 @@ class PaymentService {
         Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
       },
     });
+    console.log(payment.data);
 
     return payment.data;
   }
