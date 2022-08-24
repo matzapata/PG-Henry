@@ -110,11 +110,9 @@ export default function MatchAdd(props: props): JSX.Element {
       team_b_name: selectB.value,
     });
   };
-  const eliminarPartidosComprometidos = () => {};
 
   useEffect(() => {
     llenarSelect(equipos);
-    eliminarPartidosComprometidos();
   }, [equipos]);
   useEffect(() => {
     cb(matches);
