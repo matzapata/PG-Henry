@@ -9,6 +9,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Button,
+  Image,
 } from "@chakra-ui/react";
 
 function UploadFiles(props: any) {
@@ -48,14 +49,17 @@ function UploadFiles(props: any) {
   const uploadImage = async (base64EncodedImage: any) => {
     let secure_url;
     try {
-      await fetch("https://api.cloudinary.com/v1_1/drgqlk8l3/image/upload", {
-        method: "POST",
-        body: JSON.stringify({
-          file: base64EncodedImage,
-          upload_preset: "unqyzvup",
-        }),
-        headers: { "Content-Type": "application/json" },
-      })
+      await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_ID}/image/upload`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            file: base64EncodedImage,
+            upload_preset: `${process.env.REACT_APP_CLOUDINARY_UNSIGNED}`,
+          }),
+          headers: { "Content-Type": "application/json" },
+        }
+      )
         .then((r) => r.json())
         .then((response) => {
           secure_url = response.secure_url;
@@ -109,7 +113,7 @@ function UploadFiles(props: any) {
                 value={fileInputState}
               />
               {previewSource && (
-                <img
+                <Image
                   src={previewSource}
                   alt="imagen_elegida"
                   style={{ height: "200px" }}
@@ -135,22 +139,6 @@ function UploadFiles(props: any) {
           </ModalBody>
         </ModalContent>
       </Modal>
-      {/* <form onSubmit={handleSubmitFile}>
-        <input
-          type="file"
-          name="image"
-          onChange={handleFileInputChange}
-          value={fileInputState}
-        />
-        <button type="submit">Upload Image</button>
-      </form>
-      {previewSource && (
-        <img
-          src={previewSource}
-          alt="imagen_elegida"
-          style={{ height: "200px" }}
-        />
-      )} */}
     </div>
   );
 }
