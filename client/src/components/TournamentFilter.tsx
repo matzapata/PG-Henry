@@ -8,13 +8,12 @@ import {
   Button,
   Select,
   Stack,
-  color,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   fetchFilterTournaments,
   fetchTournaments,
-} from "../redux/slices/tournamentSlice";
+} from "../redux/slices/tournamentThunk";
 
 function TournamentFilter(): JSX.Element {
   const [filter, setFilter] = useState({
