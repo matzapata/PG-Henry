@@ -19,7 +19,11 @@ import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
-import { changePassword, deleteActiveUser } from "../redux/slices/userSlices";
+import {
+  changePassword,
+  deleteActiveUser,
+  getUserInfo,
+} from "../redux/slices/userSlices";
 import history from "../utils/history";
 import { signOut } from "../redux/slices/authThunk";
 import { FaExclamationCircle } from "react-icons/fa";
@@ -30,21 +34,30 @@ type State = {
 };
 
 export default function UserProfileEdit(): JSX.Element {
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, logout } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
   let error_message = useAppSelector((state) => state.user.error_message);
   const success = useAppSelector((state) => state.user.message);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
-  const userid = useAppSelector((state) => state.auth.decoded!.id);
   const user_detail = useAppSelector((state) => state.user.user_detail);
+  const userid: any = useAppSelector((state) => state.auth.decoded?.id);
 
   function onDeleteUser() {
-    dispatch(deleteActiveUser({ id: userid, is_active: true }));
+    if (isLoggedIn) dispatch(deleteActiveUser({ id: userid, is_active: true }));
     if (isLoggedIn) dispatch(signOut());
+    else if (isAuthenticated) logout();
     history.push("/");
   }
+
+  useEffect(() => {
+    if (isLoggedIn) dispatch(getUserInfo(null));
+    if (success)
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+  }, [user_detail.avatar, success]);
 
   return (
     <>
