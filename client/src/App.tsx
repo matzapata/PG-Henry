@@ -9,7 +9,6 @@ import Perfil from "./pages/Perfil";
 import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
-import MercadopagoPage from "./components/Mercadopago";
 import PrivateRoute from "./utils/routePrivate";
 import TournamentCreate from "./pages/TournamentCreate";
 import TournamentDetailPage from "./pages/TournamentDetail";
@@ -32,7 +31,6 @@ function App() {
       <PrivateRoute exact path="/torneos" component={TournamentsPage} />
       <Route exact path="/auth/login" component={LoginPage} />
       <Route exact path="/auth/signup" component={SignUpPage} />
-      <Route exact path="/mercadopago" component={MercadopagoPage} />
       <PrivateRoute exact path="/auth/perfil" component={Perfil} />
       <Route exact path="/" component={HomePage} />
       <Route exact path="/about" component={About} />
