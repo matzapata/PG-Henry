@@ -3,6 +3,7 @@ import {
   fetchTournaments,
   fetchFilterTournaments,
   fetchTournamentDetail,
+  fetchTournamentMatches,
 } from "./tournamentThunk";
 
 export type Tournament = {
@@ -25,18 +26,23 @@ export type TournamentDetail = {
 };
 
 export type TournamentMatch = {
-  id: string,
-  score_a: number,
-  score_b: number,
-  date: string,
-  stage: string,
-  tournament_id: string,
-  team_a_id: string,
-  team_b_id: string
+  id: string;
+  score_a: number;
+  score_b: number;
+  date: string;
+  stage: string;
+  team_a: Team;
+  team_b: Team;
+};
+
+export type Team = {
+  name: string;
+  shield_url: string;
 };
 
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
+  tournamentMatches: TournamentMatch[];
   tournaments: Tournament[];
   loading: boolean;
   error: string;
@@ -44,6 +50,7 @@ export type InitialState = {
 
 const initialState: InitialState = {
   tournamentDetail: null,
+  tournamentMatches: [],
   tournaments: [],
   loading: false,
   error: "",
@@ -101,6 +108,19 @@ const tournamentSlice = createSlice({
     builder.addCase(fetchTournamentDetail.rejected, (state) => {
       state.loading = false;
       state.tournamentDetail = null;
+    });
+    //Fetch tournament  matches
+    builder.addCase(fetchTournamentMatches.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchTournamentMatches.fulfilled, (state, action) => {
+      state.loading = false;
+      state.tournamentMatches = action.payload;
+    });
+    builder.addCase(fetchTournamentMatches.rejected, (state, action) => {
+      state.loading = false;
+      state.tournamentMatches = [];
+      state.error = action.error.message || "Algo salio mal";
     });
   },
 });

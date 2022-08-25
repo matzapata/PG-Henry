@@ -36,32 +36,39 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
-router.get("/:tournamentId/matches", async (req: express.Request, res: express.Response)=>{
-  const { tournamentId } = req.params
-  const { stage } = req.query
+router.get(
+  "/:tournamentId/matches",
+  async (req: express.Request, res: express.Response) => {
+    const { tournamentId } = req.params;
+    const { stage } = req.query;
 
-  try {
-      const tournament = await prisma.tournament.findUnique({
-          where: {
-            id: tournamentId
-          }
-      })
-        
-      if(tournament){
-          const result = await prisma.matches.findMany({
-              where: {
-              tournament_id: tournamentId ,     
-              stage: stage as MatchStage
-          }})
-          res.status(200).send(result)
-        }else{
-          throw new Error("No existe el torneo")
-        }
-        
-  } catch (error) {
-      res.status(400).send(error)
+    try {
+      const result = await prisma.matches.findMany({
+        where: {
+          tournament_id: tournamentId,
+          stage: stage as MatchStage,
+        },
+        include: {
+          team_a: {
+            select: {
+              name: true,
+              shield_url: true,
+            },
+          },
+          team_b: {
+            select: {
+              name: true,
+              shield_url: true,
+            },
+          },
+        },
+      });
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
-})
+);
 
 router.get("/:id", async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
