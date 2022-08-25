@@ -18,7 +18,17 @@ type DeleteUser = {
   id: string;
 };
 
-const initialState = {
+const initialState: {
+  token: string | null;
+  decoded: { id: string; email: string; username: string } | null;
+  loading: boolean;
+  error: string;
+  error_message: string;
+  message: string;
+  user_detail: any;
+} = {
+  token: null,
+  decoded: null,
   loading: false,
   error: "",
   error_message: "",
@@ -49,6 +59,21 @@ export const changePassword = createAsyncThunk(
       console.log(err.response.data.error);
       console.log(err);
       return rejectWithValue(err.response.data.error);
+    }
+  }
+);
+
+export const deleteActiveUser = createAsyncThunk(
+  "delete/user",
+  async (payload: DeleteUser, { rejectWithValue }) => {
+    try {
+      const { id, is_active } = payload;
+      const response = await api.put(`/users/${id}/status`, {
+        is_active: is_active,
+      });
+      if (response.data.status === 200) return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data.message);
     }
   }
 );
@@ -88,20 +113,5 @@ const userSlice = createSlice({
     });
   },
 });
-
-export const deleteActiveUser = createAsyncThunk(
-  "delete/user",
-  async (payload: DeleteUser, { rejectWithValue }) => {
-    try {
-      const { id, is_active } = payload;
-      const response = await api.put(`/users/${id}/status`, {
-        is_active: is_active,
-      });
-      if (response.data.status === 200) return response.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response.data.message);
-    }
-  }
-);
 
 export default userSlice.reducer;

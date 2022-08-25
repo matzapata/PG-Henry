@@ -19,10 +19,10 @@ import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
-import { AdvancedImage } from "@cloudinary/react";
-import { CloudinaryImage } from "@cloudinary/url-gen";
-import axios from "axios";
-import { changePassword } from "../redux/slices/userSlices";
+import { changePassword, deleteActiveUser } from "../redux/slices/userSlices";
+import history from "../utils/history";
+import { signOut } from "../redux/slices/authThunk";
+import { FaExclamationCircle } from "react-icons/fa";
 
 type State = {
   email: string;
@@ -37,6 +37,14 @@ export default function UserProfileEdit(): JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
+  const userid = useAppSelector((state) => state.auth.decoded!.id);
+  const user_detail = useAppSelector((state) => state.user.user_detail);
+
+  function onDeleteUser() {
+    dispatch(deleteActiveUser({ id: userid, is_active: true }));
+    if (isLoggedIn) dispatch(signOut());
+    history.push("/");
+  }
 
   return (
     <>
@@ -145,6 +153,20 @@ export default function UserProfileEdit(): JSX.Element {
                 Confirmar
               </Button>
             </Stack>
+            <Stack spacing={6} direction={["column", "row"]}>
+              <Button
+                bg={"red.400"}
+                color={"white"}
+                w="full"
+                _hover={{
+                  bg: "red.500",
+                }}
+                onClick={onDeleteUser}
+              >
+                Eliminar Cuenta
+              </Button>
+            </Stack>
+
             {error_message ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
@@ -261,6 +283,34 @@ export default function UserProfileEdit(): JSX.Element {
                 Confirmar
               </Button>
             </Stack>
+            <Stack spacing={6} direction={["column", "row"]}>
+              <Button
+                bg={"red.400"}
+                color={"white"}
+                w="full"
+                _hover={{
+                  bg: "red.500",
+                }}
+                onClick={onDeleteUser}
+              >
+                Eliminar Cuenta
+              </Button>
+            </Stack>
+            {error_message ? (
+              <Flex mt="4" alignItems="center" justifyContent="center">
+                <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+                <Text as="span" color="red.500" fontWeight="500">
+                  {error_message}
+                </Text>
+              </Flex>
+            ) : success ? (
+              <Flex mt="4" alignItems="center" justifyContent="center">
+                <Icon as={CheckIcon} color="green.500" mr="2" />
+                <Text as="span" color="green.500" fontWeight="500">
+                  {success}
+                </Text>
+              </Flex>
+            ) : null}
           </Stack>
         </Flex>
       ) : null}
