@@ -9,4 +9,5 @@ router.use("/users", userRouter);
 router.use("/auth", authRouter);
 router.use("/tournaments", tournamentRouter);
 
+
 export default router;

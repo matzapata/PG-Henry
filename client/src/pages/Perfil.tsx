@@ -19,9 +19,15 @@ import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
-import { changePassword, getUserInfo } from "../redux/slices/userSlices";
-import { FaExclamationCircle } from "react-icons/fa";
-import { useHistory } from "react-router-dom";
+import { AdvancedImage } from "@cloudinary/react";
+import { CloudinaryImage } from "@cloudinary/url-gen";
+import axios from "axios";
+import { changePassword } from "../redux/slices/userSlices";
+
+type State = {
+  email: string;
+  password: string;
+};
 
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated } = useAuth0();
@@ -31,17 +37,6 @@ export default function UserProfileEdit(): JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  const user_detail: any = useAppSelector((state) => state.user.user_detail);
-
-  useEffect(() => {
-    if (isLoggedIn) dispatch(getUserInfo(null));
-    if (success)
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    console.log(user_detail);
-  }, [user_detail.avatar, success]);
 
   return (
     <>
@@ -266,21 +261,6 @@ export default function UserProfileEdit(): JSX.Element {
                 Confirmar
               </Button>
             </Stack>
-            {error_message ? (
-              <Flex mt="4" alignItems="center" justifyContent="center">
-                <Icon as={FaExclamationCircle} color="red.500" mr="2" />
-                <Text as="span" color="red.500" fontWeight="500">
-                  {error_message}
-                </Text>
-              </Flex>
-            ) : success ? (
-              <Flex mt="4" alignItems="center" justifyContent="center">
-                <Icon as={CheckIcon} color="green.500" mr="2" />
-                <Text as="span" color="green.500" fontWeight="500">
-                  {success}
-                </Text>
-              </Flex>
-            ) : null}
           </Stack>
         </Flex>
       ) : null}

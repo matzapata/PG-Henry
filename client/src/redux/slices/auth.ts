@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { login, refreshToken, signOut } from "./authThunk";
 
-const initialState = {
+const initialState: {
+  token: string | null;
+  decoded: { id: string; email: string; username: string } | null;
+  loading: boolean;
+  error: string;
+} = {
   token: null,
   decoded: null,
   loading: false,
