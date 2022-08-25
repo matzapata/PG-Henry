@@ -22,13 +22,13 @@ function App() {
 
   return (
     <Switch>
+      <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
       <PrivateRoute
         exact
         path="/torneos/:id"
         component={TournamentDetailPage}
       />
       <PrivateRoute exact path="/torneos" component={TournamentsPage} />
-      <Route exact path="/torneos/crear" component={TournamentCreate} />
       <Route exact path="/auth/login" component={LoginPage} />
       <Route exact path="/auth/signup" component={SignUpPage} />
       <PrivateRoute exact path="/auth/perfil" component={Perfil} />
