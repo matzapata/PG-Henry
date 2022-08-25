@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Container, Heading, Text } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
+import Carousel from "../components/NewsCarousel";
 
 function Home() {
   return (
@@ -13,6 +14,7 @@ function Home() {
       bgPosition="center"
     >
       <NavBar />
+      <Carousel />
       <Box
         px={["4", "24"]}
         py={["10", "24"]}
