@@ -22,7 +22,9 @@ import UploadFiles from "../components/UploadFile";
 import { AdvancedImage } from "@cloudinary/react";
 import { CloudinaryImage } from "@cloudinary/url-gen";
 import axios from "axios";
-import { changePassword } from "../redux/slices/userSlices";
+import { changePassword, deleteActiveUser } from "../redux/slices/userSlices";
+import history from "../utils/history";
+import { signOut } from "../redux/slices/authThunk";
 
 type State = {
   email: string;
@@ -35,6 +37,13 @@ export default function UserProfileEdit(): JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
+  const userid = useAppSelector((state) => state.auth.decoded!.id);
+
+  function onDeleteUser() {
+    dispatch(deleteActiveUser({ id: userid, is_active: true }));
+    if (isLoggedIn) dispatch(signOut());
+    history.push("/");
+  }
 
   return (
     <>
@@ -225,6 +234,19 @@ export default function UserProfileEdit(): JSX.Element {
                 onClick={() => dispatch(changePassword({ email, password }))}
               >
                 Confirmar
+              </Button>
+            </Stack>
+            <Stack spacing={6} direction={["column", "row"]}>
+              <Button
+                bg={"red.400"}
+                color={"white"}
+                w="full"
+                _hover={{
+                  bg: "red.500",
+                }}
+                onClick={onDeleteUser}
+              >
+                Eliminar Cuenta
               </Button>
             </Stack>
           </Stack>
