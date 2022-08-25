@@ -22,6 +22,7 @@ function UploadFiles(props: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
   const user_detail: any = useAppSelector((state) => state.user.user_detail);
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
 
   const previewFile = (file: any) => {
     const reader: any = new FileReader();
@@ -117,6 +118,7 @@ function UploadFiles(props: any) {
               onClose();
               setFileInputState("");
               setPreviewSource("");
+              if (isLoggedIn) dispatch(getUserInfo(null));
             }}
           />
           <ModalBody>
@@ -142,7 +144,7 @@ function UploadFiles(props: any) {
                     onClose();
                     setFileInputState("");
                     setPreviewSource("");
-                    dispatch(getUserInfo(null));
+                    if (isLoggedIn) dispatch(getUserInfo(null));
                   }}
                 >
                   Cerrar
