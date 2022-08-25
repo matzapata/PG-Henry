@@ -16,16 +16,16 @@ type ProfileInput = {
 const initialState = {
   loading: false,
   error: "",
-  success: "",
+  error_message: "",
+  message: "",
   user_detail: {},
 };
 
 export const getUserInfo = createAsyncThunk(
-  "get/avatar",
+  "get/userinfo",
   async (payload: any, { rejectWithValue }) => {
-    console.log(payload);
     try {
-      const response = await api.get("/users/getprofileinfo", payload);
+      const response = await api.get("/users/getprofileinfo");
       return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data.message);
@@ -72,13 +72,14 @@ const userSlice = createSlice({
     });
     builder.addCase(changePassword.fulfilled, (state, action) => {
       state.loading = false;
-      state.success = action.payload;
-      state.error = "";
+      state.message = action.payload;
+      state.error_message = "";
     });
     builder.addCase(changePassword.rejected, (state, action) => {
       state.loading = false;
       state.user_detail = {};
-      state.error = "Ingresaste un email incorrecto." || "Algo salio mal";
+      state.error_message =
+        "Ingresaste un email incorrecto." || "Algo salio mal";
     });
   },
 });

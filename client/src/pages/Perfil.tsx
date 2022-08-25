@@ -8,12 +8,10 @@ import {
   Input,
   Stack,
   useColorModeValue,
-  HStack,
   Avatar,
   AvatarBadge,
   IconButton,
   Center,
-  Container,
   Icon,
   Text,
 } from "@chakra-ui/react";
@@ -21,31 +19,33 @@ import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
-import { AdvancedImage } from "@cloudinary/react";
-import { CloudinaryImage } from "@cloudinary/url-gen";
-import axios from "axios";
-import { changePassword } from "../redux/slices/userSlices";
+import { changePassword, getUserInfo } from "../redux/slices/userSlices";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-
-type State = {
-  email: string;
-  password: string;
-};
 
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-  const error = useAppSelector((state) => state.user.error);
-  const success = useAppSelector((state) => state.user.success);
+  let error_message = useAppSelector((state) => state.user.error_message);
+  const success = useAppSelector((state) => state.user.message);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const user_detail: any = useAppSelector((state) => state.user.user_detail);
+
+  useEffect(() => {
+    if (isLoggedIn) dispatch(getUserInfo(null));
+    if (success)
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    console.log(user_detail);
+  }, [user_detail.avatar, success]);
 
   return (
     <>
-      {isAuthenticated ? (
+      {isLoggedIn ? (
         <Flex
           h="900px"
           p="0"
@@ -71,7 +71,7 @@ export default function UserProfileEdit(): JSX.Element {
             <FormControl id="userName">
               <Stack direction={["column", "row"]} spacing={6}>
                 <Center>
-                  <Avatar size="xl" src={user?.picture}>
+                  <Avatar size="xl" src={user_detail.avatar}>
                     <AvatarBadge
                       as={IconButton}
                       size="sm"
@@ -129,6 +129,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
+                  error_message = "";
                 }}
               >
                 Cancelar
@@ -140,15 +141,20 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={async () => {
+                  await dispatch(changePassword({ email, password }));
+                  setEmail("");
+                  setPassword("");
+                }}
               >
                 Confirmar
               </Button>
             </Stack>
-            {error ? (
+            {error_message ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error}
+                  {error_message}
                 </Text>
               </Flex>
             ) : success ? (
@@ -161,7 +167,7 @@ export default function UserProfileEdit(): JSX.Element {
             ) : null}
           </Stack>
         </Flex>
-      ) : (
+      ) : isAuthenticated ? (
         <Flex
           h="900px"
           p="0"
@@ -187,7 +193,7 @@ export default function UserProfileEdit(): JSX.Element {
             <FormControl id="userName">
               <Stack direction={["column", "row"]} spacing={6}>
                 <Center>
-                  <Avatar size="xl" src="/img/sin_foto_perfil.png">
+                  <Avatar size="xl" src={user?.picture}>
                     <AvatarBadge
                       as={IconButton}
                       size="sm"
@@ -251,16 +257,20 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "blue.500",
                 }}
-                onClick={() => dispatch(changePassword({ email, password }))}
+                onClick={() => {
+                  dispatch(changePassword({ email, password }));
+                  setEmail("");
+                  setPassword("");
+                }}
               >
                 Confirmar
               </Button>
             </Stack>
-            {error ? (
+            {error_message ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error}
+                  {error_message}
                 </Text>
               </Flex>
             ) : success ? (
@@ -273,7 +283,7 @@ export default function UserProfileEdit(): JSX.Element {
             ) : null}
           </Stack>
         </Flex>
-      )}
+      ) : null}
     </>
   );
 }
