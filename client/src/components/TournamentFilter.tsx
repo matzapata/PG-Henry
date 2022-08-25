@@ -10,10 +10,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import {
-  fetchFilterTournaments,
-  fetchTournaments,
-} from "../redux/slices/tournamentThunk";
+import { fetchFilterTournaments } from "../redux/slices/tournamentThunk";
 
 function TournamentFilter(): JSX.Element {
   const [filter, setFilter] = useState({
@@ -48,6 +45,7 @@ function TournamentFilter(): JSX.Element {
 
   function handleFilter() {
     dispatch(fetchFilterTournaments(filter));
+    setCurrentPage(1);
   }
 
   function handleSubmit() {
@@ -66,14 +64,15 @@ function TournamentFilter(): JSX.Element {
   }
 
   function deleteFilter() {
-    dispatch(fetchTournaments());
     setFilter({
       stat: "",
       type: "",
-      sort: "",
+      sort: "asc",
       name: "",
       searchname: "",
     });
+    dispatch(fetchFilterTournaments(filter));
+    setCurrentPage(1);
   }
 
   return (

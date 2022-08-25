@@ -5,7 +5,7 @@ export const fetchTournaments = createAsyncThunk(
   "tournaments/fetchTournaments",
   async () => {
     const result = await api.get(
-      `${process.env.REACT_APP_API_URL}/tournaments?sort=asc`
+      `${process.env.REACT_APP_API_URL}/tournaments?sort=asc&page=1`
     );
     return result.data;
   }
@@ -24,9 +24,9 @@ export const fetchFilterTournaments = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/tournaments?${
         filters.type ? "type=" + filters.type : ""
       }&${filters.stat ? "status=" + filters.stat : ""}&${
-        filters.sort ? "sort=" + filters.sort : ""
+        filters.sort ? "sort=" + filters.sort : "asc"
       }&${filters.name ? "name=" + filters.name : ""}&${
-        filters.page ? "page=" + filters.page : ""
+        filters.page ? "page=" + filters.page : "1"
       }`
     );
     return result.data;
