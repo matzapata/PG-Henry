@@ -6,7 +6,6 @@ import {
   Flex,
   Stack,
   Input,
-  Image,
   Button,
   GridItem,
   FormControl,
@@ -19,11 +18,12 @@ type Match = {
   team_a_name: string;
   team_b_name: string;
   date: string;
+  stage: string;
 };
 
 type Team = {
   name: string;
-  shield: string;
+  shield_url: string;
   key: number;
 };
 type props = {
@@ -40,6 +40,7 @@ export default function MatchAdd(props: props): JSX.Element {
     team_a_name: "",
     team_b_name: "",
     date: "",
+    stage: "",
   });
 
   const cambiosEnInput = (
@@ -64,6 +65,7 @@ export default function MatchAdd(props: props): JSX.Element {
         team_b_name: input.team_b_name,
         date: input.date,
         key: input.key,
+        stage: input.stage,
       },
     ]);
     setInput({ ...input, key: input.key + 1 });
@@ -164,7 +166,7 @@ export default function MatchAdd(props: props): JSX.Element {
                     </Select>
                     <Input
                       type="date"
-                      name="matchDate"
+                      name="date"
                       value={input.date}
                       onChange={cambiosEnInput}
                     />
@@ -174,14 +176,26 @@ export default function MatchAdd(props: props): JSX.Element {
                         !equipos.length ||
                         input.team_a_name === input.team_b_name ||
                         input.team_a_name === "Equipo A" ||
-                        input.team_b_name === "Equipo B"
+                        input.team_b_name === "Equipo B" ||
+                        input.stage === ""
                           ? true
                           : false
                       }
                     >
                       Agregar
                     </Button>
+                    <Select name="stage" onChange={cambiosEnInput}>
+                      <option selected value="">
+                        Instacia
+                      </option>
+                      <option value={"FASEGROUP"}>FASEGROUP</option>
+                      <option value={"ROUNDOF32"}>ROUNDOF32</option>
+                      <option value={"QUARTERFINAL"}>QUARTERFINAL</option>
+                      <option value={"SEMIFINAL"}>SEMIFINAL</option>
+                      <option value={"FINAL"}>FINAL</option>
+                    </Select>
                   </Stack>
+
                   <FormErrorMessage>Partido inválido</FormErrorMessage>
                 </FormControl>
               </form>
@@ -211,6 +225,9 @@ export default function MatchAdd(props: props): JSX.Element {
                         </Text>
                         <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
                           {el.date}
+                        </Text>
+                        <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
+                          {el.stage}
                         </Text>
                       </Stack>
                       <Button value={el.key} onClick={quitarPartido}>
