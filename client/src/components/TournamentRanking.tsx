@@ -30,6 +30,7 @@ function TournamentRanking({ id }: { id: string }) {
       ))}
       <Box my="4">
         <Pagination
+          lastPage={tournamentRanking.lastPage}
           onPageChange={(page) => {
             dispatch(fetchTournamentRanking({ id, page, pageSize: 5 }));
           }}

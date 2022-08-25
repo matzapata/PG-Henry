@@ -36,6 +36,7 @@ export type InitialState = {
   tournaments: Tournament[];
   tournamentRanking: {
     page: number;
+    lastPage: number;
     ranking: TournamentRanking[] | null;
   };
   loading: boolean;
@@ -46,6 +47,7 @@ const initialState: InitialState = {
   tournaments: [],
   tournamentRanking: {
     page: 1,
+    lastPage: 1,
     ranking: null,
   },
   tournamentDetail: null,
@@ -114,6 +116,7 @@ const tournamentSlice = createSlice({
     builder.addCase(fetchTournamentRanking.rejected, (state) => {
       state.tournamentRanking = {
         page: 1,
+        lastPage: 1,
         ranking: null,
       };
     });

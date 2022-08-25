@@ -99,16 +99,20 @@ router.get(
 
     if (id === undefined) return res.status(400).send("Missing parameters");
 
-    const ranking = await prisma.userTournament.findMany({
-      where: { tournament_id: id },
-      include: { user: { select: { full_name: true, username: true } } },
-      orderBy: { score: "desc" },
-      take: pageSize,
-      skip: pageSize * (page - 1),
-    });
+    const [ranking, participantsCount] = await prisma.$transaction([
+      prisma.userTournament.findMany({
+        where: { tournament_id: id },
+        include: { user: { select: { full_name: true, username: true } } },
+        orderBy: { score: "desc" },
+        take: pageSize,
+        skip: pageSize * (page - 1),
+      }),
+      prisma.userTournament.count({ where: { tournament_id: id } }),
+    ]);
 
     res.send({
       page,
+      lastPage: Math.ceil(participantsCount / pageSize),
       ranking: ranking.map((ut) => {
         return {
           score: ut.score,
