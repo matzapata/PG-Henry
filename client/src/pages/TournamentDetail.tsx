@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import TournamentDetailHeader from "../components/TournamentDetailHeader";
 import NavBar from "../components/NavBar";
 import { Box } from "@chakra-ui/react";
+import TournamentRanking from "../components/TournamentRanking";
 
 function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +13,7 @@ function TournamentDetail() {
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
+        <TournamentRanking id={id} />
       </Box>
     </Box>
   );
