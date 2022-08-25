@@ -10,7 +10,8 @@ function Home() {
       h="950px"
       p="0"
       bgSize="cover"
-      bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+      bgImage="url('/img/landing-wallpaper.jpg')"
+      bgPosition="center"
     >
       <NavBar />
       <Carousel />
