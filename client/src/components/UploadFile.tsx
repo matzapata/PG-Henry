@@ -11,9 +11,8 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { getUserInfo } from "../redux/slices/userSlices";
+import { getUserInfo } from "../redux/slices/userThunk";
 import api from "../services/api";
 
 function UploadFiles(props: any) {
