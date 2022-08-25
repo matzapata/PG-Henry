@@ -31,7 +31,8 @@ function Mercadopago(): JSX.Element {
           <ModalHeader>Unete comprando con mercadopago!</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Te redireccionaremos a Mercadopago asi puedes realizar tu compra!
+            Te redireccionaremos a Mercadopago asi puedes realizar tu compra por
+            200 pesos argentinos!
           </ModalBody>
 
           <ModalFooter>

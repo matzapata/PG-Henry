@@ -13,7 +13,7 @@ async function PaymentService() {
         picture_url: "http://www.myapp.com/myimage.jpg",
         category_id: "category123",
         quantity: 1,
-        unit_price: 1,
+        unit_price: 200,
       },
     ],
     back_urls: {
