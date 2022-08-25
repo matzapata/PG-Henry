@@ -52,6 +52,36 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get(
+  "/:tournamentId/matches",
+  async (req: express.Request, res: express.Response) => {
+    const { tournamentId } = req.params;
+    const { stage } = req.query;
+
+    try {
+      const tournament = await prisma.tournament.findUnique({
+        where: {
+          id: tournamentId,
+        },
+      });
+
+      if (tournament) {
+        const result = await prisma.matches.findMany({
+          where: {
+            tournament_id: tournamentId,
+            stage: stage as MatchStage,
+          },
+        });
+        res.status(200).send(result);
+      } else {
+        throw new Error("No existe el torneo");
+      }
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+);
+
 router.get("/:id", async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
   try {
@@ -121,15 +151,6 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
         .status(400)
         .send("Missing required parameters. When Teams create");
     } else {
-      /* const matchesPromises = matches.map(async (match: Match) => {
-        const newMatch = await db.matches.create({
-          data: { },
-        });
-        
-        return newMatch;
-      });
-      await Promise.all(matchesPromises); */
-
       const teamsPromises = teams.map(async (team: Team) => {
         const newTeam = await db.teams.create({
           data: { shield_url: team.shield_url, name: team.name },
@@ -177,4 +198,40 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
     res.status(400).send({ message: e.message });
   }
 });
+
+router.get(
+  "/:id/ranking",
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
+
+    if (id === undefined) return res.status(400).send("Missing parameters");
+
+    const [ranking, participantsCount] = await prisma.$transaction([
+      prisma.userTournament.findMany({
+        where: { tournament_id: id },
+        include: { user: { select: { full_name: true, username: true } } },
+        orderBy: { score: "desc" },
+        take: pageSize,
+        skip: pageSize * (page - 1),
+      }),
+      prisma.userTournament.count({ where: { tournament_id: id } }),
+    ]);
+
+    res.send({
+      page,
+      lastPage: Math.ceil(participantsCount / pageSize),
+      ranking: ranking.map((ut) => {
+        return {
+          score: ut.score,
+          full_name: ut.user.full_name,
+          username: ut.user.username,
+        };
+      }),
+    });
+  }
+);
+
 export default router;

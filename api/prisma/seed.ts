@@ -62,6 +62,7 @@ function createUserTournament(
 ) {
   return {
     user: { connect: { id: userId } },
+    score: faker.datatype.number({ min: 0, max: 50 }),
     winner: { connect: { id: winnerTeamId } },
     tournament: { connect: { id: tournamentId } },
   };

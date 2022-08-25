@@ -3,7 +3,14 @@ import {
   fetchTournaments,
   fetchFilterTournaments,
   fetchTournamentDetail,
+  fetchTournamentRanking,
 } from "./tournamentThunk";
+
+export type TournamentRanking = {
+  score: number;
+  full_name: string;
+  username: string;
+};
 
 export type Tournament = {
   id: string;
@@ -27,13 +34,23 @@ export type TournamentDetail = {
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
   tournaments: Tournament[];
+  tournamentRanking: {
+    page: number;
+    lastPage: number;
+    ranking: TournamentRanking[] | null;
+  };
   loading: boolean;
   error: string;
 };
 
 const initialState: InitialState = {
-  tournamentDetail: null,
   tournaments: [],
+  tournamentRanking: {
+    page: 1,
+    lastPage: 1,
+    ranking: null,
+  },
+  tournamentDetail: null,
   loading: false,
   error: "",
 };
@@ -90,6 +107,18 @@ const tournamentSlice = createSlice({
     builder.addCase(fetchTournamentDetail.rejected, (state) => {
       state.loading = false;
       state.tournamentDetail = null;
+    });
+
+    // Fetch tournament ranking
+    builder.addCase(fetchTournamentRanking.fulfilled, (state, action) => {
+      state.tournamentRanking = action.payload;
+    });
+    builder.addCase(fetchTournamentRanking.rejected, (state) => {
+      state.tournamentRanking = {
+        page: 1,
+        lastPage: 1,
+        ranking: null,
+      };
     });
   },
 });
