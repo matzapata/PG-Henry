@@ -8,7 +8,7 @@ type InitialState = {
   error: string;
 };
 
-const initialState = {
+const initialState: InitialState = {
   token: null,
   decoded: null,
   loading: false,
