@@ -8,6 +8,49 @@ import { JwtPayload } from "jsonwebtoken";
 
 const router: express.Router = express.Router();
 
+router.get(
+  "/tournaments",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    const userId = req.user.id;
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
+
+    try {
+      const [tournaments, tournamentsCount] = await prisma.$transaction([
+        db.userTournament.findMany({
+          where: { user_id: userId },
+          include: {
+            tournament: {
+              select: { name: true, logo_url: true, status: true },
+            },
+          },
+          take: pageSize,
+          skip: pageSize * (page - 1),
+        }),
+        prisma.userTournament.count({ where: { user_id: userId } }),
+      ]);
+
+      res.send({
+        page,
+        lastPage: Math.ceil(tournamentsCount / pageSize),
+        tournaments: tournaments.map((t) => {
+          return {
+            id: t.tournament_id,
+            score: t.score,
+            name: t.tournament.name,
+            logo_url: t.tournament.logo_url,
+            status: t.tournament.status,
+          };
+        }),
+      });
+    } catch (e: any) {
+      res.status(400).send({ msg: e.message });
+    }
+  }
+);
+
 router.put(
   "/:id/status",
   async (req: express.Request, res: express.Response) => {
