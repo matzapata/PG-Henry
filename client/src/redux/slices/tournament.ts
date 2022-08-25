@@ -69,7 +69,6 @@ const initialState: InitialState = {
     lastPage: 1,
     ranking: null,
   },
-  tournamentDetail: null,
   loading: false,
   error: "",
 };
@@ -139,6 +138,7 @@ const tournamentSlice = createSlice({
       state.loading = false;
       state.tournamentMatches = [];
       state.error = action.error.message || "Algo salio mal";
+    });
     // Fetch tournament ranking
     builder.addCase(fetchTournamentRanking.fulfilled, (state, action) => {
       state.tournamentRanking = action.payload;
