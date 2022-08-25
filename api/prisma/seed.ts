@@ -42,6 +42,8 @@ function createRandomUser() {
     is_active: faker.datatype.boolean(),
     is_banned: faker.datatype.boolean(),
     last_access: faker.date.recent(),
+    url_avatar: faker.image.avatar(),
+    alias_mp: fullName,
   };
 }
 
