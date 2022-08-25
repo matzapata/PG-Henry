@@ -59,23 +59,27 @@ router.get(
     const { stage } = req.query;
 
     try {
-      const tournament = await prisma.tournament.findUnique({
+      const result = await prisma.matches.findMany({
         where: {
-          id: tournamentId,
+          tournament_id: tournamentId,
+          stage: stage as MatchStage,
+        },
+        include: {
+          team_a: {
+            select: {
+              name: true,
+              shield_url: true,
+            },
+          },
+          team_b: {
+            select: {
+              name: true,
+              shield_url: true,
+            },
+          },
         },
       });
-
-      if (tournament) {
-        const result = await prisma.matches.findMany({
-          where: {
-            tournament_id: tournamentId,
-            stage: stage as MatchStage,
-          },
-        });
-        res.status(200).send(result);
-      } else {
-        throw new Error("No existe el torneo");
-      }
+      res.status(200).send(result);
     } catch (error) {
       res.status(400).send(error);
     }

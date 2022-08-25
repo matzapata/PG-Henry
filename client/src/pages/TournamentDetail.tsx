@@ -2,7 +2,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import TournamentDetailHeader from "../components/TournamentDetailHeader";
 import NavBar from "../components/NavBar";
-import { Box } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
+import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
 
 function TournamentDetail() {
@@ -13,6 +14,8 @@ function TournamentDetail() {
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
+        <Heading color="#F7F7F7">Partidos</Heading>
+        <TournamentMatches id={id} />
         <TournamentRanking id={id} />
       </Box>
     </Box>
