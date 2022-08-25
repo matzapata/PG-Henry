@@ -5,6 +5,7 @@ import NavBar from "../components/NavBar";
 import { Box, Heading } from "@chakra-ui/react";
 import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
+import Mercadopago from "../components/Mercadopago";
 
 function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +18,7 @@ function TournamentDetail() {
         <Heading color="#F7F7F7">Partidos</Heading>
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
+        <Mercadopago />
       </Box>
     </Box>
   );
