@@ -36,32 +36,35 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
-router.get("/:tournamentId/matches", async (req: express.Request, res: express.Response)=>{
-  const { tournamentId } = req.params
-  const { stage } = req.query
+router.get(
+  "/:tournamentId/matches",
+  async (req: express.Request, res: express.Response) => {
+    const { tournamentId } = req.params;
+    const { stage } = req.query;
 
-  try {
+    try {
       const tournament = await prisma.tournament.findUnique({
+        where: {
+          id: tournamentId,
+        },
+      });
+
+      if (tournament) {
+        const result = await prisma.matches.findMany({
           where: {
-            id: tournamentId
-          }
-      })
-        
-      if(tournament){
-          const result = await prisma.matches.findMany({
-              where: {
-              tournament_id: tournamentId ,     
-              stage: stage as MatchStage
-          }})
-          res.status(200).send(result)
-        }else{
-          throw new Error("No existe el torneo")
-        }
-        
-  } catch (error) {
-      res.status(400).send(error)
+            tournament_id: tournamentId,
+            stage: stage as MatchStage,
+          },
+        });
+        res.status(200).send(result);
+      } else {
+        throw new Error("No existe el torneo");
+      }
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
-})
+);
 
 router.get("/:id", async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
@@ -94,14 +97,24 @@ router.get(
 
     const ranking = await prisma.userTournament.findMany({
       where: { tournament_id: id },
-      include: { user: { select: { full_name: true } } },
+      include: { user: { select: { full_name: true, username: true } } },
       orderBy: { score: "desc" },
     });
+
+    let position = 1;
+    let prevPosScore = ranking[0].score;
+
     res.send(
       ranking.map((ut) => {
+        if (ut.score < prevPosScore) {
+          prevPosScore = ut.score;
+          position++;
+        }
         return {
+          position,
           score: ut.score,
-          user: ut.user.full_name,
+          full_name: ut.user.full_name,
+          username: ut.user.username,
         };
       })
     );

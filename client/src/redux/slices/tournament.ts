@@ -8,7 +8,9 @@ import {
 
 export type TournamentRanking = {
   score: number;
-  user: string;
+  full_name: string;
+  username: string;
+  position: number;
 };
 
 export type Tournament = {
@@ -33,7 +35,7 @@ export type TournamentDetail = {
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
   tournaments: Tournament[];
-  tournamentRanking: TournamentRanking[];
+  tournamentRanking: TournamentRanking[] | null;
   loading: boolean;
   error: string;
 };
@@ -105,7 +107,7 @@ const tournamentSlice = createSlice({
       state.tournamentRanking = action.payload;
     });
     builder.addCase(fetchTournamentRanking.rejected, (state) => {
-      state.tournamentDetail = null;
+      state.tournamentRanking = null;
     });
   },
 });

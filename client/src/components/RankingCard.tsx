@@ -1,7 +1,17 @@
 import React from "react";
 import { Flex, Text } from "@chakra-ui/react";
 
-function RankingCard({ score, user }: { score: number; user: string }) {
+function RankingCard({
+  score,
+  username,
+  fullName,
+  position,
+}: {
+  score: number;
+  username: string;
+  fullName: string;
+  position: number;
+}) {
   return (
     <Flex
       px="4"
@@ -12,7 +22,15 @@ function RankingCard({ score, user }: { score: number; user: string }) {
       bg="secondary"
       justifyContent="space-between"
     >
-      <Text>{user}</Text>
+      <Flex>
+        <Text mr="3">{position}</Text>
+        <Flex flexDir="column">
+          <Text>{fullName}</Text>
+          <Text fontSize="sm" color="gray.300">
+            {username}
+          </Text>
+        </Flex>
+      </Flex>
       <Text>{score}</Text>
     </Flex>
   );

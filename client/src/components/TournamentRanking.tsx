@@ -23,8 +23,14 @@ function TournamentRanking({ id }: { id: string }) {
       <Heading mb="4" mt="8" size="md">
         Ranking del torneo
       </Heading>
-      {tournamentRanking.map((r, id) => (
-        <RankingCard key={id} score={r.score} user={r.user} />
+      {tournamentRanking?.map((r, id) => (
+        <RankingCard
+          key={id}
+          score={r.score}
+          fullName={r.full_name}
+          username={r.username}
+          position={r.position}
+        />
       ))}
     </Box>
   );
