@@ -5,6 +5,7 @@ import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
 import { verifyAccessToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
+import { token } from "morgan";
 
 const router: express.Router = express.Router();
 
@@ -82,6 +83,54 @@ router.put(
     } catch (err) {
       console.error(err);
       res.status(400).json({ error: "Ingresaste un mail incorrecto." });
+    }
+  }
+);
+
+router.get(
+  "/getprofileinfo",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const email = req.user.email;
+      const user = await db.user.findUnique({ where: { email } });
+      if (!user) return res.send("El usuario no existe");
+
+      const user_detail = {
+        id: user.id,
+        username: user.username,
+        full_name: user.full_name,
+        email: user.email,
+        is_admin: user.is_admin,
+        banned: user.is_banned,
+        avatar: user.url_avatar,
+        alias_mp: user.alias_mp,
+      };
+
+      return res.status(200).json(user_detail);
+    } catch (err: any) {
+      res.status(404).json({ msg: err.message });
+    }
+  }
+);
+
+router.put(
+  "/changeavatar",
+  async (req: express.Request, res: express.Response) => {
+    const { avatar, email, id } = req.body;
+    try {
+      const user = await db.user.findUnique({ where: { email } });
+      if (!user) return res.send("El usuario no existe");
+
+      if (email === user.email && id === user.id) {
+        const user_update = await db.user.update({
+          where: { id: id },
+          data: { url_avatar: avatar },
+        });
+        return res.status(200).send("Imagen cambiada exitosamente!");
+      }
+    } catch (err: any) {
+      res.status(404).json({ msg: err.message });
     }
   }
 );
