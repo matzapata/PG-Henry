@@ -4,7 +4,14 @@ import {
   fetchFilterTournaments,
   fetchTournamentDetail,
   fetchTournamentMatches,
+  fetchTournamentRanking,
 } from "./tournamentThunk";
+
+export type TournamentRanking = {
+  score: number;
+  full_name: string;
+  username: string;
+};
 
 export type Tournament = {
   id: string;
@@ -44,6 +51,11 @@ export type InitialState = {
   tournamentDetail: TournamentDetail | null;
   tournamentMatches: TournamentMatch[];
   tournaments: Tournament[];
+  tournamentRanking: {
+    page: number;
+    lastPage: number;
+    ranking: TournamentRanking[] | null;
+  };
   loading: boolean;
   error: string;
 };
@@ -52,6 +64,12 @@ const initialState: InitialState = {
   tournamentDetail: null,
   tournamentMatches: [],
   tournaments: [],
+  tournamentRanking: {
+    page: 1,
+    lastPage: 1,
+    ranking: null,
+  },
+  tournamentDetail: null,
   loading: false,
   error: "",
 };
@@ -121,6 +139,16 @@ const tournamentSlice = createSlice({
       state.loading = false;
       state.tournamentMatches = [];
       state.error = action.error.message || "Algo salio mal";
+    // Fetch tournament ranking
+    builder.addCase(fetchTournamentRanking.fulfilled, (state, action) => {
+      state.tournamentRanking = action.payload;
+    });
+    builder.addCase(fetchTournamentRanking.rejected, (state) => {
+      state.tournamentRanking = {
+        page: 1,
+        lastPage: 1,
+        ranking: null,
+      };
     });
   },
 });
