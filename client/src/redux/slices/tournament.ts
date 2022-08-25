@@ -24,6 +24,17 @@ export type TournamentDetail = {
   logo_url: string;
 };
 
+export type TournamentMatch = {
+  id: string,
+  score_a: number,
+  score_b: number,
+  date: string,
+  stage: string,
+  tournament_id: string,
+  team_a_id: string,
+  team_b_id: string
+};
+
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
   tournaments: Tournament[];

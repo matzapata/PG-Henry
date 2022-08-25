@@ -40,3 +40,13 @@ export const fetchTournamentDetail = createAsyncThunk(
     return response.data;
   }
 );
+
+export const fetchTournamentMatches = createAsyncThunk(
+  "tournaments/fetchTournamentMatches",
+  async (id:string, stage) => {
+    const result = await api.get(
+      `${process.env.REACT_APP_API_URL}/tournaments/${id}&${stage ? "stage=" + stage : ""}`
+    );
+    return result.data;
+  }
+);
