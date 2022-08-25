@@ -12,7 +12,7 @@ function Mercadopago(): JSX.Element {
 
   return (
     <Box>
-      <Button onClick={handleMP}>Mercadopago</Button>
+      <Button onClick={handleMP}>Unirse</Button>
     </Box>
   );
 }

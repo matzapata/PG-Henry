@@ -9,7 +9,7 @@ import Perfil from "./pages/Perfil";
 import { useAppDispatch } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
-import MercadopagoPage from "./pages/Mercadopago";
+import MercadopagoPage from "./components/Mercadopago";
 import PrivateRoute from "./utils/routePrivate";
 import TournamentCreate from "./pages/TournamentCreate";
 import TournamentDetailPage from "./pages/TournamentDetail";
