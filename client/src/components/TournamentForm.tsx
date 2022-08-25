@@ -16,96 +16,31 @@ import {
   InputLeftElement,
   NumberInput,
   NumberInputField,
-  GridItem,
-  FormErrorMessage,
+  Icon,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import { check } from "prettier";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+
 import { useHistory } from "react-router-dom";
 import TeamAdd from "./TeamAdd";
 import MatchAdd from "./MatchAdd";
-//import teamSlice from "../redux/slices/teamSlice";
+import { FaExclamationCircle } from "react-icons/fa";
+import api from "../services/api";
+import { useAppSelector } from "../redux/hooks";
 
-/*model Tournament {
-  id              String            @unique @default(uuid())
-  name            String            @unique
-  description     String
-  user_limit      Int
-  creator_id      User              @relation(fields: [creator_user_id], references: [id])
-  creator_user_id String
-  status          Status            @default(INCOMING)
-  type            TournamentType    @default(PUBLIC)
-  pool            Int               @default(0)
-  logo_url        String
-  stage           TournamentStage
-  tournament_id   User_Tournament[]
-  predictions_id  Predictions[]
-  matches_id      Matches[]
-}
-
-enum TournamentStage {
-  FASEGROUP
-  ROUNDOF32
-  ROUNDOF16
-  QUARTERFINAL
-  SEMIFINAL
-  FINAL
-}
-
-enum TournamentType {
-  PRIVATE
-  PUBLIC
-}
-
-enum Status {
-  INCOMING
-  INPROGRESS
-  CONCLUDED
-} 
-model Teams {
-  id         String    @unique @default(uuid())
-  name       String    @unique
-  shield_url String
-  id_team_a  Matches[] @relation("team_a")
-  id_team_b  Matches[] @relation("team_b")
-}
-
-model Matches {
-  id            String      @unique @default(uuid())
-  id_a          Teams       @relation(name: "team_a", fields: [team_a_id], references: [id])
-  team_a_id     String
-  id_b          Teams       @relation(name: "team_b", fields: [team_b_id], references: [id])
-  team_b_id     String
-  scores_a      Int
-  scores_b      Int
-  date          DateTime
-  tournament    Tournament  @relation(fields: [tournament_id], references: [id])
-  tournament_id String
-  match_id      Predictions[]
-
-  @@id([team_a_id, team_b_id])
-}
-
-*/
 type Inputs = {
   name: string;
   description: string;
   user_limit: number;
-  creator_user_id: number;
-  is_public: boolean;
+  creator_user_id: string;
   type: string;
   logo_url: string;
-  stage: string;
   password: string;
-
   teams: Team[];
   matches: Match[];
 };
 
 type Team = {
   name: string;
-  shield: string;
+  shield_url: string;
   key: number;
 };
 
@@ -114,23 +49,21 @@ type Match = {
   team_a_name: string;
   team_b_name: string;
   date: string;
+  stage: string;
 };
 
 export default function TournamentForm(): JSX.Element {
+  const userCreatorId = useAppSelector((state) => state.auth.decoded?.id);
   const history = useHistory();
-  //const currentTeams = useAppSelector((state) => state.teams);
-  const dispatch = useAppDispatch();
-  const [suma, setSuma] = useState(0);
+  const [CrearError, setCrearError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [input, setInput] = useState<Inputs>({
     name: "",
     description: "",
     user_limit: 0,
-    creator_user_id: 0,
-    is_public: true,
+    creator_user_id: "",
     type: "PUBLIC",
     logo_url: "",
-    stage: "",
     password: "",
     teams: [],
     matches: [],
@@ -152,7 +85,27 @@ export default function TournamentForm(): JSX.Element {
       [e.currentTarget.name]: e.currentTarget.value,
     });
   };
-
+  const cambiosENUser_Limit = (e: React.FormEvent<HTMLInputElement>) => {
+    setInput({
+      ...input,
+      [e.currentTarget.name]: Number(e.currentTarget.value),
+    });
+  };
+  const crear = async () => {
+    console.log("enviando...");
+    console.log(input);
+    try {
+      await api.post("/tournaments/create", {
+        ...input,
+        creator_user_id: userCreatorId,
+      });
+      //history.push("/torneos");
+      console.log("Envio completado");
+    } catch (e: any) {
+      setCrearError(e.response.data.message);
+    }
+  };
+  console.log(input);
   return (
     <Container>
       <Flex>
@@ -230,16 +183,34 @@ export default function TournamentForm(): JSX.Element {
                       name="user_limit"
                       value={input.user_limit}
                       placeholder="Cantidad máxima de usuarios"
-                      onChange={cambiosEnInput}
+                      onChange={cambiosENUser_Limit}
                     />
                   </NumberInput>
                 </InputGroup>
               </FormControl>
             </Flex>
+
+            <Input
+              type="text"
+              name="logo_url"
+              value={input.logo_url}
+              placeholder="URL logo"
+              onChange={cambiosEnInput}
+            />
+
             <TeamAdd cb={addTeam} />
 
             <MatchAdd cb={addMatch} equipos={input.teams} />
             <Box></Box>
+            {CrearError && (
+              <Flex mt="4" alignItems="center">
+                <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+                <Text as="span" color="red.500" fontWeight="500">
+                  {CrearError}
+                </Text>
+              </Flex>
+            )}
+            <Button onClick={crear}>Crear</Button>
           </Stack>
         </Box>
       </Flex>
