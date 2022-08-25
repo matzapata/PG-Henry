@@ -36,7 +36,7 @@ function Mercadopago(): JSX.Element {
 
           <ModalFooter>
             <Button onClick={handleMP} mr={3}>
-              Comprar
+              Ir a mercadopago
             </Button>
             <Button onClick={onClose} colorScheme="blue" mr={3}>
               Cerrar
