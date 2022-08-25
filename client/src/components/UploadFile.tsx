@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getUserInfo } from "../redux/slices/userSlices";
+import api from "../services/api";
 
 function UploadFiles(props: any) {
   const [imageSelected, setImageSelected] = useState("");
@@ -74,8 +75,8 @@ function UploadFiles(props: any) {
       setFileInputState("");
       setPreviewSource("");
       if (secure_url) {
-        await axios
-          .put("http://localhost:8080/api/users/changeavatar", {
+        await api
+          .put(`${props.url}`, {
             avatar: secure_url,
             email: user_detail.email,
             id: user_detail.id,

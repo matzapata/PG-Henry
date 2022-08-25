@@ -98,6 +98,7 @@ export default function UserProfileEdit(): JSX.Element {
                   <UploadFiles
                     funcion={"Cambiar Avatar"}
                     titulo={"Subir Imagen"}
+                    url={"/users/changeavatar"}
                   />
                 </Center>
               </Stack>
