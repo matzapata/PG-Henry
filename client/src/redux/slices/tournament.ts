@@ -34,14 +34,20 @@ export type TournamentDetail = {
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
   tournaments: Tournament[];
-  tournamentRanking: TournamentRanking[] | null;
+  tournamentRanking: {
+    page: number;
+    ranking: TournamentRanking[] | null;
+  };
   loading: boolean;
   error: string;
 };
 
 const initialState: InitialState = {
   tournaments: [],
-  tournamentRanking: [],
+  tournamentRanking: {
+    page: 1,
+    ranking: null,
+  },
   tournamentDetail: null,
   loading: false,
   error: "",
@@ -106,7 +112,10 @@ const tournamentSlice = createSlice({
       state.tournamentRanking = action.payload;
     });
     builder.addCase(fetchTournamentRanking.rejected, (state) => {
-      state.tournamentRanking = null;
+      state.tournamentRanking = {
+        page: 1,
+        ranking: null,
+      };
     });
   },
 });

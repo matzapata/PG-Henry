@@ -43,8 +43,21 @@ export const fetchTournamentDetail = createAsyncThunk(
 
 export const fetchTournamentRanking = createAsyncThunk(
   "tournaments/fetchTournamentRanking",
-  async (id: string) => {
-    const response = await api.get(`/tournaments/${id}/ranking`);
+  async ({
+    id,
+    page,
+    pageSize,
+  }: {
+    id: string;
+    page?: number;
+    pageSize?: number;
+  }) => {
+    const response = await api.get(`/tournaments/${id}/ranking`, {
+      params: {
+        page,
+        pageSize,
+      },
+    });
     return response.data;
   }
 );

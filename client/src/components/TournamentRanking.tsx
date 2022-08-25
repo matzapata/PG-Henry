@@ -2,6 +2,7 @@ import { Box, Heading } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { fetchTournamentRanking } from "../redux/slices/tournamentThunk";
+import Pagination from "./Pagination";
 import RankingCard from "./RankingCard";
 
 function TournamentRanking({ id }: { id: string }) {
@@ -11,19 +12,15 @@ function TournamentRanking({ id }: { id: string }) {
   );
 
   useEffect(() => {
-    dispatch(fetchTournamentRanking(id));
+    dispatch(fetchTournamentRanking({ id, page: 1, pageSize: 5 }));
   }, []);
-
-  useEffect(() => {
-    console.log(tournamentRanking);
-  }, [tournamentRanking]);
 
   return (
     <Box>
       <Heading mb="4" mt="8" size="md">
         Ranking del torneo
       </Heading>
-      {tournamentRanking?.map((r, id) => (
+      {tournamentRanking.ranking?.map((r, id) => (
         <RankingCard
           key={id}
           score={r.score}
@@ -31,6 +28,13 @@ function TournamentRanking({ id }: { id: string }) {
           username={r.username}
         />
       ))}
+      <Box my="4">
+        <Pagination
+          onPageChange={(page) => {
+            dispatch(fetchTournamentRanking({ id, page, pageSize: 5 }));
+          }}
+        />
+      </Box>
     </Box>
   );
 }

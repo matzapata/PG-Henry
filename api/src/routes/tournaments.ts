@@ -107,15 +107,16 @@ router.get(
       skip: pageSize * (page - 1),
     });
 
-    res.send(
-      ranking.map((ut) => {
+    res.send({
+      page,
+      ranking: ranking.map((ut) => {
         return {
           score: ut.score,
           full_name: ut.user.full_name,
           username: ut.user.username,
         };
-      })
-    );
+      }),
+    });
   }
 );
 
