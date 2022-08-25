@@ -28,11 +28,6 @@ import history from "../utils/history";
 import { signOut } from "../redux/slices/authThunk";
 import { FaExclamationCircle } from "react-icons/fa";
 
-type State = {
-  email: string;
-  password: string;
-};
-
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);

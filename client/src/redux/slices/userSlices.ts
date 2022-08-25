@@ -1,14 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 import api from "../../services/api";
-import { useHistory } from "react-router-dom";
 
 type ChangePassword = {
-  email: string;
-  password: string;
-};
-
-type ProfileInput = {
   email: string;
   password: string;
 };
