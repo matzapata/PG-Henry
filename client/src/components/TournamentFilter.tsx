@@ -178,7 +178,7 @@ function TournamentFilter(): JSX.Element {
         <Button
           onClick={nextPage}
           name="fowardbutton"
-          disabled={currentTournaments.tournaments.length < 9 ? true : false}
+          disabled={currentTournaments.tournaments.length < 10 ? true : false}
         >
           adelant
         </Button>
