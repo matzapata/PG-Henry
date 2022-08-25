@@ -14,7 +14,7 @@ import React, { useState, useEffect } from "react";
 
 type Team = {
   name: string;
-  shield: string;
+  shield_url: string;
   key: number;
 };
 
@@ -34,7 +34,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
     name: "",
-    shield: "",
+    shield_url: "",
     key: 0,
   });
 
@@ -55,9 +55,9 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       setTeams([
         ...teams,
 
-        { name: input.name, shield: input.shield, key: input.key },
+        { name: input.name, shield_url: input.shield_url, key: input.key },
       ]);
-      setInput({ name: "", shield: "", key: input.key + 1 });
+      setInput({ name: "", shield_url: "", key: input.key + 1 });
     }
   };
 
@@ -99,8 +99,8 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                     />
                     <Input
                       type="text"
-                      name="shield"
-                      value={input.shield}
+                      name="shield_url"
+                      value={input.shield_url}
                       placeholder="Escudo"
                       onChange={cambiosEnInput}
                     />
@@ -125,7 +125,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         margin="5px"
                       >
                         <Image
-                          src={el.shield}
+                          src={el.shield_url}
                           w="4rem"
                           h="4rem"
                           fit="cover"
