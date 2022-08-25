@@ -5,13 +5,8 @@ import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
 import { verifyAccessToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
-import { token } from "morgan";
 
 const router: express.Router = express.Router();
-
-router.get("/", (req: express.Request, res: express.Response) => {
-  res.send("User index");
-});
 
 router.put(
   "/:id/status",
@@ -68,7 +63,7 @@ router.put(
         email === req.user.email &&
         user.id === req.user.id
       ) {
-        const update_user = await db.user.update({
+        await db.user.update({
           where: {
             email: email,
           },
@@ -123,7 +118,7 @@ router.put(
       if (!user) return res.send("El usuario no existe");
 
       if (email === user.email && id === user.id) {
-        const user_update = await db.user.update({
+        await db.user.update({
           where: { id: id },
           data: { url_avatar: avatar },
         });
