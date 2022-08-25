@@ -11,12 +11,19 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { getUserInfo } from "../redux/slices/userSlices";
+import api from "../services/api";
 
 function UploadFiles(props: any) {
   const [imageSelected, setImageSelected] = useState("");
   const [fileInputState, setFileInputState] = useState("");
   const [previewSource, setPreviewSource] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useAppDispatch();
+  const user_detail: any = useAppSelector((state) => state.user.user_detail);
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
 
   const previewFile = (file: any) => {
     const reader: any = new FileReader();
@@ -38,9 +45,10 @@ function UploadFiles(props: any) {
     if (!imageSelected) return;
     const reader: any = new FileReader();
     reader.readAsDataURL(imageSelected);
-    reader.onloadend = () => {
+    reader.onloadend = async () => {
       uploadImage(reader.result);
     };
+
     reader.onerror = () => {
       console.error("Error subiendo el archivo!!");
     };
@@ -66,7 +74,16 @@ function UploadFiles(props: any) {
         });
       setFileInputState("");
       setPreviewSource("");
-      if (secure_url) console.log(secure_url);
+      if (secure_url) {
+        await api
+          .put(`${props.url}`, {
+            avatar: secure_url,
+            email: user_detail.email,
+            id: user_detail.id,
+          })
+          .then((r) => r.data)
+          .then((r) => console.log(r));
+      }
     } catch (err) {
       console.error(err);
     }
@@ -102,6 +119,7 @@ function UploadFiles(props: any) {
               onClose();
               setFileInputState("");
               setPreviewSource("");
+              if (isLoggedIn) dispatch(getUserInfo(null));
             }}
           />
           <ModalBody>
@@ -127,6 +145,7 @@ function UploadFiles(props: any) {
                     onClose();
                     setFileInputState("");
                     setPreviewSource("");
+                    if (isLoggedIn) dispatch(getUserInfo(null));
                   }}
                 >
                   Cerrar
