@@ -5,12 +5,10 @@ function RankingCard({
   score,
   username,
   fullName,
-  position,
 }: {
   score: number;
   username: string;
   fullName: string;
-  position: number;
 }) {
   return (
     <Flex
@@ -22,14 +20,11 @@ function RankingCard({
       bg="secondary"
       justifyContent="space-between"
     >
-      <Flex>
-        <Text mr="3">{position}</Text>
-        <Flex flexDir="column">
-          <Text>{fullName}</Text>
-          <Text fontSize="sm" color="gray.300">
-            {username}
-          </Text>
-        </Flex>
+      <Flex flexDir="column">
+        <Text>{fullName}</Text>
+        <Text fontSize="sm" color="gray.300">
+          {username}
+        </Text>
       </Flex>
       <Text>{score}</Text>
     </Flex>

@@ -93,25 +93,23 @@ router.get(
   "/:id/ranking",
   async (req: express.Request, res: express.Response) => {
     const { id } = req.params;
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
+
     if (id === undefined) return res.status(400).send("Missing parameters");
 
     const ranking = await prisma.userTournament.findMany({
       where: { tournament_id: id },
       include: { user: { select: { full_name: true, username: true } } },
       orderBy: { score: "desc" },
+      take: pageSize,
+      skip: pageSize * (page - 1),
     });
-
-    let position = 1;
-    let prevPosScore = ranking[0].score;
 
     res.send(
       ranking.map((ut) => {
-        if (ut.score < prevPosScore) {
-          prevPosScore = ut.score;
-          position++;
-        }
         return {
-          position,
           score: ut.score,
           full_name: ut.user.full_name,
           username: ut.user.username,

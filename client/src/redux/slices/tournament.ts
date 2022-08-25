@@ -10,7 +10,6 @@ export type TournamentRanking = {
   score: number;
   full_name: string;
   username: string;
-  position: number;
 };
 
 export type Tournament = {

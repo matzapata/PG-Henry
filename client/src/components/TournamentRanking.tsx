@@ -29,7 +29,6 @@ function TournamentRanking({ id }: { id: string }) {
           score={r.score}
           fullName={r.full_name}
           username={r.username}
-          position={r.position}
         />
       ))}
     </Box>
