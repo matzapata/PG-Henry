@@ -185,7 +185,7 @@ export default function TournamentForm(): JSX.Element {
     ) {
       let finalLogo_url = input.logo_url;
       if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
-      console.log("enviando...");
+      console.log(input.teams);
       try {
         const tournamentID = await api.post("/tournaments/create", {
           ...input,
@@ -194,7 +194,7 @@ export default function TournamentForm(): JSX.Element {
         });
         console.log(tournamentID);
         console.log("Envio completado");
-        history.push("/torneos/" + tournamentID.data.id);
+        history.push("/torneos/" + tournamentID.data);
       } catch (e: any) {
         setCrearError(e.response.data.message);
       }
@@ -205,7 +205,7 @@ export default function TournamentForm(): JSX.Element {
     console.log("RAYOS");
     actualizarMatches();
   }, [input.teams, input.matches]);
-  console.log(input.matches);
+  console.log(input);
   return (
     <Container>
       <Flex alignItems="center">
