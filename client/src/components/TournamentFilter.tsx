@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { SearchIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import {
   Input,
@@ -19,7 +19,7 @@ function TournamentFilter(): JSX.Element {
   const [filter, setFilter] = useState({
     stat: "",
     type: "",
-    sort: "",
+    sort: "asc",
     name: "",
     searchname: "",
   });
@@ -176,15 +176,15 @@ function TournamentFilter(): JSX.Element {
           name="backbutton"
           disabled={currentPage === 1 ? true : false}
         >
-          atra
+          <ArrowBackIcon />
         </Button>
         <Box bgColor="#4FBDBA">{currentPage}</Box>
         <Button
           onClick={nextPage}
           name="fowardbutton"
-          disabled={currentTournaments.tournaments.length < 9 ? true : false}
+          disabled={currentTournaments.tournaments.length < 10 ? true : false}
         >
-          adelant
+          <ArrowForwardIcon />
         </Button>
       </Stack>
     </Box>
