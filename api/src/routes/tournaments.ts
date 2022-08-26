@@ -197,7 +197,7 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
       }
     }
 
-    res.status(200).json(torneo);
+    res.status(200).json(torneo.id);
   } catch (e: any) {
     res.status(400).send({ message: e.message });
   }
