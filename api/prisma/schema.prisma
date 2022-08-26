@@ -80,9 +80,9 @@ model UserTournament {
 }
 
 model Teams {
-  id         String @unique @default(uuid())
-  name       String @unique
-  shield_url String
+  id         String  @unique @default(uuid())
+  name       String
+  shield_url String?
 
   id_team_a      Matches[]        @relation("team_a")
   id_team_b      Matches[]        @relation("team_b")
@@ -90,7 +90,7 @@ model Teams {
 }
 
 model Predictions {
-  id       String @unique @default(uuid())
+  id      String @unique @default(uuid())
   score_a Int
   score_b Int
 
@@ -105,11 +105,11 @@ model Predictions {
 }
 
 model Matches {
-  id       String     @unique @default(uuid())
+  id      String     @unique @default(uuid())
   score_a Int?
   score_b Int?
-  date     DateTime
-  stage    MatchStage
+  date    DateTime
+  stage   MatchStage
 
   tournament    Tournament    @relation(fields: [tournament_id], references: [id])
   tournament_id String
@@ -119,5 +119,5 @@ model Matches {
   team_b_id     String
   match_id      Predictions[]
 
-  @@id([team_a_id, team_b_id])
+  //@@id([team_a_id, team_b_id])
 }
