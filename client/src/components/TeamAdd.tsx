@@ -8,6 +8,8 @@ import {
   Image,
   Button,
   GridItem,
+  FormControl,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
@@ -24,13 +26,23 @@ const validateTeamNames = (teams: Team[], newName: string) => {
   });
 
   if (result.includes(true)) {
-    alert("ya existe");
+    alert("Ya existe un equipo con ese nombre.");
     return false;
   }
   return true;
 };
 
+const validateName = (input: Team, agregar = false) => {
+  let error = "";
+  if (!!input.name.length) error = "Completado";
+  if (agregar) {
+    if (error === "") error = "Campo Requerido";
+  }
+  return error;
+};
+
 export default function TeamAdd({ cb }: any): JSX.Element {
+  const [error, setError] = useState("");
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
     name: "",
@@ -48,16 +60,28 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       ...input,
       [e.currentTarget.name]: e.currentTarget.value,
     });
+    setError(
+      validateName({
+        ...input,
+        [e.currentTarget.name]: e.currentTarget.value,
+      })
+    );
   };
   const agregaEquipo = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateTeamNames(teams, input.name)) {
-      setTeams([
-        ...teams,
+    setError(validateName(input, true));
+    if (error === "Completado") {
+      if (validateTeamNames(teams, input.name)) {
+        let finalShield_url = input.shield_url;
+        if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
+        setTeams([
+          ...teams,
 
-        { name: input.name, shield_url: input.shield_url, key: input.key },
-      ]);
-      setInput({ name: "", shield_url: "", key: input.key + 1 });
+          { name: input.name, shield_url: finalShield_url, key: input.key },
+        ]);
+        setInput({ name: "", shield_url: "", key: input.key + 1 });
+        setError("");
+      }
     }
   };
 
@@ -72,6 +96,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
   useEffect(() => {
     cb(teams);
   }, [teams]);
+
   return (
     <div>
       <Container>
@@ -83,34 +108,43 @@ export default function TeamAdd({ cb }: any): JSX.Element {
             alignItems="center"
             justifyContent="space-between"
             p="20px"
-            backgroundColor="rgba(57,91,100,0.9)"
+            backgroundColor="rgba(57,70,100,0.9)"
           >
             <Stack spacing="9px">
               <Box>
                 <form onSubmit={agregaEquipo}>
                   <Text>Agregar Equipos</Text>
-                  <Stack direction="row" spacing={4}>
-                    <Input
-                      type="text"
-                      name="name"
-                      value={input.name}
-                      placeholder="Nombre"
-                      onChange={cambiosEnInput}
-                    />
-                    <Input
-                      type="text"
-                      name="shield_url"
-                      value={input.shield_url}
-                      placeholder="Escudo"
-                      onChange={cambiosEnInput}
-                    />
+                  <Stack direction="column" spacing={4}>
+                    <Stack direction="row" spacing={4}>
+                      <FormControl
+                        isInvalid={
+                          error === "Completado" || error === "" ? false : true
+                        }
+                      >
+                        <Input
+                          type="text"
+                          name="name"
+                          value={input.name}
+                          placeholder="Nombre"
+                          onChange={cambiosEnInput}
+                        />
+                        <FormErrorMessage>{error}</FormErrorMessage>
+                      </FormControl>
+                      <Input
+                        type="text"
+                        name="shield_url"
+                        value={input.shield_url}
+                        placeholder="Escudo"
+                        onChange={cambiosEnInput}
+                      />
+                    </Stack>
                     <Button type="submit">Agregar</Button>
                   </Stack>
                 </form>
 
                 {!!teams.length &&
                   teams.map((el) => (
-                    <Box key={el.key}>
+                    <Box key={el.key} display="Flex" flexDirection="row">
                       <GridItem
                         _hover={{
                           bgColor: "#04879C",
@@ -120,14 +154,17 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         backgroundColor="rgba(57,91,100,0.7)"
                         borderRadius="20px"
                         display={"flex"}
+                        justifyContent="space-between"
+                        alignItems="center"
                         p="5px"
-                        w="auto"
+                        w="100%"
                         margin="5px"
                       >
                         <Image
+                          className="image"
                           src={el.shield_url}
-                          w="4rem"
-                          h="4rem"
+                          w="3rem"
+                          h="3rem"
                           fit="cover"
                           borderRadius={"20px"}
                         />
