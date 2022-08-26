@@ -23,7 +23,9 @@ function Pagination({
       </Button>
       <Button
         onClick={() => setPage((page) => page + 1)}
-        disabled={lastPage ? page === lastPage : false}
+        disabled={
+          lastPage !== undefined ? page === lastPage || lastPage === 0 : false
+        }
       >
         Next
       </Button>
