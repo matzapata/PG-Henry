@@ -13,7 +13,6 @@ function Home() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
   const { isAuthenticated, user } = useAuth0();
   const dispatch = useAppDispatch();
-  const email: any = user?.email;
   const password: any = "test";
 
   useEffect(() => {
@@ -27,7 +26,6 @@ function Home() {
           password: password,
         })
       );
-      // dispatch(loginAuth0({ email, password, check: true }));
     }
   }, [isAuthenticated]);
 
