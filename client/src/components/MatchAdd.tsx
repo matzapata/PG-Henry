@@ -44,8 +44,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
       errors.teams = "Partido Inválido";
     }
   }
-  console.log(matches);
-  console.log(input);
+
   matches.map((match: Match) => {
     if (
       (match.team_a_name === input.team_a_name &&

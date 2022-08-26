@@ -185,15 +185,14 @@ export default function TournamentForm(): JSX.Element {
     ) {
       let finalLogo_url = input.logo_url;
       if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
-      console.log(input.teams);
+
       try {
         const tournamentID = await api.post("/tournaments/create", {
           ...input,
           creator_user_id: userCreatorId,
           logo_url: finalLogo_url,
         });
-        console.log(tournamentID);
-        console.log("Envio completado");
+
         history.push("/torneos/" + tournamentID.data);
       } catch (e: any) {
         console.log(e.response.data);
