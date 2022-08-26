@@ -30,11 +30,12 @@ type props = {
   cb: any;
   equipos: Team[];
 };
-function validate(input: Match, agregar = false) {
+function validate(input: Match, matches: Match[], agregar = false) {
   const errors = {
     teams: "",
     stage: "",
     date: "",
+    matches: "",
   };
   if (input.team_a_name != "Equipo A" && input.team_b_name != "Equipo B") {
     if (input.team_a_name !== input.team_b_name) {
@@ -43,6 +44,39 @@ function validate(input: Match, agregar = false) {
       errors.teams = "Partido Inválido";
     }
   }
+  console.log(matches);
+  console.log(input);
+  matches.map((match: Match) => {
+    if (
+      (match.team_a_name === input.team_a_name &&
+        match.team_b_name === input.team_b_name) ||
+      (match.team_a_name === input.team_b_name &&
+        match.team_b_name === input.team_a_name)
+    ) {
+      errors.matches =
+        "El partido entre " +
+        input.team_a_name +
+        " y " +
+        input.team_b_name +
+        " ya está programado.";
+    } else {
+      if (
+        match.team_a_name === input.team_a_name ||
+        match.team_b_name === input.team_a_name
+      ) {
+        errors.matches =
+          "El equipo " + input.team_a_name + " ya tiene un partido asignado.";
+      } else {
+        if (
+          match.team_b_name === input.team_b_name ||
+          match.team_b_name === input.team_a_name
+        )
+          errors.matches =
+            "El equipo " + input.team_b_name + " ya tiene un partido asignado.";
+      }
+    }
+  });
+
   if (!!input.stage.length) errors.stage = "Completado";
   if (!!input.date.length) errors.date = "Completado";
   if (agregar) {
@@ -67,6 +101,7 @@ export default function MatchAdd(props: props): JSX.Element {
     teams: "",
     stage: "",
     date: "",
+    matches: "",
   });
 
   const cambiosEnInput = (
@@ -80,20 +115,25 @@ export default function MatchAdd(props: props): JSX.Element {
       [e.currentTarget.name]: e.currentTarget.value,
     });
     setErrors(
-      validate({
-        ...input,
-        [e.currentTarget.name]: e.currentTarget.value,
-      })
+      validate(
+        {
+          ...input,
+          [e.currentTarget.name]: e.currentTarget.value,
+        },
+        matches
+      )
     );
   };
 
   const agregaPartido = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrors(validate(input, true));
+    const newErrors = validate(input, matches, true);
+    setErrors(newErrors);
     if (
-      errors.date === "Completado" &&
-      errors.stage === "Completado" &&
-      errors.teams === "Completado"
+      newErrors.date === "Completado" &&
+      newErrors.stage === "Completado" &&
+      newErrors.teams === "Completado" &&
+      newErrors.matches === ""
     ) {
       setMatches([
         ...matches,
@@ -281,6 +321,9 @@ export default function MatchAdd(props: props): JSX.Element {
                     >
                       Agregar
                     </Button>
+                    {errors.matches != "Completado" && (
+                      <Text color="red.500">{errors.matches}</Text>
+                    )}
                   </Stack>
 
                   <FormErrorMessage>Partido inválido</FormErrorMessage>

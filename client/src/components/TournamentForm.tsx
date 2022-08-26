@@ -220,6 +220,7 @@ export default function TournamentForm(): JSX.Element {
         >
           <Stack alignItems="center" spacing="9px">
             <Stack direction="row" spacing={4}>
+              {/* INPUT NAME */}
               <FormControl
                 isInvalid={
                   errors.name === "Completado" || errors.name === ""
@@ -236,6 +237,7 @@ export default function TournamentForm(): JSX.Element {
                 />
                 <FormErrorMessage>{errors.name}</FormErrorMessage>
               </FormControl>
+              {/* SELECT TYPE PRIVADO/PUBLICO */}
               <Select name="type" onChange={cambiosEnInput}>
                 <option value="PRIVATE">Privado</option>
                 <option value="PUBLIC" selected>
@@ -243,6 +245,7 @@ export default function TournamentForm(): JSX.Element {
                 </option>
               </Select>
             </Stack>
+            {/* CONTRASEÑA */}
             {input.type === "PRIVATE" && (
               <FormControl
                 isInvalid={
@@ -316,7 +319,9 @@ export default function TournamentForm(): JSX.Element {
                     onChange={cambiosENUser_Limit}
                   />
                 </NumberInput>
-                <FormErrorMessage>{errors.user_limit}</FormErrorMessage>
+                <FormErrorMessage fontSize="15px">
+                  {errors.user_limit}
+                </FormErrorMessage>
               </FormControl>
             </Flex>
             {/*  ///LOGO/// */}
@@ -327,7 +332,7 @@ export default function TournamentForm(): JSX.Element {
               placeholder="URL logo"
               onChange={cambiosEnInput}
             />
-
+            {/* AGREGAR EQUIPOS */}
             <TeamAdd cb={addTeam} />
             <Flex mt="4" alignItems="center">
               <FormControl
@@ -340,7 +345,7 @@ export default function TournamentForm(): JSX.Element {
                 <FormErrorMessage>{errors.teams}</FormErrorMessage>
               </FormControl>
             </Flex>
-
+            {/* AGREGAR PARTIDOS */}
             <MatchAdd cb={addMatch} equipos={input.teams} />
             <Flex mt="4" alignItems="center">
               <FormControl
@@ -357,7 +362,12 @@ export default function TournamentForm(): JSX.Element {
             {CrearError && (
               <Flex mt="4" alignItems="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
-                <Text as="span" color="red.500" fontWeight="500">
+                <Text
+                  as="span"
+                  color="red.500"
+                  fontWeight="500"
+                  fontSize="20px"
+                >
                   {CrearError}
                 </Text>
               </Flex>
