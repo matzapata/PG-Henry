@@ -4,5 +4,6 @@
         "outDir": "./build",
         "lib": ["ESNext", "DOM"],
         "strict": true 
-    }
+    },
+    "exclude": ["netlify", "prisma"]
 }

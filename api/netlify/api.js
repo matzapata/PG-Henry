@@ -1,4 +1,4 @@
-"use strict";
+/* eslint-disable @typescript-eslint/no-var-requires */
 const serverless = require("serverless-http");
 const router = require("../build/routes/index").default;
 const app = require("../build/app").default;
