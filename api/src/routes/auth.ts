@@ -122,4 +122,80 @@ router.get(
   }
 );
 
+router.post(
+  "/authlogin",
+  async (req: express.Request, res: express.Response) => {
+    const { username, full_name, email, avatar } = req.body;
+    if (!username || !full_name || !email || !avatar)
+      return res.send("Faltan parametros requeridos");
+    try {
+      const user: any = await db.user.findUnique({ where: { email } });
+      if (!user) {
+        const verification_token = crypto.randomBytes(32).toString("hex");
+        const user = await db.user.create({
+          data: {
+            email,
+            username,
+            full_name,
+            verification_token,
+            birth_date: new Date(),
+            password: bcrypt.hashSync("test", 8),
+            url_avatar: avatar,
+          },
+        });
+        const token = await signAccessToken({
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        });
+        return res.status(200).send({ user, token });
+      }
+
+      const token = await signAccessToken({
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      });
+
+      return res.status(200).send({ user, token });
+    } catch (err: any) {
+      res.status(404).json({ msg: err.message });
+    }
+  }
+);
+
+router.post(
+  "/auth0/signin",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { email, password } = req.body;
+      if ([email, password].includes(undefined))
+        return res.status(400).send("Missing required parameters.");
+
+      const user = await db.user.findUnique({ where: { email } });
+      if (!user)
+        return res.status(400).send({ message: "User not registered" });
+
+      const checkPassword = bcrypt.compareSync(password, user.password);
+      if (!checkPassword)
+        return res
+          .status(400)
+          .send({ message: "Email address or password invalid" });
+
+      const token = await signAccessToken({
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      });
+
+      res.status(200).send({
+        message: "Account login successful",
+        token,
+      });
+    } catch (e: any) {
+      res.send({ message: e.message });
+    }
+  }
+);
+
 export default router;

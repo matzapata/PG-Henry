@@ -31,17 +31,16 @@ import { FaExclamationCircle } from "react-icons/fa";
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-  let error = useAppSelector((state) => state.user.error);
+  let error_message = useAppSelector((state) => state.user.error);
   const success = useAppSelector((state) => state.user.message);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
   const user_detail = useAppSelector((state) => state.user.userDetail);
-  const userid = useAppSelector((state) => state.auth.decoded?.id);
+  const userid: any = useAppSelector((state) => state.auth.decoded?.id);
 
   function onDeleteUser() {
-    if (isLoggedIn)
-      dispatch(deleteActiveUser({ id: userid as string, is_active: true }));
+    if (isLoggedIn) dispatch(deleteActiveUser({ id: userid, is_active: true }));
     if (isLoggedIn) dispatch(signOut());
     else if (isAuthenticated) logout();
     history.push("/");
@@ -49,11 +48,13 @@ export default function UserProfileEdit(): JSX.Element {
 
   useEffect(() => {
     if (isLoggedIn) dispatch(getUserInfo(null));
+    if (isAuthenticated) dispatch(getUserInfo(null));
+
     if (success)
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-  }, [user_detail?.avatar, success]);
+  }, [user_detail.avatar, success]);
 
   return (
     <>
@@ -83,7 +84,7 @@ export default function UserProfileEdit(): JSX.Element {
             <FormControl id="userName">
               <Stack direction={["column", "row"]} spacing={6}>
                 <Center>
-                  <Avatar size="xl" src={user_detail?.avatar}>
+                  <Avatar size="xl" src={user_detail.avatar}>
                     <AvatarBadge
                       as={IconButton}
                       size="sm"
@@ -142,7 +143,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
-                  error = "";
+                  error_message = "";
                 }}
               >
                 Cancelar
@@ -177,11 +178,11 @@ export default function UserProfileEdit(): JSX.Element {
               </Button>
             </Stack>
 
-            {error ? (
+            {error_message ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error}
+                  {error_message}
                 </Text>
               </Flex>
             ) : success ? (
@@ -233,7 +234,11 @@ export default function UserProfileEdit(): JSX.Element {
                   </Avatar>
                 </Center>
                 <Center w="full">
-                  <Button w="full">Cambiar Imagen</Button>
+                  <UploadFiles
+                    funcion={"Cambiar Avatar"}
+                    titulo={"Subir Imagen"}
+                    url={"/users/changeavatar"}
+                  />
                 </Center>
               </Stack>
             </FormControl>
@@ -263,6 +268,7 @@ export default function UserProfileEdit(): JSX.Element {
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
+                disabled={true}
               />
             </FormControl>
             <Stack spacing={6} direction={["column", "row"]}>
@@ -273,7 +279,10 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "red.500",
                 }}
-                onClick={() => history.push("/")}
+                onClick={() => {
+                  history.push("/");
+                  error_message = "";
+                }}
               >
                 Cancelar
               </Button>
@@ -284,8 +293,8 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "blue.500",
                 }}
-                onClick={() => {
-                  dispatch(changePassword({ email, password }));
+                onClick={async () => {
+                  await dispatch(changePassword({ email, password }));
                   setEmail("");
                   setPassword("");
                 }}
@@ -306,11 +315,12 @@ export default function UserProfileEdit(): JSX.Element {
                 Eliminar Cuenta
               </Button>
             </Stack>
-            {error ? (
+
+            {error_message ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error}
+                  {error_message}
                 </Text>
               </Flex>
             ) : success ? (
