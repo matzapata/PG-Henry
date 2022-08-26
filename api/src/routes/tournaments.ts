@@ -162,6 +162,8 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
 
     if ([name, description, user_limit, type].includes(undefined))
       return res.status(400).send("Missing required parameters.");
+
+    ///////CHEQUEO DE EQUIPOS PREXISTENTES///////
     let encontrados: string[] = [];
     const teamsArray = teams.map(async (team: Team) => {
       const teamName = await db.teams.findUnique({
@@ -175,20 +177,43 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
     await Promise.all(teamsArray);
     if (!!encontrados.length) {
       if (encontrados.length === 1)
-        return res
-          .status(400)
-          .send({
-            message: "El equipo " + encontrados[0] + " ya está registrado.",
-          });
-      return res
-        .status(400)
-        .send({
-          message:
-            "Los equipos " + encontrados.toString() + " ya están registrados.",
+        return res.status(400).send({
+          message: "El equipo " + encontrados[0] + " ya está registrado.",
         });
+      return res.status(400).send({
+        message:
+          "Los equipos " + encontrados.toString() + " ya están registrados.",
+      });
     }
-
+    /////////CHEQUEO DE TORNEO PREXISTENTE///////////
     let torneo: any;
+    torneo = await db.tournament.findUnique({
+      where: { name },
+    });
+    if (torneo) {
+      return res.status(400).send({
+        message: "El nombre del torneo " + torneo.name + " ya está registrado.",
+      });
+    }
+    //////////CHEQUEO DE MATCHES PREXISTENTES///////////
+
+    /*   let MatchesFinded:string[]=[]
+    matches.map(async (match: Match) => {
+      const team_a = await prisma.teams.findUnique({
+        where: { name: match.team_a_name },
+      });
+      const team_b = await prisma.teams.findUnique({
+        where: { name: match.team_b_name },
+      });
+
+      
+        const findMatch = await db.matches.findFirst({
+          where: { team_a_id: team_a?.id, team_b_id: team_b?.id },
+        });
+        if(findMatch)MatchesFinded.push(team_a?.name+" y " +team_b?.name)
+      
+    }); */
+
     if (type === "PUBLIC") {
       torneo = await db.tournament.create({
         data: {
