@@ -1,12 +1,10 @@
 import {
-  Box,
-  Container,
-  Grid,
   Text,
   Stack,
   Input,
   IconButton,
   Button,
+  Heading,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
@@ -61,56 +59,56 @@ function PublicTournaments(): JSX.Element {
     });
   }
   return (
-    <Container maxW="100vw" h="950px" bgSize="cover" p="0">
-      <Box p="20px" backdropBrightness="0.5">
-        <Stack direction="row" spacing="5px">
-          <Input
-            name="searchname"
-            placeholder="Buscar torneo..."
-            value={filters.searchname}
-            color="#F7F7F7"
-            borderColor="#4FBDBA"
-            w="30%"
-            type="text"
-            onChange={handleInputChange}
-          />
-          <IconButton
-            aria-label="Search database"
-            bgColor="#4FBDBA"
-            icon={<SearchIcon />}
-            type="submit"
-            onClick={handleSubmit}
-          />
-          <Button
-            _hover={{
-              color: "#082032",
-            }}
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
-            size="md"
-            onClick={deleteFilter}
-          >
-            Cargar todos
-          </Button>
-        </Stack>
-      </Box>
+    <>
+      <Heading size="lg" color="text">
+        Torneos Publicos
+      </Heading>
+
+      <Stack direction="row" spacing="5px" my="4">
+        <Input
+          name="searchname"
+          placeholder="Buscar torneo..."
+          value={filters.searchname}
+          color="#F7F7F7"
+          borderColor="#4FBDBA"
+          w="30%"
+          type="text"
+          onChange={handleInputChange}
+        />
+        <IconButton
+          aria-label="Search database"
+          bgColor="#4FBDBA"
+          icon={<SearchIcon />}
+          type="submit"
+          onClick={handleSubmit}
+        />
+        <Button
+          _hover={{
+            color: "#082032",
+          }}
+          bgColor="#4FBDBA"
+          color="#F7F7F7"
+          size="md"
+          onClick={deleteFilter}
+        >
+          Cargar todos
+        </Button>
+      </Stack>
+
       {!currentTournamets.loading && currentTournamets.error ? (
         <Text>Error: {currentTournamets.error}</Text>
       ) : null}
-      <Grid templateColumns="repeat(3, 3fr)" gap={10} m="20px" pt="50px">
-        {currentTournamets.tournaments &&
-          currentTournamets.tournaments.map((el) => (
-            <TournamentCard
-              key={el.id}
-              id={el.id}
-              name={el.name}
-              status={el.status}
-              type={el.type}
-              logo={el.logo_url}
-            />
-          ))}
-      </Grid>
-    </Container>
+      {currentTournamets.tournaments?.map((el) => (
+        <TournamentCard
+          key={el.id}
+          id={el.id}
+          name={el.name}
+          status={el.status}
+          type={el.type}
+          logo={el.logo_url}
+        />
+      ))}
+    </>
   );
 }
 export default PublicTournaments;

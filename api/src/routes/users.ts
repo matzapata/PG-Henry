@@ -5,13 +5,52 @@ import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
 import { verifyAccessToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
-import { token } from "morgan";
 
 const router: express.Router = express.Router();
 
-router.get("/", (req: express.Request, res: express.Response) => {
-  res.send("User index");
-});
+router.get(
+  "/tournaments",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    const userId = req.user.id;
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
+
+    try {
+      const [tournaments, tournamentsCount] = await prisma.$transaction([
+        db.userTournament.findMany({
+          where: { user_id: userId },
+          include: {
+            tournament: {
+              select: { name: true, logo_url: true, status: true, type: true },
+            },
+          },
+          take: pageSize,
+          skip: pageSize * (page - 1),
+        }),
+        prisma.userTournament.count({ where: { user_id: userId } }),
+      ]);
+
+      res.send({
+        page,
+        lastPage: Math.ceil(tournamentsCount / pageSize),
+        tournaments: tournaments.map((t) => {
+          return {
+            id: t.tournament_id,
+            score: t.score,
+            name: t.tournament.name,
+            logo_url: t.tournament.logo_url,
+            status: t.tournament.status,
+            type: t.tournament.type,
+          };
+        }),
+      });
+    } catch (e: any) {
+      res.status(400).send({ msg: e.message });
+    }
+  }
+);
 
 router.put(
   "/:id/status",
@@ -68,7 +107,7 @@ router.put(
         email === req.user.email &&
         user.id === req.user.id
       ) {
-        const update_user = await db.user.update({
+        await db.user.update({
           where: {
             email: email,
           },
@@ -123,7 +162,7 @@ router.put(
       if (!user) return res.send("El usuario no existe");
 
       if (email === user.email && id === user.id) {
-        const user_update = await db.user.update({
+        await db.user.update({
           where: { id: id },
           data: { url_avatar: avatar },
         });

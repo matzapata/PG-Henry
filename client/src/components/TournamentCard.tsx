@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, GridItem, Image, Stack, Text } from "@chakra-ui/react";
+import { Flex, Image, Stack, Tag, Text } from "@chakra-ui/react";
 
 interface CardProps {
   id: string;
@@ -18,7 +18,7 @@ function TournamentCard({
   logo,
 }: CardProps): JSX.Element {
   return (
-    <GridItem
+    <Flex
       _hover={{
         bgColor: "#04879C",
       }}
@@ -26,33 +26,34 @@ function TournamentCard({
       transition="200ms ease"
       backgroundColor="rgba(57,91,100,0.7)"
       borderRadius="20px"
-      display={"flex"}
       p="5px"
       w="auto"
+      mb="2"
     >
-      <Image src={logo} w="10rem" h="10rem" fit="cover" borderRadius={"20px"} />
+      <Image
+        src={logo}
+        w="6rem"
+        h="6rem"
+        fit="cover"
+        mr="2"
+        borderRadius={"20px"}
+      />
       <Link to={`/torneos/${id}`}>
-        <Stack p="5px" spacing={3}>
-          <Text fontSize="30px" fontWeight="bold" color="#AEFEFF">
+        <Stack p="5px" spacing={2}>
+          <Text fontSize="2xl" fontWeight="bold" color="#AEFEFF">
             {name}
           </Text>
-          {status === "INPROGRESS" && (
-            <Text color="#F7F7F7">Status: En progreso</Text>
-          )}
-          {status === "CONCLUDED" && (
-            <Text color="#F7F7F7">Status: Finalizado</Text>
-          )}
-          {status === "INCOMING" && (
-            <Text color="#F7F7F7">Status: Proximamente</Text>
-          )}
-          {type === "PRIVATE" ? (
-            <Text color="#F7F7F7">Acceso: Privado</Text>
-          ) : (
-            <Text color="#F7F7F7">Acceso: Publico</Text>
-          )}
+          <Flex>
+            {status === "INPROGRESS" && <Tag mr="2">En progreso</Tag>}
+            {status === "CONCLUDED" && <Tag mr="2">Finalizado</Tag>}
+            {status === "INCOMING" && <Tag mr="2">Proximamente</Tag>}
+
+            {type === "PRIVATE" && <Tag>Privado</Tag>}
+            {type === "PUBLIC" && <Tag>Publico</Tag>}
+          </Flex>
         </Stack>
       </Link>
-    </GridItem>
+    </Flex>
   );
 }
 

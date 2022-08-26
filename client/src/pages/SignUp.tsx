@@ -164,16 +164,7 @@ function FormSignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrors(
-      validate(
-        {
-          ...input,
-          [e.currentTarget.name]: e.currentTarget.value,
-        },
-        true
-      )
-    );
-
+    setErrors(validate(input, true));
     if (
       errors.full_name === "Completado" &&
       errors.username === "Completado" &&

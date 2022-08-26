@@ -23,7 +23,7 @@ import {
   changePassword,
   deleteActiveUser,
   getUserInfo,
-} from "../redux/slices/userSlices";
+} from "../redux/slices/userThunk";
 import history from "../utils/history";
 import { signOut } from "../redux/slices/authThunk";
 import { FaExclamationCircle } from "react-icons/fa";
@@ -31,16 +31,17 @@ import { FaExclamationCircle } from "react-icons/fa";
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-  let error_message = useAppSelector((state) => state.user.error_message);
+  let error = useAppSelector((state) => state.user.error);
   const success = useAppSelector((state) => state.user.message);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
-  const user_detail = useAppSelector((state) => state.user.user_detail);
-  const userid: any = useAppSelector((state) => state.auth.decoded?.id);
+  const user_detail = useAppSelector((state) => state.user.userDetail);
+  const userid = useAppSelector((state) => state.auth.decoded?.id);
 
   function onDeleteUser() {
-    if (isLoggedIn) dispatch(deleteActiveUser({ id: userid, is_active: true }));
+    if (isLoggedIn)
+      dispatch(deleteActiveUser({ id: userid as string, is_active: true }));
     if (isLoggedIn) dispatch(signOut());
     else if (isAuthenticated) logout();
     history.push("/");
@@ -52,7 +53,7 @@ export default function UserProfileEdit(): JSX.Element {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-  }, [user_detail.avatar, success]);
+  }, [user_detail?.avatar, success]);
 
   return (
     <>
@@ -61,7 +62,7 @@ export default function UserProfileEdit(): JSX.Element {
           h="900px"
           p="0"
           bgSize="cover"
-          bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+          bgImage="url('/img/landing-wallpaper.jpg')"
           maxW={"100vw"}
           align={"center"}
           justify={"center"}
@@ -82,7 +83,7 @@ export default function UserProfileEdit(): JSX.Element {
             <FormControl id="userName">
               <Stack direction={["column", "row"]} spacing={6}>
                 <Center>
-                  <Avatar size="xl" src={user_detail.avatar}>
+                  <Avatar size="xl" src={user_detail?.avatar}>
                     <AvatarBadge
                       as={IconButton}
                       size="sm"
@@ -141,7 +142,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
-                  error_message = "";
+                  error = "";
                 }}
               >
                 Cancelar
@@ -176,11 +177,11 @@ export default function UserProfileEdit(): JSX.Element {
               </Button>
             </Stack>
 
-            {error_message ? (
+            {error ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error_message}
+                  {error}
                 </Text>
               </Flex>
             ) : success ? (
@@ -198,7 +199,7 @@ export default function UserProfileEdit(): JSX.Element {
           h="900px"
           p="0"
           bgSize="cover"
-          bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+          bgImage="url('/img/landing-wallpaper.jpg')"
           maxW={"100vw"}
           align={"center"}
           justify={"center"}
@@ -305,11 +306,11 @@ export default function UserProfileEdit(): JSX.Element {
                 Eliminar Cuenta
               </Button>
             </Stack>
-            {error_message ? (
+            {error ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error_message}
+                  {error}
                 </Text>
               </Flex>
             ) : success ? (

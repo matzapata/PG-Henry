@@ -33,10 +33,10 @@ function Carousel() {
         <Text>{selectedNew?.description}</Text>
       </Stack>
       <SimpleGrid columns={3} width="50%">
-        {news.map((e) => (
+        {news.map((e, id) => (
           <Box
+            key={id}
             onClick={() => setSelectedNew(e)}
-            key={e.image}
             bgImg={e.image}
             height="10%"
           >
