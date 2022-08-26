@@ -16,7 +16,7 @@ function TournamentFilter(): JSX.Element {
   const [filter, setFilter] = useState({
     stat: "",
     type: "",
-    sort: "",
+    sort: "asc",
     name: "",
     searchname: "",
   });
