@@ -21,7 +21,7 @@ function UploadFiles(props: any) {
   const [previewSource, setPreviewSource] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
-  const user_detail: any = useAppSelector((state) => state.user.user_detail);
+  const user_detail: any = useAppSelector((state) => state.user.userDetail);
   const isLoggedIn = useAppSelector((state) => state.auth.token);
 
   const previewFile = (file: any) => {

@@ -21,12 +21,12 @@ function RankingCard({
       justifyContent="space-between"
     >
       <Flex flexDir="column">
-        <Text>{fullName}</Text>
+        <Text color="text">{fullName}</Text>
         <Text fontSize="sm" color="gray.300">
           {username}
         </Text>
       </Flex>
-      <Text>{score}</Text>
+      <Text color="text">{score}</Text>
     </Flex>
   );
 }

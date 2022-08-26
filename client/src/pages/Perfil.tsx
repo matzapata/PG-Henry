@@ -36,7 +36,7 @@ export default function UserProfileEdit(): JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
-  const user_detail = useAppSelector((state) => state.user.user_detail);
+  const user_detail = useAppSelector((state) => state.user.userDetail);
   const userid = useAppSelector((state) => state.auth.decoded?.id);
 
   function onDeleteUser() {

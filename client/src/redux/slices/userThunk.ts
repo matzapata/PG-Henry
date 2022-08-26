@@ -26,7 +26,6 @@ export const getUserInfo = createAsyncThunk(
 export const changePassword = createAsyncThunk(
   "change/password",
   async (payload: ChangePassword, { rejectWithValue }) => {
-    console.log(payload);
     try {
       const response = await api.put("/users/changepsw", payload);
       return response.data.msg;
@@ -47,6 +46,18 @@ export const deleteActiveUser = createAsyncThunk(
       if (response.data.status === 200) return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const fetchUserTournaments = createAsyncThunk(
+  "user/fetchUserTournaments",
+  async (payload: void, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/users/tournaments");
+      return response.data;
+    } catch (e: any) {
+      return rejectWithValue(e.message);
     }
   }
 );

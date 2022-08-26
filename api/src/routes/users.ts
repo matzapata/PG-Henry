@@ -23,7 +23,7 @@ router.get(
           where: { user_id: userId },
           include: {
             tournament: {
-              select: { name: true, logo_url: true, status: true },
+              select: { name: true, logo_url: true, status: true, type: true },
             },
           },
           take: pageSize,
@@ -42,6 +42,7 @@ router.get(
             name: t.tournament.name,
             logo_url: t.tournament.logo_url,
             status: t.tournament.status,
+            type: t.tournament.type,
           };
         }),
       });

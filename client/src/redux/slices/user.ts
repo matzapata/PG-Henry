@@ -1,11 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { changePassword, getUserInfo } from "./userThunk";
+import { changePassword, fetchUserTournaments, getUserInfo } from "./userThunk";
+
+type UserTournament = {
+  id: string;
+  score: number;
+  name: string;
+  logo_url: string;
+  status: string;
+  type: string;
+};
 
 type InitialState = {
   loading: boolean;
   error: string;
   message: string;
-  user_detail: {
+  userDetail: {
     id: string;
     username: string;
     full_name: string;
@@ -15,13 +24,23 @@ type InitialState = {
     avatar: string;
     alias_mp: string;
   } | null;
+  userTournaments: {
+    page: number;
+    lastPage: number;
+    tournaments: UserTournament[];
+  };
 };
 
 const initialState: InitialState = {
   loading: false,
   error: "",
   message: "",
-  user_detail: null,
+  userDetail: null,
+  userTournaments: {
+    page: 1,
+    lastPage: 1,
+    tournaments: [],
+  },
 };
 
 const userSlice = createSlice({
@@ -35,12 +54,12 @@ const userSlice = createSlice({
     });
     builder.addCase(getUserInfo.fulfilled, (state, action) => {
       state.loading = false;
-      state.user_detail = action.payload;
+      state.userDetail = action.payload;
       state.error = "";
     });
     builder.addCase(getUserInfo.rejected, (state, action) => {
       state.loading = false;
-      state.user_detail = null;
+      state.userDetail = null;
       state.error = action.error.message || "Algo salio mal";
     });
 
@@ -55,8 +74,23 @@ const userSlice = createSlice({
     });
     builder.addCase(changePassword.rejected, (state) => {
       state.loading = false;
-      state.user_detail = null;
-      state.error = "Ingresaste un email incorrecto." || "Algo salio mal";
+      state.userDetail = null;
+      state.error = "Ingresaste un email incorrecto.";
+    });
+
+    // fetch user tournaments
+    builder.addCase(fetchUserTournaments.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournaments.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userTournaments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournaments.rejected, (state, action) => {
+      state.userTournaments = initialState.userTournaments;
+      state.error = action.payload as string;
     });
   },
 });
