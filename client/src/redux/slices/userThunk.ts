@@ -52,9 +52,17 @@ export const deleteActiveUser = createAsyncThunk(
 
 export const fetchUserTournaments = createAsyncThunk(
   "user/fetchUserTournaments",
-  async (payload: void, { rejectWithValue }) => {
+  async (
+    { page, pageSize }: { page?: number; pageSize?: number },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await api.get("/users/tournaments");
+      const response = await api.get("/users/tournaments", {
+        params: {
+          page,
+          pageSize,
+        },
+      });
       return response.data;
     } catch (e: any) {
       return rejectWithValue(e.message);

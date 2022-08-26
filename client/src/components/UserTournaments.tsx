@@ -11,7 +11,7 @@ function UserTournament() {
   const userTournaments = useAppSelector((state) => state.user.userTournaments);
 
   useEffect(() => {
-    dispatch(fetchUserTournaments());
+    dispatch(fetchUserTournaments({}));
   }, []);
 
   return (
@@ -42,9 +42,7 @@ function UserTournament() {
         ))}
       </Box>
       <Pagination
-        onPageChange={(page) => {
-          console.log(page);
-        }}
+        onPageChange={(page) => dispatch(fetchUserTournaments({ page }))}
         lastPage={userTournaments.lastPage}
       />
     </>
