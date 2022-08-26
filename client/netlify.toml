@@ -1,0 +1,5 @@
+[build]
+  command = "npm install && npm run build && cd ../api && npm install && npm run build"
+  functions = "../api/netlify"
+
+    
