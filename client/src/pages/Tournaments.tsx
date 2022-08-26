@@ -20,11 +20,7 @@ import Logo from "../components/Logo";
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
   const showingTournaments = currentTournamets.tournaments.slice(0, 9);
-  const dispatch = useAppDispatch();
   const history = useHistory();
-  useEffect(() => {
-    dispatch(fetchTournaments());
-  }, []);
 
   return (
     <Container
