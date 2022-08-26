@@ -172,7 +172,7 @@ export default function MatchAdd(props: props): JSX.Element {
   useEffect(() => {
     cb(matches);
   }, [matches]);
-  console.log(matches);
+
   return (
     <div>
       <Container>

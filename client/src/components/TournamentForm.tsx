@@ -196,16 +196,16 @@ export default function TournamentForm(): JSX.Element {
         console.log("Envio completado");
         history.push("/torneos/" + tournamentID.data);
       } catch (e: any) {
+        console.log(e.response.data);
         setCrearError(e.response.data.message);
       }
     }
   };
   useEffect(() => {
     setErrors(validate(input));
-    console.log("RAYOS");
     actualizarMatches();
   }, [input.teams, input.matches]);
-  console.log(input);
+
   return (
     <Container>
       <Flex alignItems="center">

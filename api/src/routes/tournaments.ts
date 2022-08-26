@@ -108,6 +108,44 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
     res.status(400).send({ message: e.message });
   }
 });
+/* 
+router.post("/create", async (req: express.Request, res: express.Response) => {
+  try {
+    const {
+      name,
+      description,
+      user_limit,
+      creator_user_id,
+      type,
+      logo_url,
+      password,
+      teams,
+      matches,
+    } = req.body;
+
+    if (
+      [name, description, user_limit, type, creator_user_id].includes(undefined)
+    )
+      return res.status(400).send("Missing required parameters.");
+    let torneo: any;
+
+    torneo = await db.tournament.create({
+      data: {
+        name,
+        description,
+        user_limit,
+        creator_user_id,
+        type,
+        logo_url,
+      },
+    });
+
+    res.status(200).json(torneo);
+  } catch (e: any) {
+    res.status(400).send({ message: e.message });
+  }
+}); */
+
 router.post("/create", async (req: express.Request, res: express.Response) => {
   try {
     const {
@@ -124,6 +162,32 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
 
     if ([name, description, user_limit, type].includes(undefined))
       return res.status(400).send("Missing required parameters.");
+    let encontrados: string[] = [];
+    const teamsArray = teams.map(async (team: Team) => {
+      const teamName = await db.teams.findUnique({
+        where: { name: team.name },
+      });
+      if (teamName) {
+        encontrados.push(teamName.name);
+      }
+      return teamName;
+    });
+    await Promise.all(teamsArray);
+    if (!!encontrados.length) {
+      if (encontrados.length === 1)
+        return res
+          .status(400)
+          .send({
+            message: "El equipo " + encontrados[0] + " ya está registrado.",
+          });
+      return res
+        .status(400)
+        .send({
+          message:
+            "Los equipos " + encontrados.toString() + " ya están registrados.",
+        });
+    }
+
     let torneo: any;
     if (type === "PUBLIC") {
       torneo = await db.tournament.create({
