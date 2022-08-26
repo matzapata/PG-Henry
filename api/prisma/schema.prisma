@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,43 +7,117 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ExtendedProfile {
-  id        Int    @id @default(autoincrement())
-  biography String
-  user      User   @relation(fields: [userId], references: [id])
-  userId    Int    @unique
-}
-
 model User {
-  id           Int              @id @default(autoincrement())
-  name         String?
-  email        String           @unique
-  profileViews Int              @default(0)
-  role         Role             @default(USER)
-  coinflips    Boolean[]
-  posts        Post[]
-  profile      ExtendedProfile?
+  id                 String   @unique @default(uuid())
+  username           String   @unique
+  full_name          String
+  email              String   @unique
+  password           String
+  birth_date         DateTime
+  alias_mp           String?  @unique
+  is_admin           Boolean  @default(false)
+  is_active          Boolean  @default(false)
+  is_banned          Boolean  @default(false)
+  last_access        DateTime @default(now())
+  verification_token String
+  url_avatar         String   @default("https://static.vecteezy.com/system/resources/previews/003/337/511/original/default-avatar-photo-placeholder-profile-icon-female-vector.jpg")
+
+  tournament_userid  UserTournament[]
+  predictions_userid Predictions[]
+  creator            Tournament[]
 }
 
-model Post {
-  id         Int        @id @default(autoincrement())
-  title      String
-  published  Boolean    @default(true)
-  author     User       @relation(fields: [authorId], references: [id])
-  authorId   Int
-  comments   Json?
-  views      Int        @default(0)
-  likes      Int        @default(0)
-  categories Category[]
+model Tournament {
+  id          String         @unique @default(uuid())
+  name        String         @unique
+  description String
+  user_limit  Int?
+  status      Status         @default(INCOMING)
+  type        TournamentType @default(PUBLIC)
+  password    String?
+  pool        Int            @default(0)
+  logo_url    String?
+
+  creator         User             @relation(fields: [creator_user_id], references: [id])
+  creator_user_id String
+  matches         Matches[]
+  predictions     Predictions[]
+  tournament      UserTournament[]
 }
 
-model Category {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  posts Post[]
+enum MatchStage {
+  FASEGROUP
+  ROUNDOF32
+  ROUNDOF16
+  QUARTERFINAL
+  SEMIFINAL
+  FINAL
 }
 
-enum Role {
-  USER
-  ADMIN
+enum TournamentType {
+  PRIVATE
+  PUBLIC
+}
+
+enum Status {
+  INCOMING
+  INPROGRESS
+  CONCLUDED
+}
+
+model UserTournament {
+  id    String @unique @default(uuid())
+  score Int    @default(0)
+
+  winner         Teams      @relation(fields: [winner_team_id], references: [id])
+  winner_team_id String
+  user           User       @relation(fields: [user_id], references: [id])
+  user_id        String
+  tournament     Tournament @relation(fields: [tournament_id], references: [id])
+  tournament_id  String
+
+  @@id([user_id, tournament_id])
+}
+
+model Teams {
+  id         String @unique @default(uuid())
+  name       String @unique
+  shield_url String
+
+  id_team_a      Matches[]        @relation("team_a")
+  id_team_b      Matches[]        @relation("team_b")
+  UserTournament UserTournament[]
+}
+
+model Predictions {
+  id       String @unique @default(uuid())
+  score_a Int
+  score_b Int
+
+  match         Matches    @relation(fields: [match_id], references: [id])
+  match_id      String
+  user          User       @relation(fields: [user_id], references: [id])
+  user_id       String
+  tournament    Tournament @relation(fields: [tournament_id], references: [id])
+  tournament_id String
+
+  @@id([user_id, tournament_id, match_id])
+}
+
+model Matches {
+  id       String     @unique @default(uuid())
+  score_a Int?
+  score_b Int?
+  date     DateTime
+  stage    MatchStage
+
+  tournament    Tournament    @relation(fields: [tournament_id], references: [id])
+  tournament_id String
+  team_a        Teams         @relation(name: "team_a", fields: [team_a_id], references: [id])
+  team_a_id     String
+  team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
+  team_b_id     String
+  match_id      Predictions[]
+
+  @@id([team_a_id, team_b_id])
 }
