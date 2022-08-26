@@ -27,7 +27,7 @@ function Home() {
           password: password,
         })
       );
-      // dispatch(loginAuth0({ email, password, check: true }));
+      dispatch(loginAuth0({ email, password, check: true }));
     }
   }, [isAuthenticated]);
 
