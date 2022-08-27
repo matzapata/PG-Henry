@@ -143,7 +143,6 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
-                  error = "";
                 }}
               >
                 Cancelar
@@ -178,11 +177,11 @@ export default function UserProfileEdit(): JSX.Element {
               </Button>
             </Stack>
 
-            {error_message ? (
+            {error ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error_message}
+                  {error}
                 </Text>
               </Flex>
             ) : success ? (
@@ -281,7 +280,6 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
-                  error = "";
                 }}
               >
                 Cancelar
@@ -319,7 +317,7 @@ export default function UserProfileEdit(): JSX.Element {
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error_message}
+                  {error}
                 </Text>
               </Flex>
             ) : success ? (
