@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  IconButton,
-  useBreakpointValue,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import Slider from "react-slick";
 import Review from "./Review";
@@ -33,7 +28,6 @@ export default function Carousel(props: any) {
       height={"500px"}
       width={"100%"}
       overflow={"hidden"}
-      //   bg={useColorModeValue("gray.100", "gray.700")}
       bg={"rgba(57,91,100,0.7)"}
       borderRadius="15px"
     >
@@ -74,7 +68,7 @@ export default function Carousel(props: any) {
       >
         <BiRightArrowAlt />
       </IconButton>
-      <Slider {...settings} ref={(slider) => setSlider(slider)}>
+      <Slider {...settings}>
         <Box>
           <Review
             title1={"Pagos Rapidos"}
