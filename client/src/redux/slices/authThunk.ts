@@ -6,7 +6,7 @@ import { HeadersDefaults } from "axios";
 import jwtDecode from "jwt-decode";
 
 type LoginPayload = {
-  email: string;
+  email: string | any;
   password: string;
   check?: boolean;
 };
@@ -67,13 +67,12 @@ export const createAuthAccount = createAsyncThunk(
   "create/auth0",
   async (payload: any, { rejectWithValue }) => {
     try {
-      const { email, username, full_name, avatar } = payload;
+      const { email, username, full_name } = payload;
       const response = await api
         .post(`/auth/authlogin`, {
           email: email,
           username: username,
           full_name: full_name,
-          avatar: avatar,
         })
         .then(async (r) => {
           const response2 = await api.post("/auth/auth0/signin", {

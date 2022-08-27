@@ -70,8 +70,10 @@ export default function NavBar() {
           </Button>
           <Button
             onClick={() => {
-              if (isLoggedIn) dispatch(signOut());
-              else if (isAuthenticated) logout();
+              if (isAuthenticated && isLoggedIn) {
+                logout();
+                dispatch(signOut());
+              } else if (isLoggedIn) dispatch(signOut());
             }}
             bgColor="#4FBDBA"
             color="#F7F7F7"
