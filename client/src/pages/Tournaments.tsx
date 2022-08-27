@@ -19,11 +19,8 @@ import Logo from "../components/Logo";
 
 function Tournaments(): JSX.Element {
   const currentTournamets = useAppSelector((state) => state.tournaments);
-  const dispatch = useAppDispatch();
+  const showingTournaments = currentTournamets.tournaments.slice(0, 9);
   const history = useHistory();
-  useEffect(() => {
-    dispatch(fetchTournaments());
-  }, []);
 
   return (
     <Container
@@ -81,7 +78,7 @@ function Tournaments(): JSX.Element {
       ) : null}
       <Grid templateColumns="repeat(3, 3fr)" gap={10} m="20px" pt="50px">
         {!currentTournamets.loading &&
-          currentTournamets.tournaments.map((el) => (
+          showingTournaments.map((el) => (
             <TournamentCard
               key={el.id}
               id={el.id}

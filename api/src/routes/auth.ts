@@ -125,8 +125,8 @@ router.get(
 router.post(
   "/authlogin",
   async (req: express.Request, res: express.Response) => {
-    const { username, full_name, email, avatar } = req.body;
-    if (!username || !full_name || !email || !avatar)
+    const { username, full_name, email } = req.body;
+    if (!username || !full_name || !email)
       return res.send("Faltan parametros requeridos");
     try {
       const user: any = await db.user.findUnique({ where: { email } });
@@ -140,7 +140,6 @@ router.post(
             verification_token,
             birth_date: new Date(),
             password: bcrypt.hashSync("test", 8),
-            url_avatar: avatar,
           },
         });
         const token = await signAccessToken({

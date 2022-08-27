@@ -43,8 +43,24 @@ export const fetchTournamentDetail = createAsyncThunk(
 
 export const fetchTournamentMatches = createAsyncThunk(
   "tournaments/fetchTournamentMatches",
-  async (id: string /* , stage */) => {
-    const result = await api.get(`/tournaments/${id}/matches?`);
+  async ({
+    id,
+    page,
+    pageSize,
+    stage,
+  }: {
+    id: string;
+    page?: number;
+    pageSize?: number;
+    stage?: string;
+  }) => {
+    const result = await api.get(`/tournaments/${id}/matches`, {
+      params: {
+        page,
+        pageSize,
+        stage,
+      },
+    });
     return result.data;
   }
 );
