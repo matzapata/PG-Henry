@@ -14,16 +14,18 @@ type InitialState = {
   loading: boolean;
   error: string;
   message: string;
-  userDetail: {
-    id: string;
-    username: string;
-    full_name: string;
-    email: string;
-    is_admin: boolean;
-    banned: boolean;
-    avatar: string;
-    alias_mp: string;
-  } | null;
+  userDetail:
+    | {
+        id: string;
+        username: string;
+        full_name: string;
+        email: string;
+        is_admin: boolean;
+        banned: boolean;
+        avatar: string;
+        alias_mp: string;
+      }
+    | any;
   userTournaments: {
     page: number;
     lastPage: number;
@@ -35,7 +37,7 @@ const initialState: InitialState = {
   loading: false,
   error: "",
   message: "",
-  userDetail: null,
+  userDetail: {},
   userTournaments: {
     page: 1,
     lastPage: 1,

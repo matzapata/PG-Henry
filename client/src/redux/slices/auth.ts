@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, refreshToken, signOut } from "./authThunk";
+import { login, loginAuth0, refreshToken, signOut } from "./authThunk";
 
 type InitialState = {
   token: null | string;
@@ -30,6 +30,22 @@ const authSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(login.rejected, (state, action) => {
+      state.token = null;
+      state.decoded = null;
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    // Login Auth0
+    builder.addCase(loginAuth0.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(loginAuth0.fulfilled, (state, action) => {
+      state.token = action.payload.token;
+      state.decoded = action.payload.decoded.payload;
+      state.loading = false;
+    });
+    builder.addCase(loginAuth0.rejected, (state, action) => {
       state.token = null;
       state.decoded = null;
       state.loading = false;

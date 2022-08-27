@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getUserInfo } from "../redux/slices/userThunk";
 import api from "../services/api";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function UploadFiles(props: any) {
   const [imageSelected, setImageSelected] = useState("");
@@ -23,6 +24,7 @@ function UploadFiles(props: any) {
   const dispatch = useAppDispatch();
   const user_detail: any = useAppSelector((state) => state.user.userDetail);
   const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const { isAuthenticated, logout } = useAuth0();
 
   const previewFile = (file: any) => {
     const reader: any = new FileReader();
@@ -119,6 +121,7 @@ function UploadFiles(props: any) {
               setFileInputState("");
               setPreviewSource("");
               if (isLoggedIn) dispatch(getUserInfo(null));
+              if (isAuthenticated) logout();
             }}
           />
           <ModalBody>
@@ -138,7 +141,7 @@ function UploadFiles(props: any) {
               )}
               <ModalFooter>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();
@@ -149,9 +152,7 @@ function UploadFiles(props: any) {
                 >
                   Cerrar
                 </Button>
-                <Button type="submit" variant="ghost">
-                  Subir Imagen
-                </Button>
+                <Button type="submit">Subir Imagen</Button>
               </ModalFooter>
             </form>
           </ModalBody>
