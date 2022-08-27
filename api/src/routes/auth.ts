@@ -12,8 +12,8 @@ const router: express.Router = express.Router();
 
 router.post("/signup", async (req: express.Request, res: express.Response) => {
   try {
-    const { username, full_name, birth_date, email, password } = req.body;
-    if ([username, full_name, birth_date, email, password].includes(undefined))
+    const { full_name, email, password } = req.body;
+    if ([full_name, email, password].includes(undefined))
       return res.status(400).send("Missing required parameters.");
 
     const hashedPassword = bcrypt.hashSync(password, 8);
@@ -21,10 +21,9 @@ router.post("/signup", async (req: express.Request, res: express.Response) => {
     const user = await db.user.create({
       data: {
         email,
-        username,
+        username: email.split("@")[0],
         full_name,
         verification_token,
-        birth_date: new Date(birth_date),
         password: hashedPassword,
       },
     });
