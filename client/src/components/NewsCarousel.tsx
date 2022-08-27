@@ -15,10 +15,10 @@ function Carousel() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/news")
+      .get("https://pg-henry-prode.netlify.app/data.json")
       .then((response) => {
-        setNews(response.data);
-        setSelectedNew(response.data[0]);
+        setNews(response.data.news);
+        setSelectedNew(response.data.news[0]);
       })
       .catch((error) => {
         console.log(error);
