@@ -37,11 +37,10 @@ export default function UserProfileEdit(): JSX.Element {
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
   const user_detail = useAppSelector((state) => state.user.userDetail);
-  const userid = useAppSelector((state) => state.auth.decoded?.id);
+  const userid: any = useAppSelector((state) => state.auth.decoded?.id);
 
   function onDeleteUser() {
-    if (isLoggedIn)
-      dispatch(deleteActiveUser({ id: userid as string, is_active: true }));
+    if (isLoggedIn) dispatch(deleteActiveUser({ id: userid, is_active: true }));
     if (isLoggedIn) dispatch(signOut());
     else if (isAuthenticated) logout();
     history.push("/");
@@ -144,6 +143,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
+                  error = "";
                 }}
               >
                 Cancelar
@@ -178,11 +178,11 @@ export default function UserProfileEdit(): JSX.Element {
               </Button>
             </Stack>
 
-            {error ? (
+            {error_message ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error}
+                  {error_message}
                 </Text>
               </Flex>
             ) : success ? (
@@ -281,6 +281,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
+                  error = "";
                 }}
               >
                 Cancelar
@@ -292,8 +293,8 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "blue.500",
                 }}
-                onClick={() => {
-                  dispatch(changePassword({ email, password }));
+                onClick={async () => {
+                  await dispatch(changePassword({ email, password }));
                   setEmail("");
                   setPassword("");
                 }}
@@ -314,12 +315,11 @@ export default function UserProfileEdit(): JSX.Element {
                 Eliminar Cuenta
               </Button>
             </Stack>
-
             {error ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
-                  {error}
+                  {error_message}
                 </Text>
               </Flex>
             ) : success ? (
