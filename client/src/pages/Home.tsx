@@ -1,13 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Container, Divider, Heading, Text } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import PublicTournaments from "../components/PublicTournament";
 import Carousel from "../components/NewsCarousel";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import UserTournaments from "../components/UserTournaments";
+import { useAuth0 } from "@auth0/auth0-react";
+import { createAuthAccount } from "../redux/slices/authThunk";
+import { loginAuth0 } from "../redux/slices/authThunk";
 
 function Home() {
-  const isAuthenticated = useAppSelector((state) => state.auth.token);
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const { isAuthenticated, user } = useAuth0();
+  const dispatch = useAppDispatch();
+  const email: any = user?.email;
+  const password: any = "test";
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(
+        createAuthAccount({
+          email: user?.email,
+          username: user?.name,
+          full_name: user?.name,
+          avatar: user?.picture,
+          password: password,
+        })
+      );
+      dispatch(loginAuth0({ email, password, check: true }));
+    }
+  }, [isAuthenticated]);
 
   return (
     <Container
@@ -52,7 +74,7 @@ function Home() {
           <Divider mt="5%" />
         </Box>
 
-        {isAuthenticated && (
+        {isLoggedIn && (
           <Box mt="8">
             <UserTournaments />
           </Box>

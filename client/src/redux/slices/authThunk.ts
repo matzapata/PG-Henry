@@ -62,3 +62,61 @@ export const refreshToken = createAsyncThunk("auth/refreshToken", async () => {
 export const signOut = createAsyncThunk("auth/signOut", async () => {
   removeToken();
 });
+
+export const createAuthAccount = createAsyncThunk(
+  "create/auth0",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const { email, username, full_name, avatar } = payload;
+      const response = await api
+        .post(`/auth/authlogin`, {
+          email: email,
+          username: username,
+          full_name: full_name,
+          avatar: avatar,
+        })
+        .then(async (r) => {
+          const response2 = await api.post("/auth/auth0/signin", {
+            email: r.data.user.email,
+            password: "test",
+            check: true,
+          });
+          api.defaults.headers = {
+            ...api.defaults.headers,
+            "x-access-token": r.data.token,
+          } as AxiosDefaultHeaders;
+          setToken(r.data.token);
+
+          return {
+            ...response2.data,
+            decoded: jwtDecode(response2.data.token),
+          };
+        });
+      return;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const loginAuth0 = createAsyncThunk(
+  "auth0/login",
+  async (payload: LoginPayload, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/auth0/signin", payload);
+      api.defaults.headers = {
+        ...api.defaults.headers,
+        "x-access-token": response.data.token,
+      } as AxiosDefaultHeaders;
+
+      if (payload.check) setToken(response.data.token);
+      history.push("/");
+      return {
+        ...response.data,
+        decoded: jwtDecode(response.data.token),
+      };
+    } catch (e: any) {
+      return rejectWithValue(e.response.data.message);
+    }
+  }
+);
