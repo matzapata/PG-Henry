@@ -53,15 +53,23 @@ router.get("/", async (req: express.Request, res: express.Response) => {
 });
 
 router.get(
-  "/:tournamentId/matches",
+  "/:id/matches",
   async (req: express.Request, res: express.Response) => {
-    const { tournamentId } = req.params;
-    const { stage } = req.query;
+    const { id } = req.params;
+    const stage = req.query.stage;
+
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
+
+    if (id === undefined) return res.status(400).send("Missing parameters");
 
     try {
       const result = await prisma.matches.findMany({
+        take: pageSize,
+        skip: pageSize * (page - 1),
         where: {
-          tournament_id: tournamentId,
+          tournament_id: id,
           stage: stage as MatchStage,
         },
         include: {
@@ -78,8 +86,14 @@ router.get(
             },
           },
         },
+        orderBy: { date: "asc" },
       });
-      res.status(200).send(result);
+      const count = await prisma.matches.count({
+        where: { tournament_id: id },
+      });
+      res
+        .status(200)
+        .send({ matches: result, lastPage: Math.ceil(count / pageSize) });
     } catch (error) {
       res.status(400).send(error);
     }
