@@ -13,22 +13,25 @@ function Home() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
   const { isAuthenticated, user } = useAuth0();
   const dispatch = useAppDispatch();
-  const email: any = user?.email;
   const password: any = "test";
 
   useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(
-        createAuthAccount({
-          email: user?.email,
-          username: user?.name,
-          full_name: user?.name,
-          avatar: user?.picture,
-          password: password,
-        })
-      );
-      dispatch(loginAuth0({ email, password, check: true }));
-    }
+    const logeo = async () => {
+      if (isAuthenticated) {
+        await dispatch(
+          createAuthAccount({
+            email: user?.email,
+            username: user?.nickname || user?.name,
+            full_name: user?.name,
+            password: password,
+          })
+        );
+        await dispatch(
+          loginAuth0({ email: user?.email, password, check: true })
+        );
+      }
+    };
+    logeo();
   }, [isAuthenticated]);
 
   return (
