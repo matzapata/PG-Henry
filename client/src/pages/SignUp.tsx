@@ -12,14 +12,13 @@ import {
   Avatar,
   Icon,
   Divider,
-  Image,
 } from "@chakra-ui/react";
 import { Link as ReactLink, useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../redux/hooks";
 import api from "../services/api";
 import { FaExclamationCircle } from "react-icons/fa";
-import { Auth0Client } from "@auth0/auth0-spa-js";
+import Auth0Button from "../components/Auth0SignInButton";
 
 interface Inputs {
   full_name: string;
@@ -125,23 +124,6 @@ function validate(input: Inputs, submit = false) {
 }
 
 function FormSignUp() {
-  const auth0 = new Auth0Client({
-    domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
-    client_id: process.env.REACT_APP_AUTH0_CLIENT_ID as string,
-    redirect_uri: process.env.REACT_APP_CLIENT_URL,
-  });
-
-  const auth0Login = async () => {
-    try {
-      await auth0?.loginWithRedirect();
-      const isAuth = await auth0.isAuthenticated();
-      const user = await auth0.getUser();
-      console.log(user, isAuth, "auth response");
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const history = useHistory();
   const isAuthenticated = useAppSelector((state) => state.auth.token);
   const [signUpError, setSignUpError] = useState("");
@@ -320,36 +302,11 @@ function FormSignUp() {
               <FormErrorMessage>{errors.passwordConfirm}</FormErrorMessage>
             </FormControl>
 
-            <Button
-              mt={4}
-              colorScheme="teal"
-              type="submit"
-              /* disabled={
-                errors.username === "Completado" &&
-                errors.username === "Completado" &&
-                errors.email === "Completado" &&
-                errors.birth_date === "Completado" &&
-                errors.password === "Completado" &&
-                errors.passwordConfirm === "Completado"
-                  ? false
-                  : true
-              } */
-            >
+            <Button mt={4} colorScheme="teal" type="submit">
               Crear cuenta
             </Button>
             <Divider />
-            <Button
-              type="button"
-              width="full"
-              display="flex"
-              colorScheme="gray"
-              border="1px"
-              borderColor="gray.300"
-              onClick={auth0Login}
-            >
-              <Image src="/img/auth0.png" alt="logo_auth0" width="50px" />
-              <span>Ingresar con Auth0</span>
-            </Button>
+            <Auth0Button />
             {signUpError && (
               <Flex mt="4" alignItems="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
