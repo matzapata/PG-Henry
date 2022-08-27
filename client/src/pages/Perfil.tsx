@@ -31,7 +31,7 @@ import { FaExclamationCircle } from "react-icons/fa";
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-  let error_message = useAppSelector((state) => state.user.error);
+  const error = useAppSelector((state) => state.user.error);
   const success = useAppSelector((state) => state.user.message);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -143,7 +143,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
-                  error_message = "";
+                  error = "";
                 }}
               >
                 Cancelar
@@ -155,8 +155,8 @@ export default function UserProfileEdit(): JSX.Element {
                 _hover={{
                   bg: "blue.500",
                 }}
-                onClick={async () => {
-                  await dispatch(changePassword({ email, password }));
+                onClick={() => {
+                  dispatch(changePassword({ email, password }));
                   setEmail("");
                   setPassword("");
                 }}
@@ -281,7 +281,7 @@ export default function UserProfileEdit(): JSX.Element {
                 }}
                 onClick={() => {
                   history.push("/");
-                  error_message = "";
+                  error = "";
                 }}
               >
                 Cancelar
@@ -315,8 +315,7 @@ export default function UserProfileEdit(): JSX.Element {
                 Eliminar Cuenta
               </Button>
             </Stack>
-
-            {error_message ? (
+            {error ? (
               <Flex mt="4" alignItems="center" justifyContent="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                 <Text as="span" color="red.500" fontWeight="500">
