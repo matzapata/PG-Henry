@@ -5,19 +5,20 @@ import history from "../../utils/history";
 import { HeadersDefaults } from "axios";
 import jwtDecode from "jwt-decode";
 
-type LoginPayload = {
-  email: string | any;
-  password: string;
-  check?: boolean;
-};
-
 interface AxiosDefaultHeaders extends HeadersDefaults {
   "x-access-token": string;
 }
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (payload: LoginPayload, { rejectWithValue }) => {
+  async (
+    payload: {
+      email: string;
+      password: string;
+      check: boolean;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.post("/auth/signin", payload);
       api.defaults.headers = {
@@ -63,53 +64,27 @@ export const signOut = createAsyncThunk("auth/signOut", async () => {
   removeToken();
 });
 
-export const createAuthAccount = createAsyncThunk(
-  "create/auth0",
-  async (payload: any, { rejectWithValue }) => {
-    try {
-      const { email, username, full_name } = payload;
-      const response = await api
-        .post(`/auth/authlogin`, {
-          email: email,
-          username: username,
-          full_name: full_name,
-        })
-        .then(async (r) => {
-          const response2 = await api.post("/auth/auth0/signin", {
-            email: r.data.user.email,
-            password: "test",
-            check: true,
-          });
-          api.defaults.headers = {
-            ...api.defaults.headers,
-            "x-access-token": r.data.token,
-          } as AxiosDefaultHeaders;
-          setToken(r.data.token);
-
-          return {
-            ...response2.data,
-            decoded: jwtDecode(response2.data.token),
-          };
-        });
-      return;
-    } catch (err: any) {
-      return rejectWithValue(err.response.data.message);
-    }
-  }
-);
-
 export const loginAuth0 = createAsyncThunk(
-  "auth0/login",
-  async (payload: LoginPayload, { rejectWithValue }) => {
+  "auth/loginAuth0",
+  async (
+    payload: {
+      username: string;
+      full_name: string;
+      email: string;
+      birth_date: string;
+      check: boolean;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await api.post("/auth/auth0/signin", payload);
+      const response = await api.post("/auth/auth0", payload);
       api.defaults.headers = {
         ...api.defaults.headers,
         "x-access-token": response.data.token,
       } as AxiosDefaultHeaders;
 
       if (payload.check) setToken(response.data.token);
-      history.push("/");
+
       return {
         ...response.data,
         decoded: jwtDecode(response.data.token),
