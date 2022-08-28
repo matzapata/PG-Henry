@@ -44,7 +44,24 @@ function validate(input: Match, matches: Match[], agregar = false) {
       errors.teams = "Partido Inválido";
     }
   }
+  const tiempoTranscurrido = Date.now();
+  const hoyN = new Date(tiempoTranscurrido);
 
+  const hoy = hoyN.toLocaleDateString();
+  const yyyy = Number(hoy.slice(5)).toString();
+
+  if (!!input.date.length) {
+    errors.date = "Completado";
+    if (!/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(input.date))
+      errors.date = " Fecha inválida";
+    const index = input.date.toString().indexOf("-");
+    if (
+      input.date.slice(0, index).length > 4 ||
+      input.date.slice(0, index) < yyyy
+    ) {
+      errors.date = " Año inválido";
+    }
+  }
   matches.map((match: Match) => {
     if (
       (match.team_a_name === input.team_a_name &&
@@ -77,7 +94,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
   });
 
   if (!!input.stage.length) errors.stage = "Completado";
-  if (!!input.date.length) errors.date = "Completado";
+
   if (agregar) {
     if (errors.teams === "") errors.teams = "Campo Requerido";
     if (errors.stage === "") errors.stage = "Campo Requerido";
@@ -151,7 +168,7 @@ export default function MatchAdd(props: props): JSX.Element {
     const newInputMatch = matches.filter((el) => {
       return el.key != e.target.value;
     });
-
+    setErrors(validate(input, newInputMatch, false));
     setMatches(newInputMatch);
   };
   const llenarSelect = (teams: Team[]) => {
@@ -174,7 +191,7 @@ export default function MatchAdd(props: props): JSX.Element {
     for (let i = 0; i < teams.length; i++) {
       const aTag = document.createElement("option");
       const aTag2 = document.createElement("option");
-      //Agrego un caractére alfabético en el nombre del atributo, por que no puede recivir solo números.
+
       aTag.setAttribute("a" + teams[i].key, teams[i].name);
       aTag2.setAttribute("b" + teams[i].key, teams[i].name);
 
@@ -211,7 +228,7 @@ export default function MatchAdd(props: props): JSX.Element {
   useEffect(() => {
     cb(matches);
   }, [matches]);
-
+  console.log(input);
   return (
     <div>
       <Container>
@@ -229,13 +246,7 @@ export default function MatchAdd(props: props): JSX.Element {
               <form onSubmit={agregaPartido}>
                 <Text>Agregar Partidos</Text>
 
-                <FormControl
-                /* isInvalid={
-                    input.team_a_name !== input.team_b_name || !equipos.length
-                      ? false
-                      : true
-                  } */
-                >
+                <FormControl>
                   <Stack direction="column" spacing={4}>
                     <FormControl
                       isInvalid={
@@ -306,20 +317,7 @@ export default function MatchAdd(props: props): JSX.Element {
                       </FormControl>
                     </Stack>
 
-                    <Button
-                      type="submit"
-                      /* disabled={
-                        !equipos.length ||
-                        input.team_a_name === input.team_b_name ||
-                        input.team_a_name === "Equipo A" ||
-                        input.team_b_name === "Equipo B" ||
-                        input.stage === ""
-                          ? true
-                          : false
-                      } */
-                    >
-                      Agregar
-                    </Button>
+                    <Button type="submit">Agregar</Button>
                     {errors.matches != "Completado" && (
                       <Text color="red.500">{errors.matches}</Text>
                     )}

@@ -122,43 +122,6 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
     res.status(400).send({ message: e.message });
   }
 });
-/* 
-router.post("/create", async (req: express.Request, res: express.Response) => {
-  try {
-    const {
-      name,
-      description,
-      user_limit,
-      creator_user_id,
-      type,
-      logo_url,
-      password,
-      teams,
-      matches,
-    } = req.body;
-
-    if (
-      [name, description, user_limit, type, creator_user_id].includes(undefined)
-    )
-      return res.status(400).send("Missing required parameters.");
-    let torneo: any;
-
-    torneo = await db.tournament.create({
-      data: {
-        name,
-        description,
-        user_limit,
-        creator_user_id,
-        type,
-        logo_url,
-      },
-    });
-
-    res.status(200).json(torneo);
-  } catch (e: any) {
-    res.status(400).send({ message: e.message });
-  }
-}); */
 
 router.post("/create", async (req: express.Request, res: express.Response) => {
   try {
@@ -210,23 +173,6 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
       });
     }
     //////////CHEQUEO DE MATCHES PREXISTENTES///////////
-
-    /*   let MatchesFinded:string[]=[]
-    matches.map(async (match: Match) => {
-      const team_a = await prisma.teams.findUnique({
-        where: { name: match.team_a_name },
-      });
-      const team_b = await prisma.teams.findUnique({
-        where: { name: match.team_b_name },
-      });
-
-      
-        const findMatch = await db.matches.findFirst({
-          where: { team_a_id: team_a?.id, team_b_id: team_b?.id },
-        });
-        if(findMatch)MatchesFinded.push(team_a?.name+" y " +team_b?.name)
-      
-    }); */
 
     if (type === "PUBLIC") {
       torneo = await db.tournament.create({
