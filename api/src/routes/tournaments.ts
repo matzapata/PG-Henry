@@ -27,7 +27,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
     const paginado = page ? pageN * 9 : 0;
 
     const result = await prisma.tournament.findMany({
-      take: 9,
+      take: 10,
       skip: paginado,
       where: {
         name: {
@@ -53,15 +53,23 @@ router.get("/", async (req: express.Request, res: express.Response) => {
 });
 
 router.get(
-  "/:tournamentId/matches",
+  "/:id/matches",
   async (req: express.Request, res: express.Response) => {
-    const { tournamentId } = req.params;
-    const { stage } = req.query;
+    const { id } = req.params;
+    const stage = req.query.stage;
+
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
+
+    if (id === undefined) return res.status(400).send("Missing parameters");
 
     try {
       const result = await prisma.matches.findMany({
+        take: pageSize,
+        skip: pageSize * (page - 1),
         where: {
-          tournament_id: tournamentId,
+          tournament_id: id,
           stage: stage as MatchStage,
         },
         include: {
@@ -78,8 +86,14 @@ router.get(
             },
           },
         },
+        orderBy: { date: "asc" },
       });
-      res.status(200).send(result);
+      const count = await prisma.matches.count({
+        where: { tournament_id: id },
+      });
+      res
+        .status(200)
+        .send({ matches: result, lastPage: Math.ceil(count / pageSize) });
     } catch (error) {
       res.status(400).send(error);
     }
@@ -108,6 +122,7 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
     res.status(400).send({ message: e.message });
   }
 });
+
 router.post("/create", async (req: express.Request, res: express.Response) => {
   try {
     const {
@@ -124,7 +139,41 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
 
     if ([name, description, user_limit, type].includes(undefined))
       return res.status(400).send("Missing required parameters.");
+
+    ///////CHEQUEO DE EQUIPOS PREXISTENTES///////
+    let encontrados: string[] = [];
+    const teamsArray = teams.map(async (team: Team) => {
+      const teamName = await db.teams.findUnique({
+        where: { name: team.name },
+      });
+      if (teamName) {
+        encontrados.push(teamName.name);
+      }
+      return teamName;
+    });
+    await Promise.all(teamsArray);
+    if (!!encontrados.length) {
+      if (encontrados.length === 1)
+        return res.status(400).send({
+          message: "El equipo " + encontrados[0] + " ya está registrado.",
+        });
+      return res.status(400).send({
+        message:
+          "Los equipos " + encontrados.toString() + " ya están registrados.",
+      });
+    }
+    /////////CHEQUEO DE TORNEO PREXISTENTE///////////
     let torneo: any;
+    torneo = await db.tournament.findUnique({
+      where: { name },
+    });
+    if (torneo) {
+      return res.status(400).send({
+        message: "El nombre del torneo " + torneo.name + " ya está registrado.",
+      });
+    }
+    //////////CHEQUEO DE MATCHES PREXISTENTES///////////
+
     if (type === "PUBLIC") {
       torneo = await db.tournament.create({
         data: {
@@ -197,7 +246,7 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
       }
     }
 
-    res.status(200).json(torneo);
+    res.status(200).json(torneo.id);
   } catch (e: any) {
     res.status(400).send({ message: e.message });
   }

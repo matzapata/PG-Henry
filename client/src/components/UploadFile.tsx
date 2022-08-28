@@ -11,9 +11,8 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { getUserInfo } from "../redux/slices/userSlices";
+import { getUserInfo } from "../redux/slices/userThunk";
 import api from "../services/api";
 
 function UploadFiles(props: any) {
@@ -22,7 +21,7 @@ function UploadFiles(props: any) {
   const [previewSource, setPreviewSource] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
-  const user_detail: any = useAppSelector((state) => state.user.user_detail);
+  const user_detail: any = useAppSelector((state) => state.user.userDetail);
   const isLoggedIn = useAppSelector((state) => state.auth.token);
 
   const previewFile = (file: any) => {
@@ -139,7 +138,7 @@ function UploadFiles(props: any) {
               )}
               <ModalFooter>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();
@@ -150,9 +149,7 @@ function UploadFiles(props: any) {
                 >
                   Cerrar
                 </Button>
-                <Button type="submit" variant="ghost">
-                  Subir Imagen
-                </Button>
+                <Button type="submit">Subir Imagen</Button>
               </ModalFooter>
             </form>
           </ModalBody>

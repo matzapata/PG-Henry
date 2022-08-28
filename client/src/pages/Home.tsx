@@ -3,8 +3,12 @@ import { Box, Container, Divider, Heading, Text } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import PublicTournaments from "../components/PublicTournament";
 import Carousel from "../components/NewsCarousel";
+import { useAppSelector } from "../redux/hooks";
+import UserTournaments from "../components/UserTournaments";
 
 function Home() {
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
+
   return (
     <Container
       maxW="100vw"
@@ -47,20 +51,14 @@ function Home() {
           </Text>
           <Divider mt="5%" />
         </Box>
-        <Box>
-          <Heading
-            fontSize={["2xl", "5xl"]}
-            fontWeight="800"
-            color="#F7F7F7"
-            textAlign="center"
-            my="4"
-            mt="5%"
-            borderRadius="20px"
-            opacity="95%"
-            backgroundColor="#082032"
-          >
-            Torneos Publicos
-          </Heading>
+
+        {isLoggedIn && (
+          <Box mt="8">
+            <UserTournaments />
+          </Box>
+        )}
+
+        <Box mt="10">
           <PublicTournaments />
         </Box>
       </Box>

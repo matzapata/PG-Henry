@@ -1,8 +1,13 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+// import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { ApiNew, New } from "../utils/newsInterfaces";
+interface New {
+  title: string;
+  link: string;
+  description: string;
+  image_url: string;
+}
 
 function Carousel() {
   const [news, setNews] = useState<New[]>([]);
@@ -10,34 +15,28 @@ function Carousel() {
 
   useEffect(() => {
     axios
-      .get(
-        `https://newsdata.io/api/1/news?apikey=${process.env.REACT_APP_NEWS_API_KEY}&category=sports&country=ar&language=es`
-      )
-      .then((response: AxiosResponse) => {
-        const dataMap = response.data.results.map((el: ApiNew) => {
-          return {
-            title: el.title,
-            link: el.link,
-            description: el.description,
-            image: el.image_url,
-          };
-        });
-        setNews(dataMap);
+      .get("https://pg-henry-prode.netlify.app/data.json")
+      .then((response) => {
+        setNews(response.data.news);
+        setSelectedNew(response.data.news[0]);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-  }, []);
+  }, [setNews]);
 
   return (
-    <Stack direction="row" height="50%" justifyContent="center">
-      <Stack bgImg={selectedNew?.image} bgSize="cover" width="65%">
+    <Stack direction="row" height="50%" justifyContent="center" mt={10}>
+      <Stack bgImg={selectedNew?.image_url} bgSize="cover" width="65%">
         <Heading>{selectedNew?.title}</Heading>
         <Text>{selectedNew?.description}</Text>
       </Stack>
       <SimpleGrid columns={3} width="50%">
-        {news.map((e) => (
+        {news.map((e, id) => (
           <Box
+            key={id}
             onClick={() => setSelectedNew(e)}
-            key={e.image}
-            bgImg={e.image}
+            bgImg={e.image_url}
             height="10%"
           >
             <Heading fontSize="5px">{e.title}</Heading>

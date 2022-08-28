@@ -49,7 +49,11 @@ export type Team = {
 
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
-  tournamentMatches: TournamentMatch[];
+  tournamentMatches: {
+    page: number;
+    lastPage: number;
+    matches: TournamentMatch[] | null;
+  };
   tournaments: Tournament[];
   tournamentRanking: {
     page: number;
@@ -62,7 +66,11 @@ export type InitialState = {
 
 const initialState: InitialState = {
   tournamentDetail: null,
-  tournamentMatches: [],
+  tournamentMatches: {
+    page: 1,
+    lastPage: 1,
+    matches: null,
+  },
   tournaments: [],
   tournamentRanking: {
     page: 1,
@@ -136,7 +144,11 @@ const tournamentSlice = createSlice({
     });
     builder.addCase(fetchTournamentMatches.rejected, (state, action) => {
       state.loading = false;
-      state.tournamentMatches = [];
+      state.tournamentMatches = {
+        page: 1,
+        lastPage: 1,
+        matches: null,
+      };
       state.error = action.error.message || "Algo salio mal";
     });
     // Fetch tournament ranking

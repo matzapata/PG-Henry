@@ -13,5 +13,4 @@ router.use("/tournaments", tournamentRouter);
 router.use("/mercadopago", mercadopagoRouter);
 router.use("/feedback", commentsRouter);
 
-
 export default router;

@@ -1,15 +1,12 @@
 import React from "react";
 import { Button, Flex, Text, Link, Box } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { signOut } from "../redux/slices/authThunk";
+import { useAppSelector } from "../redux/hooks";
 import Logo from "./Logo";
-import { useAuth0 } from "@auth0/auth0-react";
+import SignOutButton from "./SignOutButton";
 
 export default function NavBar() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-  const dispatch = useAppDispatch();
-  const { logout, isAuthenticated } = useAuth0();
 
   return (
     <Flex
@@ -31,7 +28,7 @@ export default function NavBar() {
         >
           ProdeMaster
         </Text>
-        {(isLoggedIn || isAuthenticated) && (
+        {isLoggedIn && (
           <>
             <Link
               color="#F7F7F7"
@@ -56,7 +53,7 @@ export default function NavBar() {
           Sobre Nosotros
         </Link>
       </Flex>
-      {isLoggedIn || isAuthenticated ? (
+      {isLoggedIn ? (
         <Box width="150px" display="flex" justifyContent="space-evenly">
           <Button
             as={ReactLink}
@@ -68,17 +65,7 @@ export default function NavBar() {
           >
             Perfil
           </Button>
-          <Button
-            onClick={() => {
-              if (isLoggedIn) dispatch(signOut());
-              else if (isAuthenticated) logout();
-            }}
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
-            size="md"
-          >
-            Salir
-          </Button>
+          <SignOutButton />
         </Box>
       ) : (
         <Box width="200px" display="flex" justifyContent="space-evenly">

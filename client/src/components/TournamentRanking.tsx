@@ -17,7 +17,7 @@ function TournamentRanking({ id }: { id: string }) {
 
   return (
     <Box>
-      <Heading mb="4" mt="8" size="md">
+      <Heading mb="4" mt="8" size="md" color="text">
         Ranking del torneo
       </Heading>
       {tournamentRanking.ranking?.map((r, id) => (
