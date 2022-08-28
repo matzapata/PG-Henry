@@ -228,7 +228,7 @@ export default function MatchAdd(props: props): JSX.Element {
   useEffect(() => {
     cb(matches);
   }, [matches]);
-  console.log(input);
+
   return (
     <Container p="0px">
       <Box

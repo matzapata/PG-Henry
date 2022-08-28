@@ -204,7 +204,6 @@ export default function TournamentForm(): JSX.Element {
     setErrors(validate(input));
     actualizarMatches();
   }, [input.teams, input.matches]);
-  console.log(input);
   return (
     <Container>
       <Flex alignItems="center">

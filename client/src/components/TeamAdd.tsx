@@ -74,7 +74,6 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       if (validateTeamNames(teams, input.name)) {
         let finalShield_url = input.shield_url;
         if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
-        console.log(finalShield_url);
         setTeams([
           ...teams,
 
