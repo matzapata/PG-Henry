@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getUserInfo } from "../redux/slices/userThunk";
 import api from "../services/api";
+import { getLogoA } from "../redux/slices/teamThunk";
 
 function UploadFiles(props: any) {
   const [imageSelected, setImageSelected] = useState("");
@@ -73,7 +74,7 @@ function UploadFiles(props: any) {
         });
       setFileInputState("");
       setPreviewSource("");
-      if (secure_url) {
+      if (secure_url && !props.asdf) {
         await api
           .put(`${props.url}`, {
             avatar: secure_url,
@@ -82,6 +83,8 @@ function UploadFiles(props: any) {
           })
           .then((r) => r.data)
           .then((r) => console.log(r));
+      } else if (secure_url && props.asdf) {
+        dispatch(getLogoA(secure_url));
       }
     } catch (err) {
       console.error(err);
@@ -118,7 +121,7 @@ function UploadFiles(props: any) {
               onClose();
               setFileInputState("");
               setPreviewSource("");
-              if (isLoggedIn) dispatch(getUserInfo(null));
+              if (isLoggedIn && !props.asdf) dispatch(getUserInfo(null));
             }}
           />
           <ModalBody>
@@ -144,7 +147,7 @@ function UploadFiles(props: any) {
                     onClose();
                     setFileInputState("");
                     setPreviewSource("");
-                    if (isLoggedIn) dispatch(getUserInfo(null));
+                    if (isLoggedIn && !props.asdf) dispatch(getUserInfo(null));
                   }}
                 >
                   Cerrar

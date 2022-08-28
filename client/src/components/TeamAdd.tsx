@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import UploadFiles from "./UploadFile";
 
 type Team = {
   name: string;
@@ -42,6 +44,7 @@ const validateName = (input: Team, agregar = false) => {
 };
 
 export default function TeamAdd({ cb }: any): JSX.Element {
+  const logo_a = useAppSelector((state) => state.team.logo_a);
   const [error, setError] = useState("");
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
@@ -67,12 +70,12 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       })
     );
   };
-  const agregaEquipo = (e: React.FormEvent<HTMLFormElement>) => {
+  const agregaEquipo = (e: React.FormEvent<HTMLFormElement> | any) => {
     e.preventDefault();
     setError(validateName(input, true));
     if (error === "Completado") {
       if (validateTeamNames(teams, input.name)) {
-        let finalShield_url = input.shield_url;
+        let finalShield_url = logo_a;
         if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
         console.log(finalShield_url);
         setTeams([
@@ -95,6 +98,10 @@ export default function TeamAdd({ cb }: any): JSX.Element {
   };
 
   useEffect(() => {
+    console.log(logo_a);
+  }, [logo_a]);
+
+  useEffect(() => {
     cb(teams);
   }, [teams]);
 
@@ -113,7 +120,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
           >
             <Stack spacing="9px">
               <Box>
-                <form onSubmit={agregaEquipo}>
+                <form>
                   <Text>Agregar Equipos</Text>
                   <Stack direction="column" spacing={4}>
                     <Stack direction="row" spacing={4}>
@@ -131,15 +138,16 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         />
                         <FormErrorMessage>{error}</FormErrorMessage>
                       </FormControl>
-                      <Input
+                      {/* <Input
                         type="text"
                         name="shield_url"
                         value={input.shield_url}
                         placeholder="Escudo"
                         onChange={cambiosEnInput}
-                      />
+                      /> */}
+                      <UploadFiles asdf={true} />
                     </Stack>
-                    <Button type="submit">Agregar</Button>
+                    <Button onClick={agregaEquipo}>Agregar</Button>
                   </Stack>
                 </form>
 
