@@ -25,6 +25,8 @@ model User {
   tournament_userid  UserTournament[]
   predictions_userid Predictions[]
   creator            Tournament[]
+  comments_userid    Comments?
+
 }
 
 model Tournament {
@@ -118,6 +120,12 @@ model Matches {
   team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
   team_b_id     String
   match_id      Predictions[]
+}
 
-  @@id([team_a_id, team_b_id])
+model Comments {
+  id          String @unique @default(uuid())
+  stars       Int  
+  comentaries String     
+  user        User   @relation(fields:[user_id], references:[id])
+  user_id     String @unique
 }
