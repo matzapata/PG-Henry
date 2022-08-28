@@ -7,7 +7,7 @@ import { Router } from "react-router-dom";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import { ChakraProvider } from "@chakra-ui/react";
-import chakraTheme from "./utils/chakraTheme";
+import chakraTheme from "./styles/chakraTheme";
 import history from "./utils/history";
 import { Auth0Provider } from "@auth0/auth0-react";
 
