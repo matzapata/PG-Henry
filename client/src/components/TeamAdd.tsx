@@ -10,6 +10,7 @@ import {
   GridItem,
   FormControl,
   FormErrorMessage,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
@@ -137,17 +138,12 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         />
                         <FormErrorMessage>{error}</FormErrorMessage>
                       </FormControl>
-                      {/* <Input
+                      <Input
                         type="text"
                         name="shield_url"
                         value={input.shield_url}
                         placeholder="Escudo"
                         onChange={cambiosEnInput}
-                      /> */}
-                      <UploadFiles
-                        imagen={true}
-                        funcion={"Subir Imagen"}
-                        titulo={"Imagen Personalizada Equipo"}
                       />
                     </Stack>
                     <Button onClick={agregaEquipo}>Agregar</Button>
