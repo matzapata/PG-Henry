@@ -1,9 +1,11 @@
 // import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
   Heading,
   HStack,
+  IconButton,
   SimpleGrid,
   Stack,
   Text,
@@ -35,35 +37,31 @@ function Carousel() {
   }, [setNews]);
 
   return (
-    <Flex
-      height="100%"
-      bgImg={selectedNew?.image_url}
-      bgSize="cover"
-      bgPos="center"
-      borderRadius={20}
-      alignItems="end"
-    >
-      {/* <VStack
+    <>
+      <Flex
+        height="100%"
         bgImg={selectedNew?.image_url}
         bgSize="cover"
         bgPos="center"
-        justifyContent="flex-end"
         borderRadius={20}
-      > */}
-      <Heading
-        fontSize="xl"
-        bgColor="cyan.50"
-        opacity="80%"
-        borderRadius={20}
-        p={2}
+        alignItems="end"
       >
-        {selectedNew?.title}
-        <Text fontSize="large" mt={2}>
-          {selectedNew?.description}
-        </Text>
-      </Heading>
-      {/* </VStack> */}
-      {/* <VStack>
+        <Box>
+          <Heading
+            fontSize="xl"
+            bgColor="cyan.50"
+            opacity="80%"
+            borderRadius={20}
+            p={2}
+          >
+            {selectedNew?.title}
+            <Text fontSize="large" mt={2}>
+              {selectedNew?.description}
+            </Text>
+          </Heading>
+        </Box>
+      </Flex>
+      <HStack>
         {news.map((e, id) => (
           <VStack
             key={id}
@@ -78,8 +76,8 @@ function Carousel() {
             <Text fontSize="xx-small">{e.description}</Text>
           </VStack>
         ))}
-      </VStack> */}
-    </Flex>
+      </HStack>
+    </>
   );
 }
 

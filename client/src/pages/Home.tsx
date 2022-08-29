@@ -117,6 +117,19 @@ function Home() {
           {/* <Divider mt="5%" /> */}
         </Box>
       </Flex>
+      <HStack
+        margin={"5%"}
+        alignItems="start"
+        spacing={10}
+        justifyContent="space-between"
+      >
+        <Box>
+          <PublicTournaments />
+        </Box>
+        <Box height="50vh" width={"50%"}>
+          {!isLoggedIn && <Carousel />}
+        </Box>
+      </HStack>
     </Container>
   );
 }
