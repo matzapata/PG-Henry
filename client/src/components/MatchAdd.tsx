@@ -84,8 +84,8 @@ function validate(input: Match, matches: Match[], agregar = false) {
           "El equipo " + input.team_a_name + " ya tiene un partido asignado.";
       } else {
         if (
-          match.team_b_name === input.team_b_name ||
-          match.team_b_name === input.team_a_name
+          match.team_a_name === input.team_b_name ||
+          match.team_b_name === input.team_b_name
         )
           errors.matches =
             "El equipo " + input.team_b_name + " ya tiene un partido asignado.";
