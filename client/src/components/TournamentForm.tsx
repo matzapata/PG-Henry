@@ -111,6 +111,7 @@ function validate(input: Inputs, submit = false) {
 export default function TournamentForm(): JSX.Element {
   const userCreatorId = useAppSelector((state) => state.auth.decoded?.id);
   const logoTorneo = useAppSelector((state) => state.team.logo_b);
+  const [logo, setLogo] = useState(logoTorneo);
   const history = useHistory();
   const [CrearError, setCrearError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -190,9 +191,14 @@ export default function TournamentForm(): JSX.Element {
       errors.teams === "Completado" &&
       errors.matches === "Completado"
     ) {
-      let finalLogo_url = logoTorneo;
+      /* let finalLogo_url = logoTorneo;
+      if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg"; */
+      let finalLogo_url = "";
+      if (logo != logoTorneo) {
+        setLogo(logoTorneo);
+        finalLogo_url = logoTorneo;
+      }
       if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
-
       try {
         const tournamentID = await api.post("/tournaments/create", {
           ...input,
@@ -212,6 +218,9 @@ export default function TournamentForm(): JSX.Element {
     actualizarMatches();
     setCrearError("");
   }, [input.teams, input.matches]);
+  useEffect(() => {
+    setLogo(logoTorneo);
+  }, []);
 
   return (
     <Container>
@@ -225,7 +234,6 @@ export default function TournamentForm(): JSX.Element {
           p="20px"
           rounded={"xl"}
           boxShadow={"lg"}
-          /* backgroundColor="rgba(57,91,100,0.98)" */
           bg={useColorModeValue("white", "gray.700")}
         >
           <Stack alignItems="space-between;" spacing="9px">
@@ -239,7 +247,7 @@ export default function TournamentForm(): JSX.Element {
                     (errors.user_limit === "Completado" ||
                       errors.user_limit === "") &&
                     (errors.password === "Completado" || errors.password === "")
-                      ? "black"
+                      ? "gray.400"
                       : "red.500"
                   }
                 >
@@ -248,7 +256,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.teams === "Completado" || errors.teams === ""
-                      ? "black"
+                      ? "gray.400"
                       : "red.500"
                   }
                 >
@@ -257,7 +265,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.matches === "Completado" || errors.matches === ""
-                      ? "black"
+                      ? "gray.400"
                       : "red.500"
                   }
                 >
