@@ -97,7 +97,7 @@ function Home() {
           <Heading
             fontSize={["2xl", "5xl"]}
             fontWeight="thin"
-            color="DText"
+            color="text"
             textAlign="end"
             textTransform="uppercase"
           >
@@ -109,7 +109,7 @@ function Home() {
             fontSize={"x-large"}
             fontFamily="heading"
             fontWeight="thin"
-            color="DText"
+            color="text"
           >
             Participá de los torneos mas famosos por premios en efectivo, o creá
             el tuyo personalizado para competir con tus amigos!
@@ -128,6 +128,11 @@ function Home() {
         </Box>
         <Box height="50vh" width={"50%"}>
           {!isLoggedIn && <Carousel />}
+          {isLoggedIn && (
+            <Box mt="8">
+              <UserTournaments />
+            </Box>
+          )}
         </Box>
       </HStack>
     </Container>

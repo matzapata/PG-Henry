@@ -2,12 +2,12 @@ import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
   colors: {
-    DPrimary: "#082032", // background & darkmode text
-    DSecondary: "#4FBDBA", // buttons bg
-    DText: "#F7F7F7", // darkmode text
+    primary: "#082032", // background & darkmode text
+    buttons: "#4FBDBA", // buttons bg
+    text: "#F7F7F7", // darkmode text
     warning: "#F95959", // delete account, cancel button
-    LPrimary: "#AEFEFF", // ligth mode bg
-    LSecondary: "#35858B", // ligth mode buttons bg
+    Lprimary: "#AEFEFF", // ligth mode bg
+    Lsecondary: "#35858B", // ligth mode buttons bg
   },
 });
 
