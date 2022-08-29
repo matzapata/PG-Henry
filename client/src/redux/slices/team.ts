@@ -3,14 +3,12 @@ import { getLogoA } from "./teamThunk";
 
 const initialState: {
   logo_a: string | any;
-  logo_b: string | any;
   loading: boolean;
   error: string;
   message: string;
 } = {
   loading: false,
   logo_a: "",
-  logo_b: "",
   error: "",
   message: "",
 };

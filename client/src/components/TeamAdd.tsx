@@ -144,7 +144,11 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         placeholder="Escudo"
                         onChange={cambiosEnInput}
                       /> */}
-                      <UploadFiles imagen={true} />
+                      <UploadFiles
+                        imagen={true}
+                        funcion={"Subir Imagen"}
+                        titulo={"Imagen Personalizada Equipo"}
+                      />
                     </Stack>
                     <Button onClick={agregaEquipo}>Agregar</Button>
                   </Stack>
