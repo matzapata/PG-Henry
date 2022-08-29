@@ -77,8 +77,8 @@ model UserTournament {
   id    String @unique @default(uuid())
   score Int    @default(0)
 
-  winner         Teams      @relation(fields: [winner_team_id], references: [id])
-  winner_team_id String
+  winner         Teams?      @relation(fields: [winner_team_id], references: [id])
+  winner_team_id String?
   user           User       @relation(fields: [user_id], references: [id])
   user_id        String
   tournament     Tournament @relation(fields: [tournament_id], references: [id])
