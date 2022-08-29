@@ -239,7 +239,7 @@ export default function TournamentForm(): JSX.Element {
                     (errors.user_limit === "Completado" ||
                       errors.user_limit === "") &&
                     (errors.password === "Completado" || errors.password === "")
-                      ? "white"
+                      ? "black"
                       : "red.500"
                   }
                 >
@@ -248,7 +248,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.teams === "Completado" || errors.teams === ""
-                      ? "white"
+                      ? "black"
                       : "red.500"
                   }
                 >
@@ -257,7 +257,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.matches === "Completado" || errors.matches === ""
-                      ? "white"
+                      ? "black"
                       : "red.500"
                   }
                 >
