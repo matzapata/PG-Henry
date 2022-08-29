@@ -10,6 +10,7 @@ import {
   FormControl,
   FormErrorMessage,
   Select,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 type Match = {
@@ -278,90 +279,83 @@ export default function MatchAdd(props: props): JSX.Element {
         alignItems="space-between"
         justifyContent="space-between"
         p="12px"
-        backgroundColor="rgba(57,70,100,0.9)"
+        bg={useColorModeValue("white", "gray.700")}
       >
         <Stack spacing="9px">
           <form onSubmit={agregaPartido}>
-            <Text>Agrega Partidos</Text>
-            <br />
+            <Stack direction="column" spacing={4} alignItems="space-between">
+              <Stack direction="row" spacing={4} alignItems="center">
+                <Select
+                  id="team_a"
+                  name="team_a_name"
+                  onChange={cambiosEnInput}
+                >
+                  <option value="" selected disabled hidden>
+                    Equipo A
+                  </option>
+                </Select>
+                <Text>Vs.</Text>
+                <Select
+                  id="team_b"
+                  name="team_b_name"
+                  onChange={cambiosEnInput}
+                >
+                  <option value="" selected disabled hidden>
+                    Equipo B
+                  </option>
+                </Select>
+              </Stack>
 
-            <FormControl>
-              <Stack direction="column" spacing={4} align-items="center">
+              <Stack direction="row" spacing={4}>
                 <FormControl
                   isInvalid={
-                    errors.teams === "Completado" || errors.teams === ""
+                    errors.date === "Completado" || errors.date === ""
                       ? false
                       : true
                   }
                 >
-                  <Stack direction="row" spacing={4}>
-                    <Select
-                      id="team_a"
-                      name="team_a_name"
-                      onChange={cambiosEnInput}
-                    >
-                      <option value="" selected disabled hidden>
-                        Equipo A
-                      </option>
-                    </Select>
-                    <Text>Vs.</Text>
-                    <Select
-                      id="team_b"
-                      name="team_b_name"
-                      onChange={cambiosEnInput}
-                    >
-                      <option value="" selected disabled hidden>
-                        Equipo B
-                      </option>
-                    </Select>
-                  </Stack>
-                  <FormErrorMessage>{errors.teams}</FormErrorMessage>
+                  <Input
+                    type="date"
+                    name="date"
+                    value={input.date}
+                    onChange={cambiosEnInput}
+                  />
+                  <FormErrorMessage>{errors.date}</FormErrorMessage>
                 </FormControl>
-                <Stack direction="row" spacing={4}>
-                  <FormControl
-                    isInvalid={
-                      errors.date === "Completado" || errors.date === ""
-                        ? false
-                        : true
-                    }
-                  >
-                    <Input
-                      type="date"
-                      name="date"
-                      value={input.date}
-                      onChange={cambiosEnInput}
-                    />
-                    <FormErrorMessage>{errors.date}</FormErrorMessage>
-                  </FormControl>
-                  <FormControl
-                    isInvalid={
-                      errors.stage === "Completado" || errors.stage === ""
-                        ? false
-                        : true
-                    }
-                  >
-                    <Select name="stage" onChange={cambiosEnInput}>
-                      <option selected value="">
-                        Instacia
-                      </option>
-                      <option value={"FASEGROUP"}>Fase de Grupo</option>
-                      <option value={"ROUNDOF32"}>Ronda de 32</option>
-                      <option value={"QUARTERFINAL"}>Cuartos de final</option>
-                      <option value={"SEMIFINAL"}>Semifinal</option>
-                      <option value={"FINAL"}>Final</option>
-                    </Select>
-                    <FormErrorMessage>{errors.stage}</FormErrorMessage>
-                  </FormControl>
-                </Stack>
-
-                <Button type="submit">Agregar</Button>
-                {errors.matches != "Completado" && (
-                  <Text color="red.500">{errors.matches}</Text>
-                )}
+                <FormControl
+                  isInvalid={
+                    errors.stage === "Completado" || errors.stage === ""
+                      ? false
+                      : true
+                  }
+                >
+                  <Select name="stage" onChange={cambiosEnInput}>
+                    <option selected value="">
+                      Instacia
+                    </option>
+                    <option value={"FASEGROUP"}>Fase de Grupo</option>
+                    <option value={"ROUNDOF32"}>Ronda de 32</option>
+                    <option value={"QUARTERFINAL"}>Cuartos de final</option>
+                    <option value={"SEMIFINAL"}>Semifinal</option>
+                    <option value={"FINAL"}>Final</option>
+                  </Select>
+                  <FormErrorMessage>{errors.stage}</FormErrorMessage>
+                </FormControl>
               </Stack>
 
-              <FormErrorMessage>Partido inválido</FormErrorMessage>
-            </FormControl>
+              {errors.matches != "Completado" && (
+                <Text color="red.500">{errors.matches}</Text>
+              )}
+              <Button
+                type="submit"
+                bg={"blue.400"}
+                _hover={{
+                  bg: "blue.500",
+                }}
+              >
+                Agregar
+              </Button>
+            </Stack>
           </form>
 
           {!!matches.length &&
@@ -370,7 +364,7 @@ export default function MatchAdd(props: props): JSX.Element {
                 <GridItem
                   boxShadow="dark-lg"
                   transition="200ms ease"
-                  backgroundColor="rgba(57,91,100,0.7)"
+                  backgroundColor="#04878C"
                   borderRadius="20px"
                   display={"flex"}
                   flexDirection="column"
@@ -402,8 +396,9 @@ export default function MatchAdd(props: props): JSX.Element {
                     <Button
                       value={el.key}
                       onClick={quitarPartido}
+                      bg="red.300"
                       _hover={{
-                        bgColor: "#04879C",
+                        bgColor: "red.500",
                       }}
                     >
                       X
