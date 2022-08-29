@@ -28,8 +28,8 @@ router.post("/", async (req, res) => {
       }
     }
     res.status(200).send("OK");
-  } catch (e) {
-    res.send(e);
+  } catch (error) {
+    res.send(error);
   }
 });
 
