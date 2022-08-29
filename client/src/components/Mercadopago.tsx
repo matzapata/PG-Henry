@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -11,15 +11,18 @@ import {
   ModalBody,
   ModalFooter,
 } from "@chakra-ui/react";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { fetchMercadoPago } from "../redux/slices/mercadopago";
+import { useParams } from "react-router-dom";
 
 function Mercadopago(): JSX.Element {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { id } = useParams<{ id: string }>();
+  const user_id = useAppSelector((state) => state.auth.decoded?.id);
 
   function handleMP() {
-    dispatch(fetchMercadoPago());
+    dispatch(fetchMercadoPago({ tournamentid: id, userid: user_id }));
   }
 
   return (
