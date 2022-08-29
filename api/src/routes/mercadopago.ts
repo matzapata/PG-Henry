@@ -3,7 +3,7 @@ import axios from "axios";
 
 const router: express.Router = express.Router();
 
-async function PaymentService() {
+async function PaymentService(tournamentid: string, userid: string) {
   const url = "https://api.mercadopago.com/checkout/preferences";
   const body = {
     items: [
@@ -19,9 +19,13 @@ async function PaymentService() {
     back_urls: {
       failure: "/failure",
       pending: "/pending",
-      success: "/success",
+      success: `${process.env.CLIENT_URL}`,
     },
     auto_return: "approved",
+    metadata: {
+      tournament_id: tournamentid,
+      user_id: userid,
+    },
   };
 
   const payment = await axios.post(url, body, {
@@ -34,8 +38,13 @@ async function PaymentService() {
 }
 
 router.get("/payment", async function (req, res: any, next) {
-  const lel = await PaymentService();
-  res.send(lel.data.init_point);
+  try {
+    const { tournamentid, userid } = req.query;
+    const response = await PaymentService(tournamentid as any, userid as any);
+    res.send(response.data.init_point);
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 export default router;
