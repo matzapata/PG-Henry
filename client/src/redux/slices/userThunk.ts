@@ -72,7 +72,10 @@ export const fetchUserTournaments = createAsyncThunk(
 
 export const fetchUniqueUserTournament = createAsyncThunk(
   "user/fetchUniqueUserTournament",
-  async (id: { tournamentid: string; userid: string | undefined }) => {
+  async (
+    id: { tournamentid: string; userid: string | undefined },
+    { rejectWithValue }
+  ) => {
     try {
       const result = await api.get(
         `/users/findTournament?${
@@ -80,8 +83,8 @@ export const fetchUniqueUserTournament = createAsyncThunk(
         }&${id.userid ? "userid=" + id.userid : ""}`
       );
       return result.data;
-    } catch (error) {
-      console.log(error);
+    } catch (e: any) {
+      return rejectWithValue(e.message);
     }
   }
 );

@@ -23,7 +23,6 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   const unido = useAppSelector(
     (state) => state.user.userTournaments.is_attached
   );
-  console.log(unido);
 
   useEffect(() => {
     dispatch(fetchUniqueUserTournament({ tournamentid: id, userid: user_id }));
