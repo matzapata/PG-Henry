@@ -44,7 +44,24 @@ function validate(input: Match, matches: Match[], agregar = false) {
       errors.teams = "Partido Inválido";
     }
   }
+  const tiempoTranscurrido = Date.now();
+  const hoyN = new Date(tiempoTranscurrido);
 
+  const hoy = hoyN.toLocaleDateString();
+  const yyyy = Number(hoy.slice(5)).toString();
+
+  if (!!input.date.length) {
+    errors.date = "Completado";
+    if (!/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(input.date))
+      errors.date = " Fecha inválida";
+    const index = input.date.toString().indexOf("-");
+    if (
+      input.date.slice(0, index).length > 4 ||
+      input.date.slice(0, index) < yyyy
+    ) {
+      errors.date = " Año inválido";
+    }
+  }
   matches.map((match: Match) => {
     if (
       (match.team_a_name === input.team_a_name &&
@@ -77,7 +94,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
   });
 
   if (!!input.stage.length) errors.stage = "Completado";
-  if (!!input.date.length) errors.date = "Completado";
+
   if (agregar) {
     if (errors.teams === "") errors.teams = "Campo Requerido";
     if (errors.stage === "") errors.stage = "Campo Requerido";
@@ -151,7 +168,7 @@ export default function MatchAdd(props: props): JSX.Element {
     const newInputMatch = matches.filter((el) => {
       return el.key != e.target.value;
     });
-
+    setErrors(validate(input, newInputMatch, false));
     setMatches(newInputMatch);
   };
   const llenarSelect = (teams: Team[]) => {
@@ -174,7 +191,7 @@ export default function MatchAdd(props: props): JSX.Element {
     for (let i = 0; i < teams.length; i++) {
       const aTag = document.createElement("option");
       const aTag2 = document.createElement("option");
-      //Agrego un caractére alfabético en el nombre del atributo, por que no puede recivir solo números.
+
       aTag.setAttribute("a" + teams[i].key, teams[i].name);
       aTag2.setAttribute("b" + teams[i].key, teams[i].name);
 
@@ -213,170 +230,150 @@ export default function MatchAdd(props: props): JSX.Element {
   }, [matches]);
 
   return (
-    <div>
-      <Container>
-        <Flex>
-          <Box
-            h="100%"
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            justifyContent="space-between"
-            p="20px"
-            backgroundColor="rgba(57,70,100,0.9)"
-          >
-            <Stack spacing="9px">
-              <form onSubmit={agregaPartido}>
-                <Text>Agregar Partidos</Text>
+    <Container p="0px">
+      <Box
+        h="100%"
+        display="flex"
+        flexDir="column"
+        alignItems="space-between"
+        justifyContent="space-between"
+        p="12px"
+        backgroundColor="rgba(57,70,100,0.9)"
+      >
+        <Stack spacing="9px">
+          <form onSubmit={agregaPartido}>
+            <Text>Agrega Partidos</Text>
+            <br />
 
+            <FormControl>
+              <Stack direction="column" spacing={4} align-items="center">
                 <FormControl
-                /* isInvalid={
-                    input.team_a_name !== input.team_b_name || !equipos.length
+                  isInvalid={
+                    errors.teams === "Completado" || errors.teams === ""
                       ? false
                       : true
-                  } */
+                  }
                 >
-                  <Stack direction="column" spacing={4}>
-                    <FormControl
-                      isInvalid={
-                        errors.teams === "Completado" || errors.teams === ""
-                          ? false
-                          : true
-                      }
+                  <Stack direction="row" spacing={4}>
+                    <Select
+                      id="team_a"
+                      name="team_a_name"
+                      onChange={cambiosEnInput}
                     >
-                      <Stack direction="row" spacing={4}>
-                        <Select
-                          id="team_a"
-                          name="team_a_name"
-                          onChange={cambiosEnInput}
-                        >
-                          <option value="" selected disabled hidden>
-                            Equipo A
-                          </option>
-                        </Select>
-                        <Text>Vs.</Text>
-                        <Select
-                          id="team_b"
-                          name="team_b_name"
-                          onChange={cambiosEnInput}
-                        >
-                          <option value="" selected disabled hidden>
-                            Equipo B
-                          </option>
-                        </Select>
-                      </Stack>
-                      <FormErrorMessage>{errors.teams}</FormErrorMessage>
-                    </FormControl>
-                    <Stack direction="row" spacing={4}>
-                      <FormControl
-                        isInvalid={
-                          errors.date === "Completado" || errors.date === ""
-                            ? false
-                            : true
-                        }
-                      >
-                        <Input
-                          type="date"
-                          name="date"
-                          value={input.date}
-                          onChange={cambiosEnInput}
-                        />
-                        <FormErrorMessage>{errors.date}</FormErrorMessage>
-                      </FormControl>
-                      <FormControl
-                        isInvalid={
-                          errors.stage === "Completado" || errors.stage === ""
-                            ? false
-                            : true
-                        }
-                      >
-                        <Select name="stage" onChange={cambiosEnInput}>
-                          <option selected value="">
-                            Instacia
-                          </option>
-                          <option value={"FASEGROUP"}>Fase de Grupo</option>
-                          <option value={"ROUNDOF32"}>Ronda de 32</option>
-                          <option value={"QUARTERFINAL"}>
-                            Cuartos de final
-                          </option>
-                          <option value={"SEMIFINAL"}>Semifinal</option>
-                          <option value={"FINAL"}>Final</option>
-                        </Select>
-                        <FormErrorMessage>{errors.stage}</FormErrorMessage>
-                      </FormControl>
-                    </Stack>
-
-                    <Button
-                      type="submit"
-                      /* disabled={
-                        !equipos.length ||
-                        input.team_a_name === input.team_b_name ||
-                        input.team_a_name === "Equipo A" ||
-                        input.team_b_name === "Equipo B" ||
-                        input.stage === ""
-                          ? true
-                          : false
-                      } */
+                      <option value="" selected disabled hidden>
+                        Equipo A
+                      </option>
+                    </Select>
+                    <Text>Vs.</Text>
+                    <Select
+                      id="team_b"
+                      name="team_b_name"
+                      onChange={cambiosEnInput}
                     >
-                      Agregar
-                    </Button>
-                    {errors.matches != "Completado" && (
-                      <Text color="red.500">{errors.matches}</Text>
-                    )}
+                      <option value="" selected disabled hidden>
+                        Equipo B
+                      </option>
+                    </Select>
                   </Stack>
-
-                  <FormErrorMessage>Partido inválido</FormErrorMessage>
+                  <FormErrorMessage>{errors.teams}</FormErrorMessage>
                 </FormControl>
-              </form>
+                <Stack direction="row" spacing={4}>
+                  <FormControl
+                    isInvalid={
+                      errors.date === "Completado" || errors.date === ""
+                        ? false
+                        : true
+                    }
+                  >
+                    <Input
+                      type="date"
+                      name="date"
+                      value={input.date}
+                      onChange={cambiosEnInput}
+                    />
+                    <FormErrorMessage>{errors.date}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={
+                      errors.stage === "Completado" || errors.stage === ""
+                        ? false
+                        : true
+                    }
+                  >
+                    <Select name="stage" onChange={cambiosEnInput}>
+                      <option selected value="">
+                        Instacia
+                      </option>
+                      <option value={"FASEGROUP"}>Fase de Grupo</option>
+                      <option value={"ROUNDOF32"}>Ronda de 32</option>
+                      <option value={"QUARTERFINAL"}>Cuartos de final</option>
+                      <option value={"SEMIFINAL"}>Semifinal</option>
+                      <option value={"FINAL"}>Final</option>
+                    </Select>
+                    <FormErrorMessage>{errors.stage}</FormErrorMessage>
+                  </FormControl>
+                </Stack>
 
-              {!!matches.length &&
-                matches.map((el) => (
-                  <Box key={el.key}>
-                    <GridItem
+                <Button type="submit">Agregar</Button>
+                {errors.matches != "Completado" && (
+                  <Text color="red.500">{errors.matches}</Text>
+                )}
+              </Stack>
+
+              <FormErrorMessage>Partido inválido</FormErrorMessage>
+            </FormControl>
+          </form>
+
+          {!!matches.length &&
+            matches.map((el) => (
+              <Box key={el.key}>
+                <GridItem
+                  boxShadow="dark-lg"
+                  transition="200ms ease"
+                  backgroundColor="rgba(57,91,100,0.7)"
+                  borderRadius="20px"
+                  display={"flex"}
+                  flexDirection="column"
+                  p="5px"
+                  w="auto"
+                  margin="5px"
+                >
+                  <Stack
+                    p="5px"
+                    spacing={3}
+                    justifyContent="space-around"
+                    alignItems="center"
+                    direction="row"
+                    word-wrap="anywhere"
+                  >
+                    <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
+                      {el.date}
+                    </Text>
+                    <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
+                      {el.team_a_name}
+                    </Text>
+                    <Text>Vs.</Text>
+                    <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
+                      {el.team_b_name}
+                    </Text>
+                    <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
+                      {el.stage}
+                    </Text>
+                    <Button
+                      value={el.key}
+                      onClick={quitarPartido}
                       _hover={{
                         bgColor: "#04879C",
                       }}
-                      boxShadow="dark-lg"
-                      transition="200ms ease"
-                      backgroundColor="rgba(57,91,100,0.7)"
-                      borderRadius="20px"
-                      display={"flex"}
-                      flexDirection="column"
-                      p="5px"
-                      w="auto"
-                      margin="5px"
                     >
-                      <Stack
-                        p="5px"
-                        spacing={3}
-                        justifyContent="center"
-                        alignItems="center"
-                        direction="row"
-                      >
-                        <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                          {el.team_a_name}
-                        </Text>
-                        <Text> Vs. </Text>
-                        <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                          {el.team_b_name}
-                        </Text>
-                        <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                          {el.date}
-                        </Text>
-                        <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                          {el.stage}
-                        </Text>
-                        <Button value={el.key} onClick={quitarPartido}>
-                          X
-                        </Button>
-                      </Stack>
-                    </GridItem>
-                  </Box>
-                ))}
-            </Stack>
-          </Box>
-        </Flex>
-      </Container>
-    </div>
+                      X
+                    </Button>
+                  </Stack>
+                </GridItem>
+              </Box>
+            ))}
+        </Stack>
+      </Box>
+    </Container>
   );
 }

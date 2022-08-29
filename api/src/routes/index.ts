@@ -11,5 +11,4 @@ router.use("/auth", authRouter);
 router.use("/tournaments", tournamentRouter);
 router.use("/mercadopago", mercadopagoRouter);
 
-
 export default router;

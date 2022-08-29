@@ -7,20 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AuthProvider {
+  JWT
+  AUTH0
+}
+
 model User {
   id                 String   @unique @default(uuid())
   username           String   @unique
   full_name          String
   email              String   @unique
-  password           String
-  birth_date         DateTime
+  password           String?  // Optional so we can work with auth0
+  authProvider       AuthProvider @default(JWT)
+  birth_date         DateTime? // Optional momentarily to work with auth0
   alias_mp           String?  @unique
   is_admin           Boolean  @default(false)
   is_active          Boolean  @default(false)
   is_banned          Boolean  @default(false)
   last_access        DateTime @default(now())
-  verification_token String
-  url_avatar         String   @default("https://static.vecteezy.com/system/resources/previews/003/337/511/original/default-avatar-photo-placeholder-profile-icon-female-vector.jpg")
+  verification_token String?
+  url_avatar         String   @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661613143/pminy2ryvqlxv3gc3gsp.jpg")
 
   tournament_userid  UserTournament[]
   predictions_userid Predictions[]
@@ -34,7 +40,7 @@ model Tournament {
   user_limit  Int?
   status      Status         @default(INCOMING)
   type        TournamentType @default(PUBLIC)
-  password    String?
+  password    String?        
   pool        Int            @default(0)
   logo_url    String?
 

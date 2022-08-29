@@ -35,6 +35,10 @@ function TournamentFilter(): JSX.Element {
     dispatch(fetchFilterTournaments({ ...filter, page: 1 }));
   }, []);
 
+  useEffect(() => {
+    handleFilter();
+  }, [filter]);
+
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setFilter({
       ...filter,

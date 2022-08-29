@@ -33,6 +33,10 @@ function PublicTournaments(): JSX.Element {
     dispatch(fetchFilterTournaments(filter));
   }, []);
 
+  useEffect(() => {
+    handleFilter();
+  }, [filters]);
+
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFilters({
       ...filters,
@@ -48,6 +52,11 @@ function PublicTournaments(): JSX.Element {
       searchname: "",
     });
   }
+
+  function handleFilter() {
+    dispatch(fetchFilterTournaments(filters));
+  }
+
   function deleteFilter() {
     dispatch(fetchFilterTournaments(filters));
     setFilters({

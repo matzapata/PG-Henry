@@ -36,7 +36,7 @@ const authSlice = createSlice({
       state.error = action.payload as string;
     });
 
-    // Login
+    // Auth0Login
     builder.addCase(loginAuth0.pending, (state) => {
       state.loading = true;
     });
