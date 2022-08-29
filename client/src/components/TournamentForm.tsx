@@ -10,6 +10,7 @@ import {
   Textarea,
   Select,
   Flex,
+  useColorModeValue,
   InputRightElement,
   FormControl,
   InputGroup,
@@ -18,6 +19,11 @@ import {
   NumberInputField,
   Icon,
   FormErrorMessage,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
 } from "@chakra-ui/react";
 
 import { useHistory } from "react-router-dom";
@@ -83,7 +89,6 @@ function validate(input: Inputs, submit = false) {
   } else {
     errors.password = "Completado";
   }
-
   if (input.teams.length >= 2) errors.teams = "Completado";
 
   if (!!input.matches.length) errors.matches = "Completado";
@@ -185,30 +190,30 @@ export default function TournamentForm(): JSX.Element {
     ) {
       let finalLogo_url = input.logo_url;
       if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
-      console.log(input.teams);
+
       try {
         const tournamentID = await api.post("/tournaments/create", {
           ...input,
           creator_user_id: userCreatorId,
           logo_url: finalLogo_url,
         });
-        console.log(tournamentID);
-        console.log("Envio completado");
+
         history.push("/torneos/" + tournamentID.data);
       } catch (e: any) {
+        console.log(e.response.data);
         setCrearError(e.response.data.message);
       }
     }
   };
   useEffect(() => {
     setErrors(validate(input));
-    console.log("RAYOS");
     actualizarMatches();
+    setCrearError("");
   }, [input.teams, input.matches]);
-  console.log(input);
+
   return (
     <Container>
-      <Flex alignItems="center">
+      <Flex alignItems="center" marginTop={"50px"} marginBlockEnd={"50px"}>
         <Box
           h="100%"
           display="flex"
@@ -216,154 +221,229 @@ export default function TournamentForm(): JSX.Element {
           alignItems="center"
           justifyContent="space-between"
           p="20px"
-          backgroundColor="rgba(57,91,100,0.98)"
+          rounded={"xl"}
+          boxShadow={"lg"}
+          /* backgroundColor="rgba(57,91,100,0.98)" */
+          bg={useColorModeValue("white", "gray.700")}
         >
-          <Stack alignItems="center" spacing="9px">
-            <Stack direction="row" spacing={4}>
-              <FormControl
-                isInvalid={
-                  errors.name === "Completado" || errors.name === ""
-                    ? false
-                    : true
-                }
-              >
-                <Input
-                  type="text"
-                  name="name"
-                  value={input.name}
-                  placeholder="Nombre del torneo"
-                  onChange={cambiosEnInput}
-                />
-                <FormErrorMessage>{errors.name}</FormErrorMessage>
-              </FormControl>
-              <Select name="type" onChange={cambiosEnInput}>
-                <option value="PRIVATE">Privado</option>
-                <option value="PUBLIC" selected>
-                  Público
-                </option>
-              </Select>
-            </Stack>
-            {input.type === "PRIVATE" && (
-              <FormControl
-                isInvalid={
-                  errors.password === "Completado" || errors.password === ""
-                    ? false
-                    : true
-                }
-              >
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    color="gray.300"
-                  ></InputLeftElement>
-                  <Input
-                    name="password"
-                    onChange={cambiosEnInput}
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Contraseña para el torneo"
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button
-                      h="1.75rem"
-                      size="sm"
-                      backgroundColor="gray"
-                      mr="0.5"
-                      onClick={() => setShowPassword(!showPassword)}
+          <Stack alignItems="space-between;" spacing="9px">
+            <Tabs>
+              <TabList>
+                <Tab
+                  textColor={
+                    (errors.name === "Completado" || errors.name === "") &&
+                    (errors.description === "Completado" ||
+                      errors.description === "") &&
+                    (errors.user_limit === "Completado" ||
+                      errors.user_limit === "") &&
+                    (errors.password === "Completado" || errors.password === "")
+                      ? "white"
+                      : "red.500"
+                  }
+                >
+                  Torneo
+                </Tab>
+                <Tab
+                  textColor={
+                    errors.teams === "Completado" || errors.teams === ""
+                      ? "white"
+                      : "red.500"
+                  }
+                >
+                  Equipos
+                </Tab>
+                <Tab
+                  textColor={
+                    errors.matches === "Completado" || errors.matches === ""
+                      ? "white"
+                      : "red.500"
+                  }
+                >
+                  Partidos
+                </Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  <Stack alignItems="space-between;" spacing="9px">
+                    <Stack direction="row" spacing={4}>
+                      {/* INPUT NAME */}
+                      <FormControl
+                        isInvalid={
+                          errors.name === "Completado" || errors.name === ""
+                            ? false
+                            : true
+                        }
+                      >
+                        <Input
+                          type="text"
+                          name="name"
+                          value={input.name}
+                          placeholder="Nombre del torneo"
+                          onChange={cambiosEnInput}
+                        />
+                        <FormErrorMessage>{errors.name}</FormErrorMessage>
+                      </FormControl>
+                      {/* SELECT TYPE PRIVADO/PUBLICO */}
+                      <Select name="type" onChange={cambiosEnInput}>
+                        <option value="PRIVATE">Privado</option>
+                        <option value="PUBLIC" selected>
+                          Público
+                        </option>
+                      </Select>
+                    </Stack>
+                    {/* CONTRASEÑA */}
+                    {input.type === "PRIVATE" && (
+                      <FormControl
+                        isInvalid={
+                          errors.password === "Completado" ||
+                          errors.password === ""
+                            ? false
+                            : true
+                        }
+                      >
+                        <InputGroup>
+                          <InputLeftElement
+                            pointerEvents="none"
+                            color="gray.300"
+                          ></InputLeftElement>
+                          <Input
+                            name="password"
+                            onChange={cambiosEnInput}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Contraseña para el torneo"
+                          />
+                          <InputRightElement width="4.5rem">
+                            <Button
+                              h="1.75rem"
+                              size="sm"
+                              backgroundColor="gray"
+                              mr="0.5"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? "Ocultar" : "Mostrar"}
+                            </Button>
+                          </InputRightElement>
+                        </InputGroup>
+                        <FormErrorMessage>{errors.password}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                    <Stack direction="row" spacing={4}>
+                      {/* ////USER_LIMIT */}
+
+                      <FormControl
+                        isInvalid={
+                          errors.user_limit === "Completado" ||
+                          errors.user_limit === ""
+                            ? false
+                            : true
+                        }
+                      >
+                        <NumberInput>
+                          <NumberInputField
+                            inputMode="numeric"
+                            type="number"
+                            name="user_limit"
+                            value={input.user_limit}
+                            placeholder="Cantidad máx. de usuarios"
+                            onChange={cambiosENUser_Limit}
+                          />
+                        </NumberInput>
+                        <FormErrorMessage fontSize="15px">
+                          {errors.user_limit}
+                        </FormErrorMessage>
+                      </FormControl>
+
+                      {/*  ///LOGO/// */}
+                      <Input
+                        type="text"
+                        name="logo_url"
+                        value={input.logo_url}
+                        placeholder="URL logo"
+                        onChange={cambiosEnInput}
+                      />
+                    </Stack>
+
+                    {/* ////DESCRIPTION */}
+                    <FormControl
+                      isInvalid={
+                        errors.description === "Completado" ||
+                        errors.description === ""
+                          ? false
+                          : true
+                      }
                     >
-                      {showPassword ? "Ocultar" : "Mostrar"}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                <FormErrorMessage>{errors.password}</FormErrorMessage>
-              </FormControl>
-            )}
-            {/* ////DESCRIPTION */}
-            <FormControl
-              isInvalid={
-                errors.description === "Completado" || errors.description === ""
-                  ? false
-                  : true
-              }
-            >
-              <Stack spacing={1}>
-                <Text mb="8px">Descripción: </Text>
-                <Textarea
-                  name="description"
-                  value={input.description}
-                  placeholder="Descripción"
-                  size="sm"
-                  onChange={cambiosEnInput}
-                />
-              </Stack>
-              <FormErrorMessage>{errors.description}</FormErrorMessage>
-            </FormControl>
-            {/* ////USER_LIMIT */}
-            <Flex inputMode="numeric">
-              <FormControl
-                isInvalid={
-                  errors.user_limit === "Completado" || errors.user_limit === ""
-                    ? false
-                    : true
-                }
-              >
-                <NumberInput>
-                  <NumberInputField
-                    inputMode="numeric"
-                    type="number"
-                    name="user_limit"
-                    value={input.user_limit}
-                    placeholder="Cantidad máxima de usuarios"
-                    onChange={cambiosENUser_Limit}
-                  />
-                </NumberInput>
-                <FormErrorMessage>{errors.user_limit}</FormErrorMessage>
-              </FormControl>
-            </Flex>
-            {/*  ///LOGO/// */}
-            <Input
-              type="text"
-              name="logo_url"
-              value={input.logo_url}
-              placeholder="URL logo"
-              onChange={cambiosEnInput}
-            />
+                      <Stack spacing={1}>
+                        <Text mb="8px">Descripción: </Text>
+                        <Textarea
+                          name="description"
+                          value={input.description}
+                          placeholder="Descripción"
+                          size="sm"
+                          onChange={cambiosEnInput}
+                        />
+                      </Stack>
+                      <FormErrorMessage>{errors.description}</FormErrorMessage>
+                    </FormControl>
+                  </Stack>
+                </TabPanel>
+                <TabPanel>
+                  {/* AGREGAR EQUIPOS */}
+                  <TeamAdd cb={addTeam} />
+                  <Flex mt="4" alignItems="center">
+                    <FormControl
+                      isInvalid={
+                        errors.teams === "Completado" || errors.teams === ""
+                          ? false
+                          : true
+                      }
+                    >
+                      <FormErrorMessage>{errors.teams}</FormErrorMessage>
+                    </FormControl>
+                  </Flex>
+                </TabPanel>
+                <TabPanel>
+                  {/* AGREGAR PARTIDOS */}
+                  <MatchAdd cb={addMatch} equipos={input.teams} />
+                  <Flex mt="4" alignItems="center">
+                    <FormControl
+                      isInvalid={
+                        errors.matches === "Completado" || errors.matches === ""
+                          ? false
+                          : true
+                      }
+                    >
+                      <FormErrorMessage>{errors.matches}</FormErrorMessage>
+                    </FormControl>
+                  </Flex>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
 
-            <TeamAdd cb={addTeam} />
-            <Flex mt="4" alignItems="center">
-              <FormControl
-                isInvalid={
-                  errors.teams === "Completado" || errors.teams === ""
-                    ? false
-                    : true
-                }
-              >
-                <FormErrorMessage>{errors.teams}</FormErrorMessage>
-              </FormControl>
-            </Flex>
-
-            <MatchAdd cb={addMatch} equipos={input.teams} />
-            <Flex mt="4" alignItems="center">
-              <FormControl
-                isInvalid={
-                  errors.matches === "Completado" || errors.matches === ""
-                    ? false
-                    : true
-                }
-              >
-                <FormErrorMessage>{errors.matches}</FormErrorMessage>
-              </FormControl>
-            </Flex>
-            <Box></Box>
             {CrearError && (
               <Flex mt="4" alignItems="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />
-                <Text as="span" color="red.500" fontWeight="500">
+                <Text
+                  as="span"
+                  color="red.500"
+                  fontWeight="500"
+                  fontSize="20px"
+                >
                   {CrearError}
                 </Text>
               </Flex>
             )}
 
-            <Button onClick={crear}>Crear</Button>
+            <Button
+              fontSize="22px"
+              bg={"blue.400"}
+              _hover={{
+                bg: "blue.500",
+              }}
+              onClick={crear}
+            >
+              Crear Torneo
+            </Button>
           </Stack>
         </Box>
       </Flex>

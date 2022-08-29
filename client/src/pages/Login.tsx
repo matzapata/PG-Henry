@@ -15,16 +15,16 @@ import {
   FormControl,
   InputRightElement,
   Checkbox,
-  Image,
   Icon,
   Divider,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock, FaExclamationCircle } from "react-icons/fa";
-import { login } from "../redux/slices/authThunk";
+import { login, loginAuth0 } from "../redux/slices/authThunk";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Link as ReactLink, useHistory } from "react-router-dom";
-import { Auth0Client } from "@auth0/auth0-spa-js";
 import { isEmail } from "../utils/validations";
+import { useAuth0 } from "@auth0/auth0-react";
+import Auth0SignInButton from "../components/Auth0SignInButton";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -36,11 +36,7 @@ function Login() {
   const isAuthenticated = useAppSelector((state) => state.auth.token);
   const authError = useAppSelector((state) => state.auth.error);
   const authLoading = useAppSelector((state) => state.auth.loading);
-  const auth0 = new Auth0Client({
-    domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
-    client_id: process.env.REACT_APP_AUTH0_CLIENT_ID as string,
-    redirect_uri: process.env.REACT_APP_CLIENT_URL,
-  });
+  const { isAuthenticated: isAuth0Authenticated, user } = useAuth0();
 
   const [showPassword, setShowPassword] = useState(false);
   const [state, setState] = useState({
@@ -64,26 +60,23 @@ function Login() {
     });
   };
 
-  const auth0Login = async () => {
-    try {
-      await auth0?.loginWithRedirect();
-      const isAuth = await auth0.isAuthenticated();
-      const user = await auth0.getUser();
-      console.log(user, isAuth, "auth response");
-    } catch (e) {
-      console.log(e);
+  useEffect(() => {
+    if (isAuthenticated) history.push("/");
+    else if (isAuth0Authenticated) {
+      console.log(user);
+      dispatch(
+        loginAuth0({
+          email: user?.email as string,
+          full_name: user?.name as string,
+          birth_date: user?.birthdate as string,
+          username: (user?.preferred_username
+            ? user.preferred_username
+            : user?.nickname) as string,
+          check,
+        })
+      );
     }
-  };
-
-  useEffect(() => {
-    auth0.isAuthenticated().then((isAuth0Authenticated) => {
-      if (isAuthenticated || isAuth0Authenticated) history.push("/");
-    });
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    console.log(check);
-  }, [check]);
+  }, [isAuthenticated, isAuth0Authenticated]);
 
   return (
     <Flex
@@ -175,19 +168,7 @@ function Login() {
                 Ingresar
               </Button>
               <Divider />
-              <Button
-                type="button"
-                width="full"
-                display="flex"
-                colorScheme="gray"
-                border="1px"
-                borderColor="gray.300"
-                onClick={auth0Login}
-                marginTop="0px"
-              >
-                <Image src="/img/auth0.png" alt="logo_auth0" width="50px" />
-                <span>Ingresar con Auth0</span>
-              </Button>
+              <Auth0SignInButton />
             </Stack>
           </form>
         </Box>

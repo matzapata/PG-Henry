@@ -7,7 +7,7 @@ import { useAppSelector } from "../redux/hooks";
 import UserTournaments from "../components/UserTournaments";
 
 function Home() {
-  const isAuthenticated = useAppSelector((state) => state.auth.token);
+  const isLoggedIn = useAppSelector((state) => state.auth.token);
 
   return (
     <Container
@@ -52,7 +52,7 @@ function Home() {
           <Divider mt="5%" />
         </Box>
 
-        {isAuthenticated && (
+        {isLoggedIn && (
           <Box mt="8">
             <UserTournaments />
           </Box>

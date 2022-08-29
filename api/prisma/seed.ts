@@ -4,6 +4,7 @@ import {
   Status,
   TournamentType,
   User,
+  AuthProvider,
 } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import * as bcrypt from "bcryptjs";
@@ -38,6 +39,7 @@ function createRandomUser() {
     password: bcrypt.hashSync("password", 8), // fixed password to allow dev login
     birth_date: faker.date.birthdate(),
     is_admin: false,
+    authProvider: "JWT" as AuthProvider,
     verification_token: faker.datatype.uuid(),
     is_active: faker.datatype.boolean(),
     is_banned: faker.datatype.boolean(),
@@ -51,7 +53,7 @@ function createRandomTeam() {
   return {
     id: faker.datatype.uuid(),
     name: faker.company.name(),
-    shield_url: faker.image.abstract(),
+    shield_url: faker.image.abstract(640, 480, true),
   };
 }
 
@@ -97,7 +99,7 @@ function createRandomTournament(
       ? status
       : getRandom(["INCOMING", "INPROGRESS", "CONCLUDED"]),
     pool: faker.datatype.number(),
-    logo_url: faker.image.abstract(),
+    logo_url: faker.image.abstract(640, 480, true),
     creator: { connect: { id: creatorUserId } },
   };
 }

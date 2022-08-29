@@ -20,15 +20,15 @@ export const fetchFilterTournaments = createAsyncThunk(
     name: string;
     page?: number;
   }) => {
-    const result = await api.get(
-      `${process.env.REACT_APP_API_URL}/tournaments?${
-        filters.type ? "type=" + filters.type : ""
-      }&${filters.stat ? "status=" + filters.stat : ""}&${
-        filters.sort ? "sort=" + filters.sort : ""
-      }&${filters.name ? "name=" + filters.name : ""}&${
-        filters.page ? "page=" + filters.page : ""
-      }`
-    );
+    const result = await api.get("/tournaments", {
+      params: {
+        type: filters.type !== "" ? filters.type : undefined,
+        status: filters.stat !== "" ? filters.stat : undefined,
+        sort: filters.sort !== "" ? filters.sort : undefined,
+        name: filters.name !== "" ? filters.name : undefined,
+        page: filters.page,
+      },
+    });
     return result.data;
   }
 );
@@ -43,8 +43,24 @@ export const fetchTournamentDetail = createAsyncThunk(
 
 export const fetchTournamentMatches = createAsyncThunk(
   "tournaments/fetchTournamentMatches",
-  async (id: string /* , stage */) => {
-    const result = await api.get(`/tournaments/${id}/matches?`);
+  async ({
+    id,
+    page,
+    pageSize,
+    stage,
+  }: {
+    id: string;
+    page?: number;
+    pageSize?: number;
+    stage?: string;
+  }) => {
+    const result = await api.get(`/tournaments/${id}/matches`, {
+      params: {
+        page,
+        pageSize,
+        stage,
+      },
+    });
     return result.data;
   }
 );

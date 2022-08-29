@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TournamentCard from "../components/TournamentCard";
 import TournamentFilter from "../components/TournamentFilter";
-import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { useAppSelector } from "../redux/hooks";
 import { useHistory } from "react-router-dom";
-import { fetchTournaments } from "../redux/slices/tournamentThunk";
 import {
   Container,
   Text,
@@ -18,20 +17,16 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import Logo from "../components/Logo";
 
 function Tournaments(): JSX.Element {
-  const currentTournamets = useAppSelector((state) => state.tournaments);
-  const dispatch = useAppDispatch();
+  const currentTournaments = useAppSelector((state) => state.tournaments);
+  const showingTournaments = currentTournaments.tournaments.slice(0, 9);
   const history = useHistory();
-  useEffect(() => {
-    dispatch(fetchTournaments());
-  }, []);
 
   return (
     <Container
       maxW="100vw"
       h="950px"
-      /* bgColor="#082032" */
       bgSize="cover"
-      bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+      bgImage="url('/img/landing-wallpaper.jpg')"
       p="0"
     >
       <Box
@@ -44,16 +39,16 @@ function Tournaments(): JSX.Element {
       >
         <Stack flexDir="row" alignItems="center">
           <Logo />
-          <Text fontSize="30px" fontWeight="bold" color="#F7F7F7" ml="40px">
+          <Text fontSize="30px" fontWeight="bold" color="text" ml="40px">
             Torneos
           </Text>
         </Stack>
         <Box display="flex" flexDir="row">
           <Link to="/">
-            <ArrowBackIcon color="#F7F7F7" fontSize="30px" pt="2px" />
+            <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
           </Link>
           <Text
-            color="#F7F7F7"
+            color="text"
             mr="10px"
             fontSize="20px"
             fontWeight="bold"
@@ -66,8 +61,8 @@ function Tournaments(): JSX.Element {
             _hover={{
               color: "#082032",
             }}
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
+            bgColor="buttons"
+            color="text"
           >
             Crear Torneo
           </Button>
@@ -75,13 +70,13 @@ function Tournaments(): JSX.Element {
       </Box>
       <Divider />
       <TournamentFilter />
-      {currentTournamets.loading && <Text>Loading...</Text>}
-      {!currentTournamets.loading && currentTournamets.error ? (
-        <Text>Error: {currentTournamets.error}</Text>
+      {currentTournaments.loading && <Text>Loading...</Text>}
+      {!currentTournaments.loading && currentTournaments.error ? (
+        <Text>Error: {currentTournaments.error}</Text>
       ) : null}
       <Grid templateColumns="repeat(3, 3fr)" gap={10} m="20px" pt="50px">
-        {!currentTournamets.loading &&
-          currentTournamets.tournaments.map((el) => (
+        {!currentTournaments.loading &&
+          showingTournaments.map((el) => (
             <TournamentCard
               key={el.id}
               id={el.id}

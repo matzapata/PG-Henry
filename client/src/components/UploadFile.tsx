@@ -138,7 +138,7 @@ function UploadFiles(props: any) {
               )}
               <ModalFooter>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();
@@ -149,9 +149,7 @@ function UploadFiles(props: any) {
                 >
                   Cerrar
                 </Button>
-                <Button type="submit" variant="ghost">
-                  Subir Imagen
-                </Button>
+                <Button type="submit">Subir Imagen</Button>
               </ModalFooter>
             </form>
           </ModalBody>

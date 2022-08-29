@@ -12,52 +12,38 @@ import { fetchFilterTournaments } from "../redux/slices/tournamentThunk";
 import TournamentCard from "../components/TournamentCard";
 import { SearchIcon } from "@chakra-ui/icons";
 
+const filterInitialState = {
+  type: "PUBLIC",
+  stat: "",
+  sort: "",
+  name: "",
+};
+
 function PublicTournaments(): JSX.Element {
-  const currentTournamets = useAppSelector((state) => state.tournaments);
+  const currentTournaments = useAppSelector((state) => state.tournaments);
   const dispatch = useAppDispatch();
-  const [filters, setFilters] = useState({
-    stat: "",
-    type: "",
-    sort: "",
-    name: "",
-    searchname: "",
-  });
-  const filter = {
-    type: "PUBLIC",
-    stat: "",
-    sort: "",
-    name: "",
-  };
+  const [filter, setFilter] = useState(filterInitialState);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     dispatch(fetchFilterTournaments(filter));
   }, []);
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value,
-      name: e.target.value,
-    });
+  function handleSubmit() {
+    dispatch(
+      fetchFilterTournaments({
+        ...filter,
+        name: search,
+      })
+    );
+    setFilter(filterInitialState);
   }
 
-  function handleSubmit() {
-    dispatch(fetchFilterTournaments(filters));
-    setFilters({
-      ...filters,
-      searchname: "",
-    });
-  }
   function deleteFilter() {
-    dispatch(fetchFilterTournaments(filters));
-    setFilters({
-      stat: "",
-      type: "",
-      sort: "",
-      name: "",
-      searchname: "",
-    });
+    setFilter(filterInitialState);
+    dispatch(fetchFilterTournaments(filterInitialState));
   }
+
   return (
     <>
       <Heading size="lg" color="text">
@@ -68,26 +54,26 @@ function PublicTournaments(): JSX.Element {
         <Input
           name="searchname"
           placeholder="Buscar torneo..."
-          value={filters.searchname}
-          color="#F7F7F7"
-          borderColor="#4FBDBA"
+          value={search}
+          color="text"
+          borderColor="buttons"
           w="30%"
           type="text"
-          onChange={handleInputChange}
+          onChange={(e) => setSearch(e.target.value)}
         />
         <IconButton
           aria-label="Search database"
-          bgColor="#4FBDBA"
+          bgColor="buttons"
           icon={<SearchIcon />}
           type="submit"
           onClick={handleSubmit}
         />
         <Button
           _hover={{
-            color: "#082032",
+            color: "primary",
           }}
-          bgColor="#4FBDBA"
-          color="#F7F7F7"
+          bgColor="buttons"
+          color="text"
           size="md"
           onClick={deleteFilter}
         >
@@ -95,10 +81,10 @@ function PublicTournaments(): JSX.Element {
         </Button>
       </Stack>
 
-      {!currentTournamets.loading && currentTournamets.error ? (
-        <Text>Error: {currentTournamets.error}</Text>
-      ) : null}
-      {currentTournamets.tournaments?.map((el) => (
+      {!currentTournaments.loading && currentTournaments.error && (
+        <Text>Error: {currentTournaments.error}</Text>
+      )}
+      {currentTournaments.tournaments?.map((el) => (
         <TournamentCard
           key={el.id}
           id={el.id}
