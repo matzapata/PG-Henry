@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getUserInfo } from "../redux/slices/userThunk";
 import api from "../services/api";
-import { getLogoA } from "../redux/slices/teamThunk";
+import { getLogoA, getLogoB } from "../redux/slices/teamThunk";
 function UploadFiles(props: any) {
   const [imageSelected, setImageSelected] = useState("");
   const [fileInputState, setFileInputState] = useState("");
@@ -78,7 +78,8 @@ function UploadFiles(props: any) {
           .then((r) => r.data)
           .then((r) => console.log(r));
       } else if (secure_url && props.imagen) {
-        dispatch(getLogoA(secure_url));
+        if (props.logo_equipo) dispatch(getLogoA(secure_url));
+        else if (props.logo_torneo) dispatch(getLogoB(secure_url));
       }
     } catch (err) {
       console.error(err);

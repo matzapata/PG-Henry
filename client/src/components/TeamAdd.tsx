@@ -138,12 +138,11 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         />
                         <FormErrorMessage>{error}</FormErrorMessage>
                       </FormControl>
-                      <Input
-                        type="text"
-                        name="shield_url"
-                        value={input.shield_url}
-                        placeholder="Escudo"
-                        onChange={cambiosEnInput}
+                      <UploadFiles
+                        imagen={true}
+                        logo_equipo={true}
+                        funcion={"Logo Equipo"}
+                        titulo={"Sube una imagen del equipo"}
                       />
                     </Stack>
                     <Button onClick={agregaEquipo}>Agregar</Button>

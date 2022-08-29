@@ -10,3 +10,14 @@ export const getLogoA = createAsyncThunk(
     }
   }
 );
+
+export const getLogoB = createAsyncThunk(
+  "get/logoB",
+  (payload: any, { rejectWithValue }) => {
+    try {
+      return payload;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);

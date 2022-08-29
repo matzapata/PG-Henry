@@ -32,6 +32,7 @@ import MatchAdd from "./MatchAdd";
 import { FaExclamationCircle } from "react-icons/fa";
 import api from "../services/api";
 import { useAppSelector } from "../redux/hooks";
+import UploadFiles from "./UploadFile";
 
 type Inputs = {
   name: string;
@@ -109,6 +110,7 @@ function validate(input: Inputs, submit = false) {
 
 export default function TournamentForm(): JSX.Element {
   const userCreatorId = useAppSelector((state) => state.auth.decoded?.id);
+  const logoTorneo = useAppSelector((state) => state.team.logo_b);
   const history = useHistory();
   const [CrearError, setCrearError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -188,7 +190,7 @@ export default function TournamentForm(): JSX.Element {
       errors.teams === "Completado" &&
       errors.matches === "Completado"
     ) {
-      let finalLogo_url = input.logo_url;
+      let finalLogo_url = logoTorneo;
       if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
 
       try {
@@ -355,12 +357,11 @@ export default function TournamentForm(): JSX.Element {
                       </FormControl>
 
                       {/*  ///LOGO/// */}
-                      <Input
-                        type="text"
-                        name="logo_url"
-                        value={input.logo_url}
-                        placeholder="URL logo"
-                        onChange={cambiosEnInput}
+                      <UploadFiles
+                        imagen={true}
+                        logo_torneo={true}
+                        funcion={"Imagen Torneo"}
+                        titulo={"Sube una imagen para el torneo"}
                       />
                     </Stack>
 
