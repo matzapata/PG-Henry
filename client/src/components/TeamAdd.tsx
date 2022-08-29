@@ -77,7 +77,6 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       if (validateTeamNames(teams, input.name)) {
         let finalShield_url = logo_a;
         if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
-        console.log(finalShield_url);
         setTeams([
           ...teams,
 
@@ -120,7 +119,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
           >
             <Stack spacing="9px">
               <Box>
-                <form>
+                <form onSubmit={agregaEquipo}>
                   <Text>Agregar Equipos</Text>
                   <Stack direction="column" spacing={4}>
                     <Stack direction="row" spacing={4}>
@@ -138,16 +137,15 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         />
                         <FormErrorMessage>{error}</FormErrorMessage>
                       </FormControl>
-                      {/* <Input
+                      <Input
                         type="text"
                         name="shield_url"
                         value={input.shield_url}
                         placeholder="Escudo"
                         onChange={cambiosEnInput}
-                      /> */}
-                      <UploadFiles asdf={true} />
+                      />
                     </Stack>
-                    <Button onClick={agregaEquipo}>Agregar</Button>
+                    <Button type="submit">Agregar</Button>
                   </Stack>
                 </form>
 
