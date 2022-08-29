@@ -15,29 +15,23 @@ import {
   fetchTournaments,
 } from "../redux/slices/tournamentThunk";
 
+const filterInitialState = {
+  stat: "",
+  type: "",
+  sort: "asc",
+  name: "",
+  page: 1,
+};
+
 function TournamentFilter(): JSX.Element {
-  const [filter, setFilter] = useState({
-    stat: "",
-    type: "",
-    sort: "asc",
-    name: "",
-    searchname: "",
-  });
-  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useAppDispatch();
+  const [filter, setFilter] = useState(filterInitialState);
+  const [currentPage, setCurrentPage] = useState(1);
   const currentTournaments = useAppSelector((state) => state.tournaments);
 
   useEffect(() => {
     dispatch(fetchFilterTournaments({ ...filter, page: currentPage }));
   }, [currentPage]);
-
-  useEffect(() => {
-    dispatch(fetchFilterTournaments({ ...filter, page: 1 }));
-  }, []);
-
-  useEffect(() => {
-    handleFilter();
-  }, [filter]);
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setFilter({
@@ -46,68 +40,39 @@ function TournamentFilter(): JSX.Element {
     });
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFilter({
-      ...filter,
-      [e.target.name]: e.target.value,
-      name: e.target.value,
-    });
-  }
-
   function handleFilter() {
     dispatch(fetchFilterTournaments(filter));
   }
 
-  function handleSubmit() {
-    dispatch(fetchFilterTournaments(filter));
-    setFilter({
-      ...filter,
-      searchname: "",
-    });
-  }
-
-  function previousPage() {
-    setCurrentPage(currentPage === 1 ? 1 : currentPage - 1);
-  }
-  function nextPage() {
-    setCurrentPage(currentPage + 1);
-  }
-
   function deleteFilter() {
     dispatch(fetchTournaments());
-    setFilter({
-      stat: "",
-      type: "",
-      sort: "",
-      name: "",
-      searchname: "",
-    });
+    setFilter(filterInitialState);
   }
 
   return (
     <Box p="20px" backdropFilter="auto" backdropBrightness="0.5">
       <Stack direction="row" spacing="5px">
         <Input
-          name="searchname"
+          name="name"
           placeholder="Buscar torneo..."
-          value={filter.searchname}
-          color="#F7F7F7"
-          borderColor="#4FBDBA"
+          value={filter.name}
+          color="text"
+          borderColor="buttons"
           w="30%"
           type="text"
-          onChange={handleInputChange}
+          onChange={(e) => setFilter({ ...filter, name: e.target.value })}
         />
         <IconButton
           aria-label="Search database"
-          bgColor="#4FBDBA"
+          bgColor="buttons"
           icon={<SearchIcon />}
           type="submit"
-          onClick={handleSubmit}
+          onClick={handleFilter}
         />
         <Select
           w="20%"
-          color="#F7F7F7"
-          borderColor="#4FBDBA"
+          color="text"
+          borderColor="buttons"
           placeholder="Estado"
           id="status"
           name="stat"
@@ -123,8 +88,8 @@ function TournamentFilter(): JSX.Element {
         </Select>
         <Select
           w="20%"
-          color="#F7F7F7"
-          borderColor="#4FBDBA"
+          color="text"
+          borderColor="buttons"
           placeholder="Acceso"
           id="types"
           name="type"
@@ -139,8 +104,8 @@ function TournamentFilter(): JSX.Element {
         </Select>
         <Select
           w="20%"
-          color="#F7F7F7"
-          borderColor="#4FBDBA"
+          color="text"
+          borderColor="buttons"
           id="sorts"
           name="sort"
           value={filter.sort}
@@ -157,8 +122,8 @@ function TournamentFilter(): JSX.Element {
           _hover={{
             color: "#082032",
           }}
-          bgColor="#4FBDBA"
-          color="#F7F7F7"
+          bgColor="buttons"
+          color="text"
           size="md"
           onClick={handleFilter}
         >
@@ -168,23 +133,25 @@ function TournamentFilter(): JSX.Element {
           _hover={{
             color: "#082032",
           }}
-          bgColor="#4FBDBA"
-          color="#F7F7F7"
+          bgColor="buttons"
+          color="text"
           size="md"
           onClick={deleteFilter}
         >
           Cargar todos
         </Button>
         <Button
-          onClick={previousPage}
+          onClick={() =>
+            setCurrentPage(currentPage === 1 ? 1 : currentPage - 1)
+          }
           name="backbutton"
           disabled={currentPage === 1 ? true : false}
         >
           <ArrowBackIcon />
         </Button>
-        <Box bgColor="#4FBDBA">{currentPage}</Box>
+        <Box bgColor="buttons">{currentPage}</Box>
         <Button
-          onClick={nextPage}
+          onClick={() => setCurrentPage(currentPage + 1)}
           name="fowardbutton"
           disabled={currentTournaments.tournaments.length < 10 ? true : false}
         >

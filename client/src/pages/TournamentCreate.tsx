@@ -22,9 +22,15 @@ export default function TournamentCreate(): JSX.Element {
         justifyContent="space-between"
         p="20px"
       >
-        <Stack flexDir="row" alignItems="center">
+        <Stack flexDir="row" alignItems="center" p={"10px"}>
           <Logo />
-          <Text fontSize="30px" fontWeight="bold" color="#F7F7F7" ml="40px">
+          <Text
+            p={"10px"}
+            fontSize="30px"
+            fontWeight="bold"
+            color="#F7F7F7"
+            ml="40px"
+          >
             Crear torneo
           </Text>
         </Stack>
@@ -46,6 +52,7 @@ export default function TournamentCreate(): JSX.Element {
       </Box>
 
       <Divider />
+
       <TournamentForm />
     </Container>
   );

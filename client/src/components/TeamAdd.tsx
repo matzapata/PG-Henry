@@ -10,9 +10,12 @@ import {
   GridItem,
   FormControl,
   FormErrorMessage,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import UploadFiles from "./UploadFile";
 
 type Team = {
   name: string;
@@ -42,6 +45,7 @@ const validateName = (input: Team, agregar = false) => {
 };
 
 export default function TeamAdd({ cb }: any): JSX.Element {
+  const logo_a = useAppSelector((state) => state.team.logo_a);
   const [error, setError] = useState("");
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
@@ -67,12 +71,12 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       })
     );
   };
-  const agregaEquipo = (e: React.FormEvent<HTMLFormElement>) => {
+  const agregaEquipo = (e: React.FormEvent<HTMLFormElement> | any) => {
     e.preventDefault();
     setError(validateName(input, true));
     if (error === "Completado") {
       if (validateTeamNames(teams, input.name)) {
-        let finalShield_url = input.shield_url;
+        let finalShield_url = logo_a;
         if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
         setTeams([
           ...teams,
@@ -94,97 +98,104 @@ export default function TeamAdd({ cb }: any): JSX.Element {
   };
 
   useEffect(() => {
+    console.log(logo_a);
+  }, [logo_a]);
+
+  useEffect(() => {
     cb(teams);
   }, [teams]);
 
   return (
-    <Container p="0px">
-      <Box
-        h="100%"
-        display="flex"
-        flexDir="column"
-        alignItems="space-between"
-        justifyContent="space-between"
-        p="12px"
-        backgroundColor="rgba(57,70,100,0.9)"
-      >
-        <Stack spacing="9px">
-          <Box>
-            <form onSubmit={agregaEquipo}>
-              <Text>Agrega Equipos</Text>
-              <br />
-              <Stack direction="column" spacing={4}>
-                <Stack direction="row" spacing={4}>
-                  <FormControl
-                    isInvalid={
-                      error === "Completado" || error === "" ? false : true
-                    }
-                  >
-                    <Input
-                      type="text"
-                      name="name"
-                      value={input.name}
-                      placeholder="Nombre"
-                      onChange={cambiosEnInput}
-                    />
-                    <FormErrorMessage>{error}</FormErrorMessage>
-                  </FormControl>
-                  <Input
-                    type="text"
-                    name="shield_url"
-                    value={input.shield_url}
-                    placeholder="Escudo"
-                    onChange={cambiosEnInput}
-                  />
-                </Stack>
-                <Button type="submit">Agregar</Button>
-              </Stack>
-            </form>
-
-            {!!teams.length &&
-              teams.map((el) => (
-                <Box key={el.key} display="Flex" flexDirection="row">
-                  <GridItem
-                    boxShadow="dark-lg"
-                    transition="200ms ease"
-                    backgroundColor="rgba(57,91,100,0.7)"
-                    borderRadius="20px"
-                    display={"flex"}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    p="5px"
-                    w="100%"
-                    margin="5px"
-                  >
-                    <Image
-                      className="image"
-                      src={el.shield_url}
-                      w="3rem"
-                      h="3rem"
-                      fit="cover"
-                      borderRadius={"20px"}
-                    />
-
-                    <Stack p="5px" spacing={3}>
-                      <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                        {el.name}
-                      </Text>
+    <div>
+      <Container>
+        <Flex>
+          <Box
+            h="100%"
+            display="flex"
+            flexDir="column"
+            alignItems="center"
+            justifyContent="space-between"
+            p="20px"
+            backgroundColor="rgba(57,70,100,0.9)"
+          >
+            <Stack spacing="9px">
+              <Box>
+                <form>
+                  <Text>Agregar Equipos</Text>
+                  <Stack direction="column" spacing={4}>
+                    <Stack direction="row" spacing={4}>
+                      <FormControl
+                        isInvalid={
+                          error === "Completado" || error === "" ? false : true
+                        }
+                      >
+                        <Input
+                          type="text"
+                          name="name"
+                          value={input.name}
+                          placeholder="Nombre"
+                          onChange={cambiosEnInput}
+                        />
+                        <FormErrorMessage>{error}</FormErrorMessage>
+                      </FormControl>
+                      <UploadFiles
+                        imagen={true}
+                        logo_equipo={true}
+                        funcion={"Logo Equipo"}
+                        titulo={"Sube una imagen del equipo"}
+                      />
                     </Stack>
-                    <Button
-                      value={el.key}
-                      onClick={quitarEquipo}
-                      _hover={{
-                        bgColor: "#04879C",
-                      }}
-                    >
-                      X
-                    </Button>
-                  </GridItem>
-                </Box>
-              ))}
+                    <Button onClick={agregaEquipo}>Agregar</Button>
+                  </Stack>
+                </form>
+
+                {!!teams.length &&
+                  teams.map((el) => (
+                    <Box key={el.key} display="Flex" flexDirection="row">
+                      <GridItem
+                        _hover={{
+                          bgColor: "#04879C",
+                        }}
+                        boxShadow="dark-lg"
+                        transition="200ms ease"
+                        backgroundColor="rgba(57,91,100,0.7)"
+                        borderRadius="20px"
+                        display={"flex"}
+                        justifyContent="space-between"
+                        alignItems="center"
+                        p="5px"
+                        w="100%"
+                        margin="5px"
+                      >
+                        <Image
+                          className="image"
+                          src={el.shield_url}
+                          w="3rem"
+                          h="3rem"
+                          fit="cover"
+                          borderRadius={"20px"}
+                        />
+
+                        <Stack p="5px" spacing={3}>
+                          <Text
+                            fontSize="15px"
+                            fontWeight="bold"
+                            color="#AEFEFF"
+                          >
+                            {el.name}
+                          </Text>
+                        </Stack>
+                        <Button value={el.key} onClick={quitarEquipo}>
+                          X
+                        </Button>
+                      </GridItem>
+                    </Box>
+                  ))}
+              </Box>
+            </Stack>
           </Box>
-        </Stack>
-      </Box>
-    </Container>
+        </Flex>
+      </Container>
+    </div>
   );
 }
