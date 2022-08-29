@@ -55,15 +55,15 @@ router.get(
 router.get("/findTournament", async (req, res) => {
   try {
     const { tournamentid, userid } = req.query;
-    const result = await db.userTournament.findFirst({
+    const result = await db.userTournament.findFirstOrThrow({
       where: {
         user_id: userid as string,
         tournament_id: tournamentid as string,
       },
     });
-    console.log("done");
-  } catch (e) {
-    console.log(e);
+    res.send(result);
+  } catch (e: any) {
+    res.status(400).send({ msg: e.message });
   }
 });
 

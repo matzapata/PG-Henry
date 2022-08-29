@@ -75,7 +75,7 @@ export const fetchUniqueUserTournament = createAsyncThunk(
   async (id: { tournamentid: string; userid: string | undefined }) => {
     try {
       const result = await api.get(
-        `/users/findTournament${
+        `/users/findTournament?${
           id.tournamentid ? "tournamentid=" + id.tournamentid : ""
         }&${id.userid ? "userid=" + id.userid : ""}`
       );

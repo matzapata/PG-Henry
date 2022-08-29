@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import {
+  Text,
   Box,
   Button,
   Modal,
@@ -19,6 +20,10 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user_id = useAppSelector((state) => state.auth.decoded?.id);
+  const unido = useAppSelector(
+    (state) => state.user.userTournaments.is_attached
+  );
+  console.log(unido);
 
   useEffect(() => {
     dispatch(fetchUniqueUserTournament({ tournamentid: id, userid: user_id }));
@@ -27,32 +32,39 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   function handleMP() {
     dispatch(fetchMercadoPago({ tournamentid: id, userid: user_id }));
   }
+  if (unido === false) {
+    return (
+      <Box>
+        <Button onClick={onOpen}>Unirse</Button>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Unete comprando con mercadopago!</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Te redireccionaremos a Mercadopago asi puedes realizar tu compra
+              por 200 pesos argentinos!
+            </ModalBody>
 
-  return (
-    <Box>
-      <Button onClick={onOpen}>Unirse</Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Unete comprando con mercadopago!</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Te redireccionaremos a Mercadopago asi puedes realizar tu compra por
-            200 pesos argentinos!
-          </ModalBody>
-
-          <ModalFooter>
-            <Button onClick={handleMP} mr={3}>
-              Ir a mercadopago
-            </Button>
-            <Button onClick={onClose} colorScheme="blue" mr={3}>
-              Cerrar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Box>
-  );
+            <ModalFooter>
+              <Button onClick={handleMP} mr={3}>
+                Ir a mercadopago
+              </Button>
+              <Button onClick={onClose} colorScheme="blue" mr={3}>
+                Cerrar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
+    );
+  } else {
+    return (
+      <Box>
+        <Text>Ya estas unido!!</Text>
+      </Box>
+    );
+  }
 }
 
 export default Mercadopago;

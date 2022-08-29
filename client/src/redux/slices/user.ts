@@ -50,6 +50,7 @@ const initialState: {
     page: number;
     lastPage: number;
     tournaments: UserTournament[];
+    is_attached: boolean;
   };
 } = {
   token: null,
@@ -63,6 +64,7 @@ const initialState: {
     page: 1,
     lastPage: 1,
     tournaments: [],
+    is_attached: false,
   },
 };
 
@@ -126,6 +128,16 @@ const userSlice = createSlice({
     builder.addCase(fetchUserTournaments.rejected, (state, action) => {
       state.userTournaments = initialState.userTournaments;
       state.error = action.payload as string;
+    });
+    // fetch if user is attached tournaments
+    builder.addCase(fetchUniqueUserTournament.fulfilled, (state, action) => {
+      if (typeof action.payload === "object") {
+        state.userTournaments.is_attached = true;
+      } else {
+        state.userTournaments.is_attached = false;
+      }
+      state.loading = false;
+      state.error = "";
     });
   },
 });
