@@ -46,7 +46,13 @@ function PublicTournaments(): JSX.Element {
 
   return (
     <>
-      <Heading size="lg" color="text">
+      <Heading
+        size="lg"
+        color="DText"
+        fontFamily="heading"
+        fontWeight="thin"
+        textTransform={"uppercase"}
+      >
         Torneos Publicos
       </Heading>
 
