@@ -83,7 +83,6 @@ function validate(input: Inputs, submit = false) {
   } else {
     errors.password = "Completado";
   }
-
   if (input.teams.length >= 2) errors.teams = "Completado";
 
   if (!!input.matches.length) errors.matches = "Completado";
@@ -203,7 +202,9 @@ export default function TournamentForm(): JSX.Element {
   useEffect(() => {
     setErrors(validate(input));
     actualizarMatches();
+    setCrearError("");
   }, [input.teams, input.matches]);
+
   return (
     <Container>
       <Flex alignItems="center">
@@ -295,7 +296,7 @@ export default function TournamentForm(): JSX.Element {
                     type="number"
                     name="user_limit"
                     value={input.user_limit}
-                    placeholder="Cantidad máxima de usuarios"
+                    placeholder="Cantidad máx. de usuarios"
                     onChange={cambiosENUser_Limit}
                   />
                 </NumberInput>
