@@ -74,7 +74,7 @@ function UploadFiles(props: any) {
         });
       setFileInputState("");
       setPreviewSource("");
-      if (secure_url && !props.asdf) {
+      if (secure_url && !props.imagen) {
         await api
           .put(`${props.url}`, {
             avatar: secure_url,
@@ -83,7 +83,7 @@ function UploadFiles(props: any) {
           })
           .then((r) => r.data)
           .then((r) => console.log(r));
-      } else if (secure_url && props.asdf) {
+      } else if (secure_url && props.imagen) {
         dispatch(getLogoA(secure_url));
       }
     } catch (err) {
