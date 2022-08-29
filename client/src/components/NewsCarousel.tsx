@@ -1,5 +1,16 @@
 // import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  SimpleGrid,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 interface New {
@@ -26,25 +37,47 @@ function Carousel() {
   }, [setNews]);
 
   return (
-    <Stack direction="row" height="50%" justifyContent="center" mt={10}>
-      <Stack bgImg={selectedNew?.image_url} bgSize="cover" width="65%">
-        <Heading>{selectedNew?.title}</Heading>
-        <Text>{selectedNew?.description}</Text>
-      </Stack>
-      <SimpleGrid columns={3} width="50%">
+    <>
+      <Flex
+        height="100%"
+        bgImg={selectedNew?.image_url}
+        bgSize="cover"
+        bgPos="center"
+        borderRadius={20}
+        alignItems="end"
+      >
+        <Box>
+          <Heading
+            fontSize="xl"
+            bgColor="cyan.50"
+            opacity="80%"
+            borderRadius={20}
+            p={2}
+          >
+            {selectedNew?.title}
+            <Text fontSize="large" mt={2}>
+              {selectedNew?.description}
+            </Text>
+          </Heading>
+        </Box>
+      </Flex>
+      <HStack>
         {news.map((e, id) => (
-          <Box
+          <VStack
             key={id}
             onClick={() => setSelectedNew(e)}
             bgImg={e.image_url}
-            height="10%"
+            bgSize="cover"
+            bgPos="center"
+            justifyContent="flex-end"
+            borderRadius={20}
           >
-            <Heading fontSize="5px">{e.title}</Heading>
-            <Text>{e.description}</Text>
-          </Box>
+            <Heading fontSize="xs">{e.title}</Heading>
+            <Text fontSize="xx-small">{e.description}</Text>
+          </VStack>
         ))}
-      </SimpleGrid>
-    </Stack>
+      </HStack>
+    </>
   );
 }
 

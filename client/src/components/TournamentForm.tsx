@@ -32,6 +32,7 @@ import MatchAdd from "./MatchAdd";
 import { FaExclamationCircle } from "react-icons/fa";
 import api from "../services/api";
 import { useAppSelector } from "../redux/hooks";
+import UploadFiles from "./UploadFile";
 
 type Inputs = {
   name: string;
@@ -109,6 +110,8 @@ function validate(input: Inputs, submit = false) {
 
 export default function TournamentForm(): JSX.Element {
   const userCreatorId = useAppSelector((state) => state.auth.decoded?.id);
+  const logoTorneo = useAppSelector((state) => state.team.logo_b);
+  const [logo, setLogo] = useState(logoTorneo);
   const history = useHistory();
   const [CrearError, setCrearError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -188,9 +191,14 @@ export default function TournamentForm(): JSX.Element {
       errors.teams === "Completado" &&
       errors.matches === "Completado"
     ) {
-      let finalLogo_url = input.logo_url;
+      /* let finalLogo_url = logoTorneo;
+      if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg"; */
+      let finalLogo_url = "";
+      if (logo != logoTorneo) {
+        setLogo(logoTorneo);
+        finalLogo_url = logoTorneo;
+      }
       if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
-
       try {
         const tournamentID = await api.post("/tournaments/create", {
           ...input,
@@ -210,6 +218,9 @@ export default function TournamentForm(): JSX.Element {
     actualizarMatches();
     setCrearError("");
   }, [input.teams, input.matches]);
+  useEffect(() => {
+    setLogo(logoTorneo);
+  }, []);
 
   return (
     <Container>
@@ -223,7 +234,6 @@ export default function TournamentForm(): JSX.Element {
           p="20px"
           rounded={"xl"}
           boxShadow={"lg"}
-          /* backgroundColor="rgba(57,91,100,0.98)" */
           bg={useColorModeValue("white", "gray.700")}
         >
           <Stack alignItems="space-between;" spacing="9px">
@@ -237,7 +247,7 @@ export default function TournamentForm(): JSX.Element {
                     (errors.user_limit === "Completado" ||
                       errors.user_limit === "") &&
                     (errors.password === "Completado" || errors.password === "")
-                      ? "white"
+                      ? "gray.400"
                       : "red.500"
                   }
                 >
@@ -246,7 +256,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.teams === "Completado" || errors.teams === ""
-                      ? "white"
+                      ? "gray.400"
                       : "red.500"
                   }
                 >
@@ -255,7 +265,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.matches === "Completado" || errors.matches === ""
-                      ? "white"
+                      ? "gray.400"
                       : "red.500"
                   }
                 >
@@ -355,12 +365,11 @@ export default function TournamentForm(): JSX.Element {
                       </FormControl>
 
                       {/*  ///LOGO/// */}
-                      <Input
-                        type="text"
-                        name="logo_url"
-                        value={input.logo_url}
-                        placeholder="URL logo"
-                        onChange={cambiosEnInput}
+                      <UploadFiles
+                        imagen={true}
+                        logo_torneo={true}
+                        funcion={"Imagen Torneo"}
+                        titulo={"Sube una imagen para el torneo"}
                       />
                     </Stack>
 

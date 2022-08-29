@@ -14,7 +14,8 @@ import {
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
-
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import UploadFiles from "./UploadFile";
 type Team = {
   name: string;
   shield_url: string;
@@ -43,6 +44,8 @@ const validateName = (input: Team, agregar = false) => {
 };
 
 export default function TeamAdd({ cb }: any): JSX.Element {
+  const logo_a = useAppSelector((state) => state.team.logo_a);
+  const [logo, setLogo] = useState(logo_a);
   const [error, setError] = useState("");
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
@@ -68,12 +71,16 @@ export default function TeamAdd({ cb }: any): JSX.Element {
       })
     );
   };
-  const agregaEquipo = (e: React.FormEvent<HTMLFormElement>) => {
+  const agregaEquipo = (e: React.FormEvent<HTMLFormElement> | any) => {
     e.preventDefault();
     setError(validateName(input, true));
     if (error === "Completado") {
       if (validateTeamNames(teams, input.name)) {
-        let finalShield_url = input.shield_url;
+        let finalShield_url = "";
+        if (logo != logo_a) {
+          setLogo(logo_a);
+          finalShield_url = logo_a;
+        }
         if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
         setTeams([
           ...teams,
@@ -97,7 +104,9 @@ export default function TeamAdd({ cb }: any): JSX.Element {
   useEffect(() => {
     cb(teams);
   }, [teams]);
-
+  useEffect(() => {
+    setLogo(logo_a);
+  }, []);
   return (
     <Container p="0px">
       <Box
@@ -110,42 +119,39 @@ export default function TeamAdd({ cb }: any): JSX.Element {
         bg={useColorModeValue("white", "gray.700")}
       >
         <Stack spacing="9px">
-          <form onSubmit={agregaEquipo}>
-            <Stack direction="column" spacing={4}>
-              <Stack direction="row" spacing={4}>
-                <FormControl
-                  isInvalid={
-                    error === "Completado" || error === "" ? false : true
-                  }
-                >
-                  <Input
-                    type="text"
-                    name="name"
-                    value={input.name}
-                    placeholder="Nombre"
-                    onChange={cambiosEnInput}
-                  />
-                  <FormErrorMessage>{error}</FormErrorMessage>
-                </FormControl>
+          <Stack direction="column" spacing={4}>
+            <Stack direction="row" spacing={4}>
+              <FormControl
+                isInvalid={
+                  error === "Completado" || error === "" ? false : true
+                }
+              >
                 <Input
                   type="text"
-                  name="shield_url"
-                  value={input.shield_url}
-                  placeholder="Escudo"
+                  name="name"
+                  value={input.name}
+                  placeholder="Nombre"
                   onChange={cambiosEnInput}
                 />
-              </Stack>
-              <Button
-                type="submit"
-                bg={"blue.400"}
-                _hover={{
-                  bg: "blue.500",
-                }}
-              >
-                Agregar
-              </Button>
+                <FormErrorMessage>{error}</FormErrorMessage>
+              </FormControl>
+              <UploadFiles
+                imagen={true}
+                logo_equipo={true}
+                funcion={"Logo Equipo"}
+                titulo={"Sube una imagen del equipo"}
+              />
             </Stack>
-          </form>
+            <Button
+              onClick={agregaEquipo}
+              bg={"blue.400"}
+              _hover={{
+                bg: "blue.500",
+              }}
+            >
+              Agregar
+            </Button>
+          </Stack>
 
           {!!teams.length &&
             teams.map((el) => (
