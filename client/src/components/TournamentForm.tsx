@@ -234,7 +234,6 @@ export default function TournamentForm(): JSX.Element {
           p="20px"
           rounded={"xl"}
           boxShadow={"lg"}
-          /* backgroundColor="rgba(57,91,100,0.98)" */
           bg={useColorModeValue("white", "gray.700")}
         >
           <Stack alignItems="space-between;" spacing="9px">
@@ -248,7 +247,7 @@ export default function TournamentForm(): JSX.Element {
                     (errors.user_limit === "Completado" ||
                       errors.user_limit === "") &&
                     (errors.password === "Completado" || errors.password === "")
-                      ? "black"
+                      ? "white"
                       : "red.500"
                   }
                 >
@@ -257,7 +256,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.teams === "Completado" || errors.teams === ""
-                      ? "black"
+                      ? "white"
                       : "red.500"
                   }
                 >
@@ -266,7 +265,7 @@ export default function TournamentForm(): JSX.Element {
                 <Tab
                   textColor={
                     errors.matches === "Completado" || errors.matches === ""
-                      ? "black"
+                      ? "white"
                       : "red.500"
                   }
                 >
