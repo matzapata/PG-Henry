@@ -120,7 +120,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
           >
             <Stack spacing="9px">
               <Box>
-                <form onSubmit={agregaEquipo}>
+                <form>
                   <Text>Agregar Equipos</Text>
                   <Stack direction="column" spacing={4}>
                     <Stack direction="row" spacing={4}>
@@ -138,15 +138,13 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                         />
                         <FormErrorMessage>{error}</FormErrorMessage>
                       </FormControl>
-                      <Input
-                        type="text"
-                        name="shield_url"
-                        value={input.shield_url}
-                        placeholder="Escudo"
-                        onChange={cambiosEnInput}
+                      <UploadFiles
+                        imagen={true}
+                        funcion={"Subir Imagen"}
+                        titulo={"Imagen Personalizada Equipo"}
                       />
                     </Stack>
-                    <Button type="submit">Agregar</Button>
+                    <Button onClick={agregaEquipo}>Agregar</Button>
                   </Stack>
                 </form>
 

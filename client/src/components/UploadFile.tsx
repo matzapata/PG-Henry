@@ -15,7 +15,6 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getUserInfo } from "../redux/slices/userThunk";
 import api from "../services/api";
 import { getLogoA } from "../redux/slices/teamThunk";
-
 function UploadFiles(props: any) {
   const [imageSelected, setImageSelected] = useState("");
   const [fileInputState, setFileInputState] = useState("");
@@ -24,7 +23,6 @@ function UploadFiles(props: any) {
   const dispatch = useAppDispatch();
   const user_detail: any = useAppSelector((state) => state.user.userDetail);
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-
   const previewFile = (file: any) => {
     const reader: any = new FileReader();
     reader.readAsDataURL(file);
@@ -32,14 +30,12 @@ function UploadFiles(props: any) {
       setPreviewSource(reader.result);
     };
   };
-
   const handleFileInputChange = (e: any) => {
     const file = e.target.files[0];
     previewFile(file);
     setImageSelected(file);
     setFileInputState(e.target.value);
   };
-
   const handleSubmitFile = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!imageSelected) return;
@@ -48,12 +44,10 @@ function UploadFiles(props: any) {
     reader.onloadend = async () => {
       uploadImage(reader.result);
     };
-
     reader.onerror = () => {
       console.error("Error subiendo el archivo!!");
     };
   };
-
   const uploadImage = async (base64EncodedImage: any) => {
     let secure_url;
     try {
@@ -74,7 +68,7 @@ function UploadFiles(props: any) {
         });
       setFileInputState("");
       setPreviewSource("");
-      if (secure_url && !props.asdf) {
+      if (secure_url && !props.imagen) {
         await api
           .put(`${props.url}`, {
             avatar: secure_url,
@@ -83,14 +77,13 @@ function UploadFiles(props: any) {
           })
           .then((r) => r.data)
           .then((r) => console.log(r));
-      } else if (secure_url && props.asdf) {
+      } else if (secure_url && props.imagen) {
         dispatch(getLogoA(secure_url));
       }
     } catch (err) {
       console.error(err);
     }
   };
-
   return (
     <div>
       <Button
@@ -104,7 +97,6 @@ function UploadFiles(props: any) {
       >
         {props.funcion || "Funcion que realiza"}
       </Button>
-
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -161,5 +153,4 @@ function UploadFiles(props: any) {
     </div>
   );
 }
-
 export default UploadFiles;
