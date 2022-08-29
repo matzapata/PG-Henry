@@ -204,7 +204,6 @@ export default function TournamentForm(): JSX.Element {
     setErrors(validate(input));
     actualizarMatches();
   }, [input.teams, input.matches]);
-  console.log(input);
   return (
     <Container>
       <Flex alignItems="center">
@@ -217,7 +216,7 @@ export default function TournamentForm(): JSX.Element {
           p="20px"
           backgroundColor="rgba(57,91,100,0.98)"
         >
-          <Stack alignItems="center" spacing="9px">
+          <Stack alignItems="space-between;" spacing="9px">
             <Stack direction="row" spacing={4}>
               {/* INPUT NAME */}
               <FormControl
@@ -244,6 +243,7 @@ export default function TournamentForm(): JSX.Element {
                 </option>
               </Select>
             </Stack>
+
             {/* CONTRASEÑA */}
             {input.type === "PRIVATE" && (
               <FormControl
@@ -279,28 +279,9 @@ export default function TournamentForm(): JSX.Element {
                 <FormErrorMessage>{errors.password}</FormErrorMessage>
               </FormControl>
             )}
-            {/* ////DESCRIPTION */}
-            <FormControl
-              isInvalid={
-                errors.description === "Completado" || errors.description === ""
-                  ? false
-                  : true
-              }
-            >
-              <Stack spacing={1}>
-                <Text mb="8px">Descripción: </Text>
-                <Textarea
-                  name="description"
-                  value={input.description}
-                  placeholder="Descripción"
-                  size="sm"
-                  onChange={cambiosEnInput}
-                />
-              </Stack>
-              <FormErrorMessage>{errors.description}</FormErrorMessage>
-            </FormControl>
-            {/* ////USER_LIMIT */}
-            <Flex inputMode="numeric">
+            <Stack direction="row" spacing={4}>
+              {/* ////USER_LIMIT */}
+
               <FormControl
                 isInvalid={
                   errors.user_limit === "Completado" || errors.user_limit === ""
@@ -322,15 +303,37 @@ export default function TournamentForm(): JSX.Element {
                   {errors.user_limit}
                 </FormErrorMessage>
               </FormControl>
-            </Flex>
-            {/*  ///LOGO/// */}
-            <Input
-              type="text"
-              name="logo_url"
-              value={input.logo_url}
-              placeholder="URL logo"
-              onChange={cambiosEnInput}
-            />
+
+              {/*  ///LOGO/// */}
+              <Input
+                type="text"
+                name="logo_url"
+                value={input.logo_url}
+                placeholder="URL logo"
+                onChange={cambiosEnInput}
+              />
+            </Stack>
+            {/* ////DESCRIPTION */}
+            <FormControl
+              isInvalid={
+                errors.description === "Completado" || errors.description === ""
+                  ? false
+                  : true
+              }
+            >
+              <Stack spacing={1}>
+                <Text mb="8px">Descripción: </Text>
+                <Textarea
+                  name="description"
+                  value={input.description}
+                  placeholder="Descripción"
+                  size="sm"
+                  onChange={cambiosEnInput}
+                />
+              </Stack>
+              <FormErrorMessage>{errors.description}</FormErrorMessage>
+            </FormControl>
+
             {/* AGREGAR EQUIPOS */}
             <TeamAdd cb={addTeam} />
             <Flex mt="4" alignItems="center">
