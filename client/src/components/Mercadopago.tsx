@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -13,13 +13,16 @@ import {
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { fetchMercadoPago } from "../redux/slices/mercadopago";
-import { useParams } from "react-router-dom";
+import { fetchUniqueUserTournament } from "../redux/slices/userThunk";
 
-function Mercadopago(): JSX.Element {
+function Mercadopago({ id }: { id: string }): JSX.Element {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { id } = useParams<{ id: string }>();
   const user_id = useAppSelector((state) => state.auth.decoded?.id);
+
+  useEffect(() => {
+    dispatch(fetchUniqueUserTournament({ tournamentid: id, userid: user_id }));
+  });
 
   function handleMP() {
     dispatch(fetchMercadoPago({ tournamentid: id, userid: user_id }));
