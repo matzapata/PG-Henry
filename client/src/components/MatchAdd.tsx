@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Text,
-  Flex,
   Stack,
   Input,
   Button,
@@ -126,6 +125,12 @@ export default function MatchAdd(props: props): JSX.Element {
       | React.ChangeEvent<HTMLTextAreaElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (
+      e.currentTarget.name === "team_a_name" ||
+      e.currentTarget.name === "team_b_name"
+    ) {
+      llenarSelect(equipos, true, e.currentTarget.name, e.currentTarget.value);
+    }
     setInput({
       ...input,
       [e.currentTarget.name]: e.currentTarget.value,
@@ -171,9 +176,30 @@ export default function MatchAdd(props: props): JSX.Element {
     setErrors(validate(input, newInputMatch, false));
     setMatches(newInputMatch);
   };
-  const llenarSelect = (teams: Team[]) => {
+  const llenarSelect = (
+    teams: Team[],
+    vieneDelinput = false,
+    targ_name = "", //team_a_name
+    targ_value = "" //A
+  ) => {
     const selectA: any = document.getElementById("team_a");
     const selectB: any = document.getElementById("team_b");
+    let teamsA: Team[] = teams;
+    let teamsB: Team[] = teams;
+    let indexA;
+    let indexB;
+
+    const NameselectedA = selectA.value;
+    const NameselectedB = selectB.value;
+
+    teamsB = teams.filter((team: Team) => {
+      return team.name != selectA.value;
+    });
+
+    teamsA = teams.filter((team: Team) => {
+      return team.name != selectB.value;
+    });
+
     for (let i = selectA?.options.length; i >= 0; i--) {
       selectA.remove(i);
       selectB.remove(i);
@@ -188,19 +214,33 @@ export default function MatchAdd(props: props): JSX.Element {
 
     selectA?.appendChild(EA);
     selectB?.appendChild(EB);
-    for (let i = 0; i < teams.length; i++) {
+    for (let i = 0; i < teamsA.length; i++) {
       const aTag = document.createElement("option");
-      const aTag2 = document.createElement("option");
-
-      aTag.setAttribute("a" + teams[i].key, teams[i].name);
-      aTag2.setAttribute("b" + teams[i].key, teams[i].name);
-
-      aTag.innerHTML = teams[i].name;
-      aTag2.innerHTML = teams[i].name;
-
+      aTag.setAttribute("a" + teamsA[i].key, teamsA[i].name);
+      aTag.innerHTML = teamsA[i].name;
       selectA?.appendChild(aTag);
-      selectB?.appendChild(aTag2);
+
+      if (teamsA[i].name === NameselectedA) {
+        indexA = i;
+      }
     }
+    for (let j = 0; j < teamsB.length; j++) {
+      const aTag2 = document.createElement("option");
+      aTag2.setAttribute("b" + teamsB[j].key, teamsB[j].name);
+      aTag2.innerHTML = teamsB[j].name;
+      selectB?.appendChild(aTag2);
+      if (teamsB[j].name === NameselectedB) {
+        indexB = j;
+      }
+    }
+
+    if (indexA || indexA === 0) {
+      selectA.children[indexA + 1].selected = true;
+    }
+    if (indexB || indexB === 0) {
+      selectB.children[indexB + 1].selected = true;
+    }
+
     setInput({
       ...input,
       team_a_name: selectA.value,
