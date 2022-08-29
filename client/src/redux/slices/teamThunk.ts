@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getLogoA = createAsyncThunk(
-  "get/logo",
+  "get/logoA",
   (payload: any, { rejectWithValue }) => {
     try {
       return payload;
