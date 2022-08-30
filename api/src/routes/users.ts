@@ -61,10 +61,6 @@ router.get("/findTournament", async (req, res) => {
         tournament_id: tournamentid as string,
       },
     });
-    if (result === null) {
-      console.log("leeel");
-    }
-    console.log(result);
     res.send(result);
   } catch (e: any) {
     res.status(400).send("No existe el torneo");
