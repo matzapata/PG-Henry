@@ -19,7 +19,7 @@ const TestimonialContent = ({ children }: { children: ReactNode }) => {
     <Stack
       bg={useColorModeValue("white", "gray.800")}
       boxShadow={"lg"}
-      p={8}
+      p={6}
       rounded={"xl"}
       align={"center"}
       pos={"relative"}
@@ -59,29 +59,19 @@ const TestimonialText = ({ children }: { children: ReactNode }) => {
       textAlign={"center"}
       color={useColorModeValue("gray.600", "gray.400")}
       fontSize={"sm"}
+      width="250px"
     >
       {children}
     </Text>
   );
 };
 
-const TestimonialAvatar = ({
-  src,
-  name,
-  title,
-}: {
-  src: string;
-  name: string;
-  title: string;
-}) => {
+const TestimonialAvatar = ({ src, name }: { src: string; name: string }) => {
   return (
     <Flex align={"center"} mt={8} direction={"column"}>
       <Avatar src={src} mb={2} />
       <Stack spacing={-1} align={"center"}>
         <Text fontWeight={600}>{name}</Text>
-        <Text fontSize={"sm"} color={useColorModeValue("gray.600", "gray.400")}>
-          {title}
-        </Text>
       </Stack>
     </Flex>
   );
@@ -90,50 +80,20 @@ const TestimonialAvatar = ({
 export default function WithSpeechBubbles(props: any) {
   return (
     // <Box bg={useColorModeValue("gray.100", "gray.700")}>
-    <Box bg={"rgba(57,91,100,0.7)"}>
-      <Container maxW={"4xl"} py={16} as={Stack} spacing={12}>
+    <Box bg={"rgba(57,91,100,0)"}>
+      <Container maxW={"4xl"} py={8} as={Stack} spacing={12}>
         <Stack
           direction={{ base: "column", md: "row" }}
           spacing={{ base: 10, md: 4, lg: 10 }}
+          display="flex"
+          justifyContent={"center"}
         >
           <Testimonial>
             <TestimonialContent>
-              <TestimonialHeading>{props.title1}</TestimonialHeading>
-              <TestimonialText>{props.review1}</TestimonialText>
+              <TestimonialHeading>{props.titulo}</TestimonialHeading>
+              <TestimonialText>{props.review}</TestimonialText>
             </TestimonialContent>
-            <TestimonialAvatar
-              src={
-                "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-              }
-              name={props.name1}
-              title={props.cargo1}
-            />
-          </Testimonial>
-          <Testimonial>
-            <TestimonialContent>
-              <TestimonialHeading>{props.title2}</TestimonialHeading>
-              <TestimonialText>{props.review2}</TestimonialText>
-            </TestimonialContent>
-            <TestimonialAvatar
-              src={
-                "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-              }
-              name={props.name2}
-              title={props.cargo2}
-            />
-          </Testimonial>
-          <Testimonial>
-            <TestimonialContent>
-              <TestimonialHeading>{props.title3}</TestimonialHeading>
-              <TestimonialText>{props.review3}</TestimonialText>
-            </TestimonialContent>
-            <TestimonialAvatar
-              src={
-                "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-              }
-              name={props.name3}
-              title={props.cargo3}
-            />
+            <TestimonialAvatar src={props.avatar} name={props.name} />
           </Testimonial>
         </Stack>
       </Container>

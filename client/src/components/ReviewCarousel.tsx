@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import Slider from "react-slick";
 import Review from "./Review";
+import { useAppSelector } from "../redux/hooks";
 
 const settings = {
   dots: true,
@@ -18,15 +19,16 @@ const settings = {
 
 export default function Carousel(props: any) {
   const [slider, setSlider] = React.useState<Slider | null>(null);
+  const data1 = useAppSelector((state) => state.user.userComments);
 
   const top = useBreakpointValue({ base: "90%", md: "50%" });
   const side = useBreakpointValue({ base: "30%", md: "10px" });
 
   return (
     <Box
-      position={"relative"}
-      height={"500px"}
-      width={"100%"}
+      position={"absolute"}
+      height={"400px"}
+      width={"35%"}
       overflow={"hidden"}
       bg={"rgba(57,91,100,0.7)"}
       borderRadius="15px"
@@ -68,51 +70,18 @@ export default function Carousel(props: any) {
       >
         <BiRightArrowAlt />
       </IconButton>
-      <Slider {...settings}>
-        <Box>
-          <Review
-            title1={"Pagos Rapidos"}
-            title2={"Seguro para apostar"}
-            title3={"Muy buen soporte"}
-            review1={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem."
-            }
-            review2={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem."
-            }
-            review3={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem."
-            }
-            name1={"Mati"}
-            name2={"Santi"}
-            name3={"San"}
-            cargo1={"Fullstack Dev"}
-            cargo2={"Fullstack Dev"}
-            cargo3={"Fullstack Dev"}
-          />
-        </Box>
-        <Box>
-          <Review
-            title1={"Buen contenido"}
-            title2={"Muy buen diseño"}
-            title3={"Funciona perfecto"}
-            review1={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem."
-            }
-            review2={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem."
-            }
-            review3={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed imperdiet nibh lectus feugiat nunc sem."
-            }
-            name1={"Meli"}
-            name2={"Ale"}
-            name3={"Nico"}
-            cargo1={"Fullstack Dev"}
-            cargo2={"Fullstack Dev"}
-            cargo3={"Fullstack Dev"}
-          />
-        </Box>
+      <Slider {...settings} ref={(slider) => setSlider(slider)}>
+        {data1.map((review, index) => (
+          <Box key={index}>
+            <Review
+              stars={review.stars}
+              review={review.comentario}
+              name={review.username}
+              avatar={review.avatar}
+              titulo={review.titulo}
+            />
+          </Box>
+        ))}
       </Slider>
     </Box>
   );
