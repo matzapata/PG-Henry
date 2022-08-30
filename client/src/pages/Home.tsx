@@ -38,7 +38,6 @@ function Home() {
           check: true,
         })
       );
-
     dispatch(getReviews(null));
   }, []);
 
@@ -107,9 +106,6 @@ function Home() {
             </Box>
           )}
           {isLoggedIn && (
-            // <Box>
-            //   <UserTournaments />
-            // </Box>
             <Box mt="12">
               <UserTournaments />
               {data.length === 0 ? null : (
