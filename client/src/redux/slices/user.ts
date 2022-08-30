@@ -130,12 +130,21 @@ const userSlice = createSlice({
       state.error = action.payload as string;
     });
     // fetch if user is attached tournaments
+    builder.addCase(fetchUniqueUserTournament.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
     builder.addCase(fetchUniqueUserTournament.fulfilled, (state, action) => {
       if (typeof action.payload === "object") {
         state.userTournaments.is_attached = true;
       } else {
         state.userTournaments.is_attached = false;
       }
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(fetchUniqueUserTournament.rejected, (state, action) => {
+      state.userTournaments.is_attached = false;
       state.loading = false;
       state.error = "";
     });

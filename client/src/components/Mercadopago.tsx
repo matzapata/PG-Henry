@@ -60,7 +60,7 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   } else {
     return (
       <Box>
-        <Text>Ya estas unido!!</Text>
+        <Text color="white">Ya estas unido!!</Text>
       </Box>
     );
   }
