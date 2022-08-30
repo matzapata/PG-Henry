@@ -7,8 +7,6 @@ import {
   Box,
   Stack,
   useColorModeValue,
-  background,
-  textDecoration,
 } from "@chakra-ui/react";
 import TeamAdd from "./TeamAdd";
 import TournamentForm from "./TournamentForm";
