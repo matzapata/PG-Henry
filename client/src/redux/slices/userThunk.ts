@@ -1,11 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 
-type ChangePassword = {
-  email: string;
-  password: string;
-};
-
 type DeleteUser = {
   is_active: boolean;
   id: string;
@@ -77,6 +72,22 @@ export const fetchUserTournaments = createAsyncThunk(
         },
       });
       return response.data;
+    } catch (e: any) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const fetchUniqueUserTournament = createAsyncThunk(
+  "user/fetchUniqueUserTournament",
+  async (id: { tournamentid: any; userid: any }, { rejectWithValue }) => {
+    try {
+      const result = await api.get(
+        `/users/findTournament?${
+          id.tournamentid ? "tournamentid=" + id.tournamentid : ""
+        }&${id.userid ? "userid=" + id.userid : ""}`
+      );
+      return result.data;
     } catch (e: any) {
       return rejectWithValue(e.message);
     }

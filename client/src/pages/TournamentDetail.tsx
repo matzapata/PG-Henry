@@ -18,7 +18,7 @@ function TournamentDetail() {
         <Heading color="#F7F7F7">Partidos</Heading>
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
-        <Mercadopago />
+        <Mercadopago id={id} />
       </Box>
     </Box>
   );

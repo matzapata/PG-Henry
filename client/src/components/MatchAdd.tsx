@@ -11,6 +11,7 @@ import {
   FormErrorMessage,
   Select,
   useColorModeValue,
+  Flex,
 } from "@chakra-ui/react";
 
 type Match = {
@@ -26,10 +27,7 @@ type Team = {
   shield_url: string;
   key: number;
 };
-type props = {
-  cb: any;
-  equipos: Team[];
-};
+
 function validate(input: Match, matches: Match[], agregar = false) {
   const errors = {
     teams: "",
@@ -37,13 +35,13 @@ function validate(input: Match, matches: Match[], agregar = false) {
     date: "",
     matches: "",
   };
-  if (input.team_a_name != "Equipo A" && input.team_b_name != "Equipo B") {
+  if (input.team_a_name != "Equipo A" && input.team_b_name != "Equipo B")
     if (input.team_a_name !== input.team_b_name) {
       errors.teams = "Completado";
     } else {
       errors.teams = "Partido Inválido";
     }
-  }
+
   const tiempoTranscurrido = Date.now();
   const hoyN = new Date(tiempoTranscurrido);
 
@@ -102,12 +100,17 @@ function validate(input: Match, matches: Match[], agregar = false) {
   }
   return errors;
 }
-export default function MatchAdd(props: props): JSX.Element {
-  const { equipos } = props;
-  const { cb } = props;
+export default function MatchAdd({
+  equipos,
+  partidos,
+  addMatches,
+  siguientePaso,
+  volverPaso,
+}: any): JSX.Element {
+  const [createError, setCreateError] = useState("");
   const [matches, setMatches] = useState<Match[]>([]);
   const [input, setInput] = useState<Match>({
-    key: 0,
+    key: 1000,
     team_a_name: "",
     team_b_name: "",
     date: "",
@@ -130,7 +133,7 @@ export default function MatchAdd(props: props): JSX.Element {
       e.currentTarget.name === "team_a_name" ||
       e.currentTarget.name === "team_b_name"
     ) {
-      llenarSelect(equipos, true, e.currentTarget.name, e.currentTarget.value);
+      llenarSelect(equipos);
     }
     setInput({
       ...input,
@@ -167,7 +170,18 @@ export default function MatchAdd(props: props): JSX.Element {
           stage: input.stage,
         },
       ]);
+      addMatches([
+        ...matches,
+        {
+          team_a_name: input.team_a_name,
+          team_b_name: input.team_b_name,
+          date: input.date,
+          key: input.key,
+          stage: input.stage,
+        },
+      ]);
       setInput({ ...input, key: input.key + 1 });
+      setCreateError("");
     }
   };
   const quitarPartido = (e: any) => {
@@ -176,13 +190,9 @@ export default function MatchAdd(props: props): JSX.Element {
     });
     setErrors(validate(input, newInputMatch, false));
     setMatches(newInputMatch);
+    addMatches(newInputMatch);
   };
-  const llenarSelect = (
-    teams: Team[],
-    vieneDelinput = false,
-    targ_name = "", //team_a_name
-    targ_value = "" //A
-  ) => {
+  const llenarSelect = (teams: Team[]) => {
     const selectA: any = document.getElementById("team_a");
     const selectB: any = document.getElementById("team_b");
     let teamsA: Team[] = teams;
@@ -249,7 +259,7 @@ export default function MatchAdd(props: props): JSX.Element {
     });
   };
   function actualizarMatches() {
-    const teamsNames = equipos.map((team) => {
+    const teamsNames = equipos.map((team: Team) => {
       return team.name;
     });
     const newMatches = matches.filter((match) => {
@@ -261,14 +271,23 @@ export default function MatchAdd(props: props): JSX.Element {
 
     if (newMatches.length != matches.length) setMatches(newMatches);
   }
+  const crear = async () => {
+    if (!matches.length) {
+      setCreateError("Debe haber al menos 1 partido");
+    } else {
+      addMatches(matches);
+      siguientePaso();
+    }
+  };
+  useEffect(() => {
+    setMatches(partidos);
+    actualizarMatches();
+  }, []);
 
   useEffect(() => {
     llenarSelect(equipos);
     actualizarMatches();
   }, [equipos]);
-  useEffect(() => {
-    cb(matches);
-  }, [matches]);
 
   return (
     <Container p="0px">
@@ -280,31 +299,42 @@ export default function MatchAdd(props: props): JSX.Element {
         justifyContent="space-between"
         p="12px"
         bg={useColorModeValue("white", "gray.700")}
+        rounded={"xl"}
+        boxShadow={"lg"}
       >
         <Stack spacing="9px">
           <form onSubmit={agregaPartido}>
             <Stack direction="column" spacing={4} alignItems="space-between">
-              <Stack direction="row" spacing={4} alignItems="center">
-                <Select
-                  id="team_a"
-                  name="team_a_name"
-                  onChange={cambiosEnInput}
-                >
-                  <option value="" selected disabled hidden>
-                    Equipo A
-                  </option>
-                </Select>
-                <Text>Vs.</Text>
-                <Select
-                  id="team_b"
-                  name="team_b_name"
-                  onChange={cambiosEnInput}
-                >
-                  <option value="" selected disabled hidden>
-                    Equipo B
-                  </option>
-                </Select>
-              </Stack>
+              <FormControl
+                isInvalid={
+                  errors.teams === "Completado" || errors.teams === ""
+                    ? false
+                    : true
+                }
+              >
+                <Stack direction="row" spacing={4} alignItems="center">
+                  <Select
+                    id="team_a"
+                    name="team_a_name"
+                    onChange={cambiosEnInput}
+                  >
+                    <option value="" selected disabled hidden>
+                      Equipo A
+                    </option>
+                  </Select>
+                  <Text>Vs.</Text>
+                  <Select
+                    id="team_b"
+                    name="team_b_name"
+                    onChange={cambiosEnInput}
+                  >
+                    <option value="" selected disabled hidden>
+                      Equipo B
+                    </option>
+                  </Select>
+                </Stack>
+                <FormErrorMessage>{errors.teams}</FormErrorMessage>
+              </FormControl>
 
               <Stack direction="row" spacing={4}>
                 <FormControl
@@ -368,7 +398,7 @@ export default function MatchAdd(props: props): JSX.Element {
                   borderRadius="20px"
                   display={"flex"}
                   flexDirection="column"
-                  p="5px"
+                  p="10px"
                   w="auto"
                   margin="5px"
                 >
@@ -407,6 +437,21 @@ export default function MatchAdd(props: props): JSX.Element {
                 </GridItem>
               </Box>
             ))}
+          <Flex mt="4" alignItems="center">
+            <FormControl
+              isInvalid={
+                createError === "Completado" || createError === ""
+                  ? false
+                  : true
+              }
+            >
+              <FormErrorMessage justifyContent="center">
+                {createError}
+              </FormErrorMessage>
+            </FormControl>
+          </Flex>
+          <Button onClick={crear}>Siguiente </Button>
+          <Button onClick={volverPaso}>Anterior </Button>
         </Stack>
       </Box>
     </Container>

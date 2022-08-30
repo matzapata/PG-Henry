@@ -52,6 +52,21 @@ router.get(
   }
 );
 
+router.get("/findTournament", async (req, res) => {
+  try {
+    const { tournamentid, userid } = req.query;
+    const result = await db.userTournament.findFirst({
+      where: {
+        user_id: userid as string,
+        tournament_id: tournamentid as string,
+      },
+    });
+    res.send(result);
+  } catch (e: any) {
+    res.status(400).send("No existe el torneo");
+  }
+});
+
 router.put(
   "/:id/status",
   async (req: express.Request, res: express.Response) => {

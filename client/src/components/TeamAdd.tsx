@@ -11,10 +11,13 @@ import {
   FormControl,
   FormErrorMessage,
   useColorModeValue,
+  Icon,
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
+import { FaExclamationCircle } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import api from "../services/api";
 import UploadFiles from "./UploadFile";
 type Team = {
   name: string;
@@ -43,10 +46,17 @@ const validateName = (input: Team, agregar = false) => {
   return error;
 };
 
-export default function TeamAdd({ cb }: any): JSX.Element {
+export default function TeamAdd({
+  equipos,
+  addTeams,
+  siguientePaso,
+  volverPaso,
+}: any): JSX.Element {
   const logo_a = useAppSelector((state) => state.team.logo_a);
   const [logo, setLogo] = useState(logo_a);
   const [error, setError] = useState("");
+  const [checkError, setCheckError] = useState("");
+  const [createError, setCreateError] = useState("");
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
     name: "",
@@ -87,9 +97,15 @@ export default function TeamAdd({ cb }: any): JSX.Element {
 
           { name: input.name, shield_url: finalShield_url, key: input.key },
         ]);
+        addTeams([
+          ...teams,
+
+          { name: input.name, shield_url: finalShield_url, key: input.key },
+        ]);
         setInput({ name: "", shield_url: "", key: input.key + 1 });
         setError("");
       }
+      setCreateError("");
     }
   };
 
@@ -99,14 +115,33 @@ export default function TeamAdd({ cb }: any): JSX.Element {
     });
 
     setTeams(newInputTeam);
+    addTeams(newInputTeam);
+  };
+
+  const crear = async () => {
+    if (teams.length < 2) {
+      setCreateError("Debe haber al menos 2 equipos");
+    } else {
+      try {
+        await api.post("/tournaments/checkTeams", { teams: teams });
+        addTeams(teams);
+        siguientePaso();
+      } catch (e: any) {
+        setCheckError(e.response.data.message);
+      }
+    }
   };
 
   useEffect(() => {
-    cb(teams);
-  }, [teams]);
-  useEffect(() => {
     setLogo(logo_a);
+    setTeams(equipos);
+    setCreateError("");
   }, []);
+  useEffect(() => {
+    setCreateError("");
+    setCheckError("");
+  }, [equipos]);
+
   return (
     <Container p="0px">
       <Box
@@ -117,6 +152,8 @@ export default function TeamAdd({ cb }: any): JSX.Element {
         justifyContent="space-between"
         p="12px"
         bg={useColorModeValue("white", "gray.700")}
+        rounded={"xl"}
+        boxShadow={"lg"}
       >
         <Stack spacing="9px">
           <Stack direction="column" spacing={4}>
@@ -164,7 +201,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                   display={"flex"}
                   justifyContent="space-between"
                   alignItems="center"
-                  p="5px"
+                  p="10px"
                   w="100%"
                   margin="5px"
                 >
@@ -195,6 +232,29 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                 </GridItem>
               </Box>
             ))}
+          <Flex mt="4" alignItems="center">
+            <FormControl
+              isInvalid={
+                createError === "Completado" || createError === ""
+                  ? false
+                  : true
+              }
+            >
+              <FormErrorMessage justifyContent="center">
+                {createError}
+              </FormErrorMessage>
+            </FormControl>
+          </Flex>
+          {checkError && (
+            <Flex mt="4" alignItems="center">
+              <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+              <Text as="span" color="red.500" fontWeight="500" fontSize="20px">
+                {checkError}
+              </Text>
+            </Flex>
+          )}
+          <Button onClick={crear}>Siguiente </Button>
+          <Button onClick={volverPaso}>Anterior </Button>
         </Stack>
       </Box>
     </Container>
