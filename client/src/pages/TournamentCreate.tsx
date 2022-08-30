@@ -2,9 +2,9 @@ import React from "react";
 
 import { Container, Box, Text, Stack, Divider } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import TournamentForm from "../components/TournamentForm";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Logo from "../components/Logo";
+import { Steper } from "../components/TournamentCreateSteper";
 export default function TournamentCreate(): JSX.Element {
   return (
     <Container
@@ -50,10 +50,20 @@ export default function TournamentCreate(): JSX.Element {
           </Text>
         </Box>
       </Box>
-
       <Divider />
-
-      <TournamentForm />
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="start"
+        alignItems="center"
+        p={"10px"}
+        maxW={"60%"}
+        h={"800px"}
+        margin="50px"
+        marginLeft="10%"
+      >
+        <Steper />
+      </Box>
     </Container>
   );
 }

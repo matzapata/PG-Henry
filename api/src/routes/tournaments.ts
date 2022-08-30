@@ -2,6 +2,7 @@ import prisma from "../db";
 import * as express from "express";
 import { MatchStage, Status, TournamentType } from "@prisma/client";
 import db from "../db";
+import { nextTick } from "process";
 
 type Team = {
   name: string;
@@ -122,9 +123,68 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
     res.status(400).send({ message: e.message });
   }
 });
+router.post(
+  "/checkName",
+  async (req: express.Request, res: express.Response, next) => {
+    try {
+      const { name } = req.body;
+
+      let torneo: any;
+      torneo = await db.tournament.findUnique({
+        where: { name },
+      });
+      if (torneo) {
+        return res.status(400).send({
+          message:
+            "El nombre del torneo " + torneo.name + " ya está registrado.",
+        });
+      } else {
+        res.status(200).send({ message: "Torneo disponible" });
+      }
+    } catch (e: any) {
+      res.status(400).send({ message: e.message });
+    }
+  }
+);
+router.post(
+  "/checkTeams",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { teams } = req.body;
+
+      let encontrados: string[] = [];
+      const teamsArray = teams.map(async (team: Team) => {
+        const teamName = await db.teams.findUnique({
+          where: { name: team.name },
+        });
+        if (teamName) {
+          encontrados.push(teamName.name);
+        }
+        return teamName;
+      });
+      await Promise.all(teamsArray);
+      if (!!encontrados.length) {
+        if (encontrados.length === 1)
+          return res.status(400).send({
+            message: "El equipo " + encontrados[0] + " ya está registrado.",
+          });
+        return res.status(400).send({
+          message:
+            "Los equipos " + encontrados.toString() + " ya están registrados.",
+        });
+      } else {
+        res.status(200).send({ message: "Equipos disponibles" });
+      }
+    } catch (e: any) {
+      res.status(400).send({ message: e.message });
+    }
+  }
+);
 
 router.post("/create", async (req: express.Request, res: express.Response) => {
   try {
+    const { tournament, teams, matches } = req.body;
+    console.log(req.body);
     const {
       name,
       description,
@@ -133,12 +193,10 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
       type,
       logo_url,
       password,
-      teams,
-      matches,
-    } = req.body;
+    } = tournament;
 
     if ([name, description, user_limit, type].includes(undefined))
-      return res.status(400).send("Missing required parameters.");
+      return res.status(400).send({ message: "Missing required parameters." });
 
     ///////CHEQUEO DE EQUIPOS PREXISTENTES///////
     let encontrados: string[] = [];
@@ -172,7 +230,6 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
         message: "El nombre del torneo " + torneo.name + " ya está registrado.",
       });
     }
-    //////////CHEQUEO DE MATCHES PREXISTENTES///////////
 
     if (type === "PUBLIC") {
       torneo = await db.tournament.create({
@@ -199,6 +256,7 @@ router.post("/create", async (req: express.Request, res: express.Response) => {
         },
       });
     }
+    console.log(torneo);
     if (!teams.length) {
       return res
         .status(400)
