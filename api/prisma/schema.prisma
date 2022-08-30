@@ -26,7 +26,7 @@ model User {
   is_banned          Boolean  @default(false)
   last_access        DateTime @default(now())
   verification_token String?
-  url_avatar         String   @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661613143/pminy2ryvqlxv3gc3gsp.jpg")
+  url_avatar         String   @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661876193/fepyrsp3x3qqj5zb0qhd.jpg")
 
   tournament_userid  UserTournament[]
   predictions_userid Predictions[]
@@ -134,6 +134,7 @@ model Comments {
   id          String @unique @default(uuid())
   stars       Int  
   comentaries String     
+  titulo      String
   user        User   @relation(fields:[user_id], references:[id])
   user_id     String @unique
 }

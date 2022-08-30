@@ -4,6 +4,7 @@ import {
   fetchUserTournaments,
   getUserInfo,
   fetchUniqueUserTournament,
+  getReviews,
 } from "./userThunk";
 
 type UserTournament = {
@@ -52,6 +53,7 @@ const initialState: {
     tournaments: UserTournament[];
     is_attached: boolean;
   };
+  userComments: any[];
 } = {
   token: null,
   decoded: null,
@@ -66,6 +68,7 @@ const initialState: {
     tournaments: [],
     is_attached: false,
   },
+  userComments: [],
 };
 
 // const initialState: InitialState = {
@@ -147,6 +150,20 @@ const userSlice = createSlice({
       state.userTournaments.is_attached = false;
       state.loading = false;
       state.error = "";
+    });
+    // fetch user comments
+    builder.addCase(getReviews.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getReviews.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userComments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getReviews.rejected, (state, action) => {
+      state.userComments = [];
+      state.error = action.payload as string;
     });
   },
 });
