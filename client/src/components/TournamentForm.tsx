@@ -302,36 +302,6 @@ export default function TournamentForm({
                 <FormErrorMessage>{errors.description}</FormErrorMessage>
               </FormControl>
             </Stack>
-            {/* AGREGAR EQUIPOS */}
-            {/* <TeamAdd cb={addTeam} />
-                  <Flex mt="4" alignItems="center">
-                    <FormControl
-                      isInvalid={
-                        errors.teams === "Completado" || errors.teams === ""
-                          ? false
-                          : true
-                      }
-                    >
-                      <FormErrorMessage justifyContent="center">
-                        {errors.teams}
-                      </FormErrorMessage>
-                    </FormControl>
-                  </Flex> */}
-            {/* AGREGAR PARTIDOS */}
-            {/*  <MatchAdd cb={addMatch} equipos={input.teams} />
-                  <Flex mt="4" alignItems="center">
-                    <FormControl
-                      isInvalid={
-                        errors.matches === "Completado" || errors.matches === ""
-                          ? false
-                          : true
-                      }
-                    >
-                      <FormErrorMessage justifyContent="center">
-                        {errors.matches}
-                      </FormErrorMessage>
-                    </FormControl>
-                  </Flex> */}
             {checkError && (
               <Flex mt="4" alignItems="center">
                 <Icon as={FaExclamationCircle} color="red.500" mr="2" />

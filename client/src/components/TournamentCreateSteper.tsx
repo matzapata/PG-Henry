@@ -52,7 +52,7 @@ const steps = [
   { label: "Partidos" },
 ];
 
-export const Steper = () => {
+const Steper = () => {
   const history = useHistory();
   const [CrearError, setCrearError] = useState("");
   const [pagina, setPagina] = useState(0);
@@ -78,8 +78,6 @@ export const Steper = () => {
   };
 
   const crear = async () => {
-    // setErrors(validate(input, true));
-
     try {
       const tournamentID = await api.post("/tournaments/create", {
         ...input,

@@ -116,7 +116,6 @@ export default function TeamAdd({
 
     setTeams(newInputTeam);
     addTeams(newInputTeam);
-    console.log(newInputTeam);
   };
 
   const crear = async () => {
