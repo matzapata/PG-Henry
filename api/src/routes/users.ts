@@ -113,6 +113,7 @@ router.put(
         id: decoded.payload.id,
         email: decoded.payload.email,
         username: decoded.payload.username,
+        is_admin: decoded.payload.is_admin,
       };
 
       const user: any = await db.user.findUnique({ where: { email } });
