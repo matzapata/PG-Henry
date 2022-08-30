@@ -111,7 +111,6 @@ router.put(
         const token = req.headers["x-access-token"];
         if (!token)
           return res.status(403).send({ message: "No token provided!" });
-
         const decoded = (await verifyAccessToken(
           token as string
         )) as JwtPayload;
@@ -119,8 +118,8 @@ router.put(
           id: decoded.payload.id,
           email: decoded.payload.email,
           username: decoded.payload.username,
+          is_admin: decoded.payload.is_admin,
         };
-
         const user: any = await db.user.findUnique({ where: { email } });
 
         if (
