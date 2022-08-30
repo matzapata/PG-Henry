@@ -10,13 +10,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import chakraTheme from "./styles/chakraTheme";
 import history from "./utils/history";
 import { Auth0Provider } from "@auth0/auth0-react";
-import { StepsStyleConfig as Steps } from "chakra-ui-steps";
-const theme = extendTheme({
-  components: {
-    Steps,
-    chakraTheme,
-  },
-});
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -25,7 +19,7 @@ root.render(
   <React.StrictMode>
     <Router history={history}>
       <Provider store={store}>
-        <ChakraProvider theme={theme}>
+        <ChakraProvider theme={chakraTheme}>
           <Auth0Provider
             domain={process.env.REACT_APP_AUTH0_DOMAIN as string}
             clientId={process.env.REACT_APP_AUTH0_CLIENT_ID as string}

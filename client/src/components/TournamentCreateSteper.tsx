@@ -1,12 +1,21 @@
 import React, { useState } from "react";
-import { Step, Steps, useSteps } from "chakra-ui-steps";
-import { Flex, Button, Heading, Box, Stack } from "@chakra-ui/react";
+
+import {
+  Flex,
+  Button,
+  Heading,
+  Box,
+  Stack,
+  useColorModeValue,
+  background,
+  textDecoration,
+} from "@chakra-ui/react";
 import TeamAdd from "./TeamAdd";
 import TournamentForm from "./TournamentForm";
 import MatchAdd from "./MatchAdd";
 import { useHistory } from "react-router-dom";
 import api from "../services/api";
-
+import { BsCircle } from "react-icons/bs";
 type Inputs = {
   tournament: Tournament;
   teams: Team[];
@@ -46,9 +55,7 @@ const steps = [
 export const Steper = () => {
   const history = useHistory();
   const [CrearError, setCrearError] = useState("");
-  const { nextStep, prevStep, reset, activeStep } = useSteps({
-    initialStep: 0,
-  });
+  const [pagina, setPagina] = useState(0);
   const [input, setInput] = useState<Inputs>({
     tournament: {
       name: "",
@@ -64,10 +71,10 @@ export const Steper = () => {
   });
 
   const siguientePaso = () => {
-    nextStep();
+    setPagina(pagina + 1);
   };
   const volverPaso = () => {
-    prevStep();
+    setPagina(pagina - 1);
   };
 
   const crear = async () => {
@@ -94,6 +101,9 @@ export const Steper = () => {
   }
   function addMatches(newMatch: Match[]) {
     setInput({ ...input, matches: newMatch });
+  }
+  function reset() {
+    setPagina(0);
   }
   function actualizarMatches() {
     const teamsNames = input.teams.map((team) => {
@@ -132,47 +142,140 @@ export const Steper = () => {
       siguientePaso={siguientePaso}
       volverPaso={volverPaso}
     />,
+    <Box key={"3"}>
+      <Flex px={4} py={4} width="100%" flexDirection="column">
+        <Button mx="auto" mt={6} onClick={reset} margin={"2rem"}>
+          Reseterar
+        </Button>
+        {CrearError && (
+          <Heading fontSize="xxl" textAlign="center" color={"red.500"}>
+            {CrearError}
+          </Heading>
+        )}
+
+        <Button
+          fontSize="22px"
+          bg={"blue.400"}
+          _hover={{
+            bg: "blue.500",
+          }}
+          onClick={crear}
+        >
+          Crear Torneo
+        </Button>
+      </Flex>
+    </Box>,
   ];
 
   return (
     <>
-      <Box>
-        <Stack justifyContent="center">
-          <Steps
-            orientation="horizontal"
-            activeStep={activeStep}
-            justifyContent="center"
-          >
-            {steps.map(({ label }, index) => (
-              <Step /* width="50%" */ label={label} key={label}>
-                {cont[index]}
-              </Step>
-            ))}
-          </Steps>
-        </Stack>
-        {activeStep === steps.length ? (
-          <Flex px={4} py={4} width="100%" flexDirection="column">
-            <Button mx="auto" mt={6} size="sm" onClick={reset}>
-              Reset
-            </Button>
-            {CrearError && (
-              <Heading fontSize="xxl" textAlign="center" color={"red.500"}>
-                {CrearError}
-              </Heading>
-            )}
-
-            <Button
-              fontSize="22px"
-              bg={"blue.400"}
-              _hover={{
-                bg: "blue.500",
-              }}
-              onClick={crear}
+      <Box
+        p="20px"
+        rounded={"xl"}
+        boxShadow={"lg"}
+        bg={useColorModeValue("white", "gray.700")}
+      >
+        <Stack justifyContent="center" alignItems={"space-arrown"}>
+          <Box display={"flex"} flexDir={"row"} alignItems={"start"}>
+            <Stack
+              flexDir={"row"}
+              spacing="9px"
+              justifyContent="center"
+              alignItems={"center"}
+              margin={"2rem"}
             >
-              Crear Torneo
-            </Button>
-          </Flex>
-        ) : null}
+              <Stack p={"0.5rem"}>
+                <label
+                  style={
+                    pagina == 0 ? { color: "lightblue" } : { color: "green" }
+                  }
+                >
+                  Torneo
+                </label>
+              </Stack>
+
+              <Stack p={"0.5rem"} paddingBottom="1rem">
+                <BsCircle
+                  style={
+                    pagina == 0 ? { color: "lightblue" } : { color: "green" }
+                  }
+                />
+              </Stack>
+            </Stack>
+            <Stack
+              flexDir={"row"}
+              spacing="9px"
+              justifyContent="center"
+              alignItems={"center"}
+              margin={"2rem"}
+            >
+              <Stack p={"0.5rem"}>
+                <label
+                  style={
+                    pagina == 1
+                      ? { color: "lightblue" }
+                      : pagina == 0
+                      ? { color: "white" }
+                      : { color: "green" }
+                  }
+                >
+                  Equipos
+                </label>
+              </Stack>
+              <Stack p={"0.5rem"} paddingBottom="1rem">
+                <BsCircle
+                  style={
+                    pagina == 1
+                      ? { color: "lightblue" }
+                      : pagina == 0
+                      ? { color: "white" }
+                      : { color: "green" }
+                  }
+                />
+              </Stack>
+            </Stack>
+            <Stack
+              flexDir={"row"}
+              spacing="9px"
+              justifyContent="center"
+              alignItems={"center"}
+              margin={"2rem"}
+            >
+              <Stack p={"0.5rem"}>
+                <label
+                  style={
+                    pagina == 2
+                      ? { color: "lightblue" }
+                      : pagina == 0 || pagina == 1
+                      ? { color: "white" }
+                      : { color: "green" }
+                  }
+                >
+                  Partidos
+                </label>
+              </Stack>
+              <Stack p={"0.5rem"} paddingBottom="1rem">
+                <BsCircle
+                  style={
+                    pagina == 2
+                      ? { color: "lightblue" }
+                      : pagina == 0 || pagina == 1
+                      ? { color: "white" }
+                      : { color: "green" }
+                  }
+                />
+              </Stack>
+            </Stack>
+          </Box>
+          {pagina === 0
+            ? cont[0]
+            : pagina === 1
+            ? cont[1]
+            : pagina === 2
+            ? cont[2]
+            : cont[3]}
+        </Stack>
+        {/*  */}
       </Box>
     </>
   );
