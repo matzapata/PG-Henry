@@ -19,7 +19,7 @@ async function PaymentService(tournamentid: string, userid: string) {
     back_urls: {
       failure: "/failure",
       pending: "/pending",
-      success: `${process.env.CLIENT_URL}`,
+      success: `${process.env.CLIENT_URL}/success/${tournamentid}`,
     },
     auto_return: "approved",
     metadata: {
