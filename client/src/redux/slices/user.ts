@@ -1,11 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  changePassword,
-  fetchUserTournaments,
-  getUserInfo,
-  fetchUniqueUserTournament,
-  getReviews,
-} from "./userThunk";
+import { fetchUserTournaments, getUserInfo, updateProfile, fetchUniqueUserTournament, getReviews } from "./userThunk";
 
 type UserTournament = {
   id: string;
@@ -103,16 +97,17 @@ const userSlice = createSlice({
       state.error = action.error.message || "Algo salio mal";
     });
 
-    // Change password
-    builder.addCase(changePassword.pending, (state) => {
+    // Edit profile
+    builder.addCase(updateProfile.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(changePassword.fulfilled, (state, action) => {
+    builder.addCase(updateProfile.fulfilled, (state, action) => {
+      console.log(action);
       state.loading = false;
       state.message = action.payload;
       state.error = "";
     });
-    builder.addCase(changePassword.rejected, (state) => {
+    builder.addCase(updateProfile.rejected, (state) => {
       state.loading = false;
       state.userDetail = null;
       state.error = "Ingresaste un email incorrecto.";
