@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { changePassword, fetchUserTournaments, getUserInfo } from "./userThunk";
+import {
+  changePassword,
+  fetchUserTournaments,
+  getReviews,
+  getUserInfo,
+} from "./userThunk";
 
 type UserTournament = {
   id: string;
@@ -46,6 +51,7 @@ const initialState: {
     lastPage: number;
     tournaments: UserTournament[];
   };
+  userComments: any[];
 } = {
   token: null,
   decoded: null,
@@ -59,6 +65,7 @@ const initialState: {
     lastPage: 1,
     tournaments: [],
   },
+  userComments: [],
 };
 
 // const initialState: InitialState = {
@@ -120,6 +127,21 @@ const userSlice = createSlice({
     });
     builder.addCase(fetchUserTournaments.rejected, (state, action) => {
       state.userTournaments = initialState.userTournaments;
+      state.error = action.payload as string;
+    });
+
+    // fetch user comments
+    builder.addCase(getReviews.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getReviews.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userComments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getReviews.rejected, (state, action) => {
+      state.userComments = [];
       state.error = action.payload as string;
     });
   },

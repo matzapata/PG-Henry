@@ -69,3 +69,15 @@ export const fetchUserTournaments = createAsyncThunk(
     }
   }
 );
+
+export const getReviews = createAsyncThunk(
+  "all/reviews",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/feedback");
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
