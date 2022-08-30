@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   changePassword,
   fetchUserTournaments,
-  getReviews,
   getUserInfo,
+  fetchUniqueUserTournament,
+  getReviews,
 } from "./userThunk";
 
 type UserTournament = {
@@ -50,6 +51,7 @@ const initialState: {
     page: number;
     lastPage: number;
     tournaments: UserTournament[];
+    is_attached: boolean;
   };
   userComments: any[];
 } = {
@@ -64,6 +66,7 @@ const initialState: {
     page: 1,
     lastPage: 1,
     tournaments: [],
+    is_attached: false,
   },
   userComments: [],
 };
@@ -129,7 +132,25 @@ const userSlice = createSlice({
       state.userTournaments = initialState.userTournaments;
       state.error = action.payload as string;
     });
-
+    // fetch if user is attached tournaments
+    builder.addCase(fetchUniqueUserTournament.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(fetchUniqueUserTournament.fulfilled, (state, action) => {
+      if (typeof action.payload === "object") {
+        state.userTournaments.is_attached = true;
+      } else {
+        state.userTournaments.is_attached = false;
+      }
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(fetchUniqueUserTournament.rejected, (state, action) => {
+      state.userTournaments.is_attached = false;
+      state.loading = false;
+      state.error = "";
+    });
     // fetch user comments
     builder.addCase(getReviews.pending, (state) => {
       state.loading = true;
