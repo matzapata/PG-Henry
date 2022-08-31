@@ -31,6 +31,7 @@ export type TournamentDetail = {
   user_limit: number;
   pool: number;
   logo_url: string;
+  creator_user_id: string;
 };
 
 export type TournamentMatch = {

@@ -6,17 +6,16 @@ import {
   FormErrorMessage,
   Heading,
   Input,
-  NumberInput,
-  NumberInputField,
-  Stack,
   Text,
 } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 export type Input = {
   scores_a: number | undefined;
   scores_b: number | undefined;
+  match_id: string;
 };
 export type MatchData = {
+  match_id: string;
   team_a: {
     scores?: number;
     shield_url: string;
@@ -59,11 +58,13 @@ function MatchForm({
   const [input, setInput] = useState<Input>({
     scores_a: undefined,
     scores_b: undefined,
+    match_id: "",
   });
   const [errors, setErrors] = useState({
     scores_a: "",
     scores_b: "",
   });
+  const [enviado, setEnviado] = useState(false);
 
   const cambiosInput = (e: React.FormEvent<HTMLInputElement>) => {
     setInput({
@@ -80,15 +81,23 @@ function MatchForm({
 
   function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!errors.scores_a && !errors.scores_b) onSubmit(input);
+    if (
+      !errors.scores_a &&
+      !errors.scores_b &&
+      input.scores_a != undefined &&
+      input.scores_b != undefined
+    )
+      onSubmit(input);
+    setEnviado(true);
   }
   useEffect(() => {
     setInput({
       scores_a: match.team_a.scores,
       scores_b: match.team_b.scores,
+      match_id: match.match_id,
     });
   }, []);
-  console.log(errors);
+
   return (
     <form action="" onSubmit={enviar}>
       <Flex flexDirection={"row"} color={"white"} justify="center">
@@ -98,7 +107,7 @@ function MatchForm({
         </Heading>
         <FormControl isInvalid={errors.scores_a !== ""}>
           <Input
-            isReadOnly={match.team_a.scores !== undefined}
+            isReadOnly={match.team_a.scores !== undefined || enviado}
             w={"50px"}
             color={"white"}
             type="number"
@@ -112,7 +121,7 @@ function MatchForm({
         <Text>VS</Text>
         <FormControl isInvalid={errors.scores_b !== ""}>
           <Input
-            isReadOnly={match.team_b.scores !== undefined}
+            isReadOnly={match.team_b.scores !== undefined || enviado}
             w={"50px"}
             type="number"
             value={input.scores_b}
@@ -126,23 +135,25 @@ function MatchForm({
         </Heading>
         <Image src={match.team_b.shield_url} w={10} h={10} />
       </Flex>
-      {match.team_a.scores === undefined && match.team_b.scores === undefined && (
-        <Button
-          marginTop={"10px"}
-          marginBottom={"30px"}
-          marginRight={"20px"}
-          width={"60px"}
-          height={"20px"}
-          type="submit"
-          fontSize="15px"
-          bg={"blue.400"}
-          _hover={{
-            bg: "blue.500",
-          }}
-        >
-          Guardar
-        </Button>
-      )}
+      {input.scores_a !== undefined &&
+        input.scores_b !== undefined &&
+        !enviado && (
+          <Button
+            marginTop={"10px"}
+            marginBottom={"30px"}
+            marginRight={"20px"}
+            width={"60px"}
+            height={"20px"}
+            type="submit"
+            fontSize="15px"
+            bg={"blue.400"}
+            _hover={{
+              bg: "blue.500",
+            }}
+          >
+            Guardar
+          </Button>
+        )}
     </form>
   );
 }
