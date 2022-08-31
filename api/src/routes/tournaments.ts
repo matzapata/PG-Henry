@@ -404,6 +404,8 @@ router.put(
         where: { id: req.params.id },
       });
       if (!tournament) return res.status(404).send("Tournament not found");
+      if (tournament?.status === "CONCLUDED")
+        return res.status(400).send("Tournament concluded");
       if (tournament?.creator_user_id !== req.user.id)
         return res
           .status(401)
@@ -417,10 +419,7 @@ router.put(
       // Update match result
       await db.matches.update({
         where: { id: req.params.match_id },
-        data: {
-          score_a,
-          score_b,
-        },
+        data: { score_a, score_b },
       });
 
       const tournamentPredictions = await db.predictions.findMany({
@@ -431,37 +430,53 @@ router.put(
       });
 
       const winners = tournamentPredictions
-        .filter((tp) => {
-          if (tp.score_a === score_a && tp.score_b === score_b) return true;
-          else return false;
-        })
+        .filter((tp) => tp.score_a === score_a && tp.score_b === score_b)
         .map((tp) => tp.user_id);
 
       await db.userTournament.updateMany({
-        where: {
-          user_id: {
-            in: winners,
-          },
-        },
-        data: {
-          score: {
-            increment: 3,
-          },
-        },
+        where: { user_id: { in: winners } },
+        data: { score: { increment: 3 } },
       });
 
       if (match.stage === "FINAL") {
-        const userTournaments = await db.userTournament.findMany({
+        const tournamentScores = await db.userTournament.findMany({
           where: { tournament_id: req.params.id },
           orderBy: { score: "desc" },
+          distinct: ["score"],
+          select: { score: true },
         });
 
-        console.log("Absolute winner: ", userTournaments[0].user_id);
+        await Promise.all([
+          db.userTournament.updateMany({
+            where: {
+              tournament_id: req.params.id,
+              score: tournamentScores[0].score,
+            },
+            data: { position: "FIRST" },
+          }),
+          db.userTournament.updateMany({
+            where: {
+              tournament_id: req.params.id,
+              score: tournamentScores[1].score,
+            },
+            data: { position: "SECOND" },
+          }),
+          db.userTournament.updateMany({
+            where: {
+              tournament_id: req.params.id,
+              score: tournamentScores[2].score,
+            },
+            data: { position: "THIRD" },
+          }),
+          db.tournament.update({
+            where: { id: req.params.id },
+            data: { status: "CONCLUDED" },
+          }),
+        ]);
       }
 
       return res.send("OK");
     } catch (e) {
-      console.log(e);
       return res.status(500).send("ERROR");
     }
   }
