@@ -20,6 +20,7 @@ import { useAppSelector } from "../redux/hooks";
 import api from "../services/api";
 import { FaExclamationCircle } from "react-icons/fa";
 import Auth0Button from "../components/Auth0SignInButton";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 interface Inputs {
   full_name: string;
@@ -139,6 +140,20 @@ function FormSignUp() {
       bgColor="primary"
       py="20"
     >
+      <Box
+        h="80px"
+        display="flex"
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        p="20px"
+      >
+        <Box display="flex" flexDir="row">
+          <Link as={ReactLink} color="teal.400" to="/">
+            <ArrowBackIcon fontSize="30px" />
+          </Link>
+        </Box>
+      </Box>
       <Avatar size="lg" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
       <Heading
         bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
