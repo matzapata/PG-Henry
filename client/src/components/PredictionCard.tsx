@@ -64,6 +64,7 @@ function MatchForm({
     scores_a: "",
     scores_b: "",
   });
+  const [enviado, setEnviado] = useState(false);
 
   const cambiosInput = (e: React.FormEvent<HTMLInputElement>) => {
     setInput({
@@ -87,6 +88,7 @@ function MatchForm({
       input.scores_b != undefined
     )
       onSubmit(input);
+    setEnviado(true);
   }
   useEffect(() => {
     setInput({
@@ -105,7 +107,7 @@ function MatchForm({
         </Heading>
         <FormControl isInvalid={errors.scores_a !== ""}>
           <Input
-            isReadOnly={match.team_a.scores !== undefined}
+            isReadOnly={match.team_a.scores !== undefined || enviado}
             w={"50px"}
             color={"white"}
             type="number"
@@ -119,7 +121,7 @@ function MatchForm({
         <Text>VS</Text>
         <FormControl isInvalid={errors.scores_b !== ""}>
           <Input
-            isReadOnly={match.team_b.scores !== undefined}
+            isReadOnly={match.team_b.scores !== undefined || enviado}
             w={"50px"}
             type="number"
             value={input.scores_b}
@@ -133,23 +135,25 @@ function MatchForm({
         </Heading>
         <Image src={match.team_b.shield_url} w={10} h={10} />
       </Flex>
-      {match.team_a.scores === undefined && match.team_b.scores === undefined && (
-        <Button
-          marginTop={"10px"}
-          marginBottom={"30px"}
-          marginRight={"20px"}
-          width={"60px"}
-          height={"20px"}
-          type="submit"
-          fontSize="15px"
-          bg={"blue.400"}
-          _hover={{
-            bg: "blue.500",
-          }}
-        >
-          Guardar
-        </Button>
-      )}
+      {input.scores_a !== undefined &&
+        input.scores_b !== undefined &&
+        !enviado && (
+          <Button
+            marginTop={"10px"}
+            marginBottom={"30px"}
+            marginRight={"20px"}
+            width={"60px"}
+            height={"20px"}
+            type="submit"
+            fontSize="15px"
+            bg={"blue.400"}
+            _hover={{
+              bg: "blue.500",
+            }}
+          >
+            Guardar
+          </Button>
+        )}
     </form>
   );
 }
