@@ -6,6 +6,7 @@ import { Box, Heading } from "@chakra-ui/react";
 import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
 import Mercadopago from "../components/Mercadopago";
+import AddPrediction from "../components/AddPrediction";
 
 function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ function TournamentDetail() {
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
         <Mercadopago id={id} />
+        <AddPrediction id={id} />
       </Box>
     </Box>
   );
