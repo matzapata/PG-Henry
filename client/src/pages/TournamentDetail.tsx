@@ -6,7 +6,11 @@ import { Box, Heading } from "@chakra-ui/react";
 import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
 import Mercadopago from "../components/Mercadopago";
+
+import AddPrediction from "../components/AddPrediction";
+
 import PrivatePassword from "../components/TournamentPrivate";
+
 
 function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +25,7 @@ function TournamentDetail() {
         <TournamentRanking id={id} />
         <PrivatePassword />
         <Mercadopago id={id} />
+        <AddPrediction id={id} />
       </Box>
     </Box>
   );
