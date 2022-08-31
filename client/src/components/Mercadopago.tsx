@@ -23,6 +23,9 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   const unido = useAppSelector(
     (state) => state.user.userTournaments.is_attached
   );
+  const tournamentDetail = useAppSelector(
+    (state) => state.tournaments.tournamentDetail
+  );
 
   useEffect(() => {
     dispatch(fetchUniqueUserTournament({ tournamentid: id, userid: user_id }));
@@ -31,7 +34,7 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   function handleMP() {
     dispatch(fetchMercadoPago({ tournamentid: id, userid: user_id }));
   }
-  if (unido === false) {
+  if (unido === false && tournamentDetail?.type === "PUBLIC") {
     return (
       <Box>
         <Button onClick={onOpen}>Unirse</Button>
@@ -57,12 +60,14 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
         </Modal>
       </Box>
     );
-  } else {
+  } else if (unido === true && tournamentDetail?.type === "PUBLIC") {
     return (
       <Box>
         <Text color="white">Ya estas unido!!</Text>
       </Box>
     );
+  } else {
+    return <Box></Box>;
   }
 }
 
