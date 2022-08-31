@@ -14,6 +14,7 @@ import TournamentCreate from "./pages/TournamentCreate";
 import TournamentDetailPage from "./pages/TournamentDetail";
 import About from "./pages/About";
 import PaymentSuccess from "./pages/SuccessPayment";
+import Admin from "./pages/Admin";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <Switch>
+      <Route exact path="/admin" component={Admin} />
       <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
       <PrivateRoute
         exact
