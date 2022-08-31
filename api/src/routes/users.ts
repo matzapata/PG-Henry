@@ -52,6 +52,21 @@ router.get(
   }
 );
 
+router.get("/findTournament", async (req, res) => {
+  try {
+    const { tournamentid, userid } = req.query;
+    const result = await db.userTournament.findFirst({
+      where: {
+        user_id: userid as string,
+        tournament_id: tournamentid as string,
+      },
+    });
+    res.send(result);
+  } catch (e: any) {
+    res.status(400).send("No existe el torneo");
+  }
+});
+
 router.put(
   "/:id/status",
   async (req: express.Request, res: express.Response) => {
@@ -82,46 +97,56 @@ router.put(
 );
 
 router.put(
-  "/changepsw",
+  "/:id/editProfile",
   protectedRoute,
   async (req: express.Request, res: express.Response) => {
-    const { email, password } = req.body;
-    if (!email || !password)
+    const { email, password, alias_mp } = req.body;
+    const { id } = req.params;
+
+    if ((!email && !password && !alias_mp) || (password && !email))
       return res.status(400).send("Faltan parametros requeridos!");
 
-    const token = req.headers["x-access-token"];
-    if (!token) return res.status(403).send({ message: "No token provided!" });
-
     try {
-      const decoded = (await verifyAccessToken(token as string)) as JwtPayload;
-      req.user = {
-        id: decoded.payload.id,
-        email: decoded.payload.email,
-        username: decoded.payload.username,
-      };
+      if (email && password) {
+        const token = req.headers["x-access-token"];
+        if (!token)
+          return res.status(403).send({ message: "No token provided!" });
+        const decoded = (await verifyAccessToken(
+          token as string
+        )) as JwtPayload;
+        req.user = {
+          id: decoded.payload.id,
+          email: decoded.payload.email,
+          username: decoded.payload.username,
+          is_admin: decoded.payload.is_admin,
+        };
+        const user: any = await db.user.findUnique({ where: { email } });
 
-      const user: any = await db.user.findUnique({ where: { email } });
-
-      if (
-        user.email === req.user.email &&
-        email === req.user.email &&
-        user.id === req.user.id
-      ) {
-        await db.user.update({
-          where: {
-            email: email,
-          },
-          data: {
-            password: bcrypt.hashSync(password, 8),
-          },
-        });
-        return res
-          .status(200)
-          .json({ msg: "Contraseña cambiada exitosamente." });
+        if (
+          user.email === req.user.email &&
+          email === req.user.email &&
+          user.id === req.user.id
+        ) {
+          await db.user.update({
+            where: {
+              email: email,
+            },
+            data: {
+              password: bcrypt.hashSync(password, 8),
+            },
+          });
+        }
       }
+      if (alias_mp) {
+        const alias = await db.user.update({
+          where: { id: id },
+          data: { alias_mp: alias_mp },
+        });
+      }
+      return res.status(200).json({ msg: "Perfil editado exitosamente." });
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: "Ingresaste un mail incorrecto." });
+      res.status(400).json({ error: "Ha ocurrido un error inesperado." });
     }
   }
 );

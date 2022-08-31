@@ -13,6 +13,7 @@ import PrivateRoute from "./utils/routePrivate";
 import TournamentCreate from "./pages/TournamentCreate";
 import TournamentDetailPage from "./pages/TournamentDetail";
 import About from "./pages/About";
+import PaymentSuccess from "./pages/SuccessPayment";
 import Admin from "./pages/Admin";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
       <PrivateRoute exact path="/auth/perfil" component={Perfil} />
       <Route exact path="/" component={HomePage} />
       <Route exact path="/about" component={About} />
+      <Route path="/success/:id" component={PaymentSuccess} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
   );
