@@ -56,7 +56,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
 
 router.get("/password", async (req: express.Request, res: express.Response) => {
   try {
-    const { tournamentid, password, userid } = req.query;
+    const { tournamentid, password } = req.query;
     if (password && tournamentid) {
       const tournaments = await prisma.tournament.findUnique({
         where: {
@@ -68,17 +68,13 @@ router.get("/password", async (req: express.Request, res: express.Response) => {
         tournaments?.password as string
       );
       if (hashedPassword) {
-        const result = await prisma.userTournament.create({
-          data: {
-            user_id: userid as string,
-            tournament_id: tournamentid as string,
-          },
-        });
         res.status(200).send("Ok");
+      } else {
+        res.status(200).send("Contraseña incorrecta");
       }
     }
   } catch (e: any) {
-    res.status(400).send({ message: e.message });
+    res.status(400).send({ message: e });
   }
 });
 

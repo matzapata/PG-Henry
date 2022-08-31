@@ -85,17 +85,3 @@ export const fetchTournamentRanking = createAsyncThunk(
     return response.data;
   }
 );
-
-export const tournamentPassword = createAsyncThunk(
-  "password/tourmanetPassword",
-  async (parametros: {
-    tournamentid: string;
-    password: string;
-    userid: string;
-  }) => {
-    const response = await api.get(
-      `/tournaments/password?password=${parametros.password}&tournamentid=${parametros.tournamentid}&userid=${parametros.userid}`
-    );
-    return response.data;
-  }
-);
