@@ -13,26 +13,25 @@ enum AuthProvider {
 }
 
 model User {
-  id                 String   @unique @default(uuid())
-  username           String   @unique
+  id                 String       @unique @default(uuid())
+  username           String       @unique
   full_name          String
-  email              String   @unique
-  password           String?  // Optional so we can work with auth0
+  email              String       @unique
+  password           String? // Optional so we can work with auth0
   authProvider       AuthProvider @default(JWT)
   birth_date         DateTime? // Optional momentarily to work with auth0
-  alias_mp           String?  @unique
-  is_admin           Boolean  @default(false)
-  is_active          Boolean  @default(false)
-  is_banned          Boolean  @default(false)
-  last_access        DateTime @default(now())
+  alias_mp           String?
+  is_admin           Boolean      @default(false)
+  is_active          Boolean      @default(false)
+  is_banned          Boolean      @default(false)
+  last_access        DateTime     @default(now())
   verification_token String?
-  url_avatar         String   @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661613143/pminy2ryvqlxv3gc3gsp.jpg")
+  url_avatar         String       @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661613143/pminy2ryvqlxv3gc3gsp.jpg")
 
   tournament_userid  UserTournament[]
   predictions_userid Predictions[]
   creator            Tournament[]
   comments_userid    Comments?
-
 }
 
 model Tournament {
@@ -42,7 +41,7 @@ model Tournament {
   user_limit  Int?
   status      Status         @default(INCOMING)
   type        TournamentType @default(PUBLIC)
-  password    String?        
+  password    String?
   pool        Int            @default(0)
   logo_url    String?
 
@@ -77,7 +76,7 @@ model UserTournament {
   id    String @unique @default(uuid())
   score Int    @default(0)
 
-  winner         Teams?      @relation(fields: [winner_team_id], references: [id])
+  winner         Teams?     @relation(fields: [winner_team_id], references: [id])
   winner_team_id String?
   user           User       @relation(fields: [user_id], references: [id])
   user_id        String
@@ -132,8 +131,8 @@ model Matches {
 
 model Comments {
   id          String @unique @default(uuid())
-  stars       Int  
-  comentaries String     
-  user        User   @relation(fields:[user_id], references:[id])
+  stars       Int
+  comentaries String
+  user        User   @relation(fields: [user_id], references: [id])
   user_id     String @unique
 }
