@@ -100,6 +100,40 @@ router.get(
     }
   }
 );
+router.get(
+  "/:id/allmatches",
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+    console.log("entró");
+    try {
+      const result = await prisma.matches.findMany({
+        where: {
+          tournament_id: id,
+        },
+        include: {
+          team_a: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+          team_b: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+);
 
 router.get("/:id", async (req: express.Request, res: express.Response) => {
   const { id } = req.params;

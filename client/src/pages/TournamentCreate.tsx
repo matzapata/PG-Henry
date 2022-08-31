@@ -4,7 +4,7 @@ import { Container, Box, Text, Stack, Divider } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Logo from "../components/Logo";
-import { Steper } from "../components/TournamentCreateSteper";
+import Steper from "../components/TournamentCreateSteper";
 export default function TournamentCreate(): JSX.Element {
   return (
     <Container
