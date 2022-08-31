@@ -2,6 +2,7 @@ import prisma from "../db";
 import * as express from "express";
 import { MatchStage, Status, TournamentType } from "@prisma/client";
 import db from "../db";
+import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
 
 type Team = {
@@ -50,6 +51,34 @@ router.get("/", async (req: express.Request, res: express.Response) => {
     res.send(result);
   } catch (error) {
     res.status(404).json({ status: "failed", msg: error });
+  }
+});
+
+router.get("/password", async (req: express.Request, res: express.Response) => {
+  try {
+    const { tournamentid, password, userid } = req.query;
+    if (password && tournamentid) {
+      const tournaments = await prisma.tournament.findUnique({
+        where: {
+          id: tournamentid as string,
+        },
+      });
+      const hashedPassword = await bcrypt.compare(
+        password as string,
+        tournaments?.password as string
+      );
+      if (hashedPassword) {
+        const result = await prisma.userTournament.create({
+          data: {
+            user_id: userid as string,
+            tournament_id: tournamentid as string,
+          },
+        });
+        res.status(200).send("Ok");
+      }
+    }
+  } catch (e: any) {
+    res.status(400).send({ message: e.message });
   }
 });
 
@@ -252,6 +281,7 @@ router.post(
         });
       } else {
         if (!password) return res.status(400).send("Password required.");
+        const hashedPassword = bcrypt.hashSync(password, 8);
         torneo = await db.tournament.create({
           data: {
             name,
@@ -260,7 +290,7 @@ router.post(
             creator_user_id,
             type,
             logo_url,
-            password,
+            password: hashedPassword,
           },
         });
       }
