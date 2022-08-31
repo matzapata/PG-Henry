@@ -403,10 +403,12 @@ router.put(
       const tournament = await db.tournament.findUnique({
         where: { id: req.params.id },
       });
+      if (!tournament) return res.status(404).send("Tournament not found");
       if (tournament?.creator_user_id !== req.user.id)
-        return res.status(401).send("unauthorized");
+        return res
+          .status(401)
+          .send("Authenticated user is not the creator of the tournament");
 
-      console.log(req.params.match_id);
       const match = await db.matches.findUnique({
         where: { id: req.params.match_id },
       });
@@ -414,7 +416,7 @@ router.put(
 
       // Update match result
       await db.matches.update({
-        where: { id: req.params.id },
+        where: { id: req.params.match_id },
         data: {
           score_a,
           score_b,
@@ -430,10 +432,7 @@ router.put(
 
       const winners = tournamentPredictions
         .filter((tp) => {
-          if (tp.score_a > tp.score_b && score_a > score_b) return true;
-          else if (tp.score_a < tp.score_b && score_a < score_b) return true;
-          else if (tp.score_a === tp.score_b && score_a === score_b)
-            return true;
+          if (tp.score_a === score_a && tp.score_b === score_b) return true;
           else return false;
         })
         .map((tp) => tp.user_id);
@@ -452,7 +451,12 @@ router.put(
       });
 
       if (match.stage === "FINAL") {
-        // Sacamos los ganadores
+        const userTournaments = await db.userTournament.findMany({
+          where: { tournament_id: req.params.id },
+          orderBy: { score: "desc" },
+        });
+
+        console.log("Absolute winner: ", userTournaments[0].user_id);
       }
 
       return res.send("OK");
