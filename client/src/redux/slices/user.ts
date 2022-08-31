@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  changePassword,
   fetchUserTournaments,
   getUserInfo,
+  updateProfile,
   fetchUniqueUserTournament,
+  getReviews,
 } from "./userThunk";
 
 type UserTournament = {
@@ -52,6 +53,7 @@ const initialState: {
     tournaments: UserTournament[];
     is_attached: boolean;
   };
+  userComments: any[];
 } = {
   token: null,
   decoded: null,
@@ -66,6 +68,7 @@ const initialState: {
     tournaments: [],
     is_attached: false,
   },
+  userComments: [],
 };
 
 // const initialState: InitialState = {
@@ -100,16 +103,17 @@ const userSlice = createSlice({
       state.error = action.error.message || "Algo salio mal";
     });
 
-    // Change password
-    builder.addCase(changePassword.pending, (state) => {
+    // Edit profile
+    builder.addCase(updateProfile.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(changePassword.fulfilled, (state, action) => {
+    builder.addCase(updateProfile.fulfilled, (state, action) => {
+      console.log(action);
       state.loading = false;
       state.message = action.payload;
       state.error = "";
     });
-    builder.addCase(changePassword.rejected, (state) => {
+    builder.addCase(updateProfile.rejected, (state) => {
       state.loading = false;
       state.userDetail = null;
       state.error = "Ingresaste un email incorrecto.";
@@ -147,6 +151,20 @@ const userSlice = createSlice({
       state.userTournaments.is_attached = false;
       state.loading = false;
       state.error = "";
+    });
+    // fetch user comments
+    builder.addCase(getReviews.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getReviews.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userComments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getReviews.rejected, (state, action) => {
+      state.userComments = [];
+      state.error = action.payload as string;
     });
   },
 });
