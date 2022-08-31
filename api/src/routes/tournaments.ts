@@ -73,8 +73,8 @@ router.get("/password", async (req: express.Request, res: express.Response) => {
         res.status(200).send("Contraseña incorrecta");
       }
     }
-  } catch (e: any) {
-    res.status(400).send({ message: e });
+  } catch (error: any) {
+    res.status(400).send(error);
   }
 });
 
