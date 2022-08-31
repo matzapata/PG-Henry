@@ -18,6 +18,7 @@ export async function protectedRoute(
       id: decoded.payload.id,
       email: decoded.payload.email,
       username: decoded.payload.username,
+      is_admin: decoded.payload.is_admin,
     };
     next();
   } catch (e) {

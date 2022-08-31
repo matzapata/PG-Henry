@@ -19,7 +19,7 @@ export function signAccessToken(
 
 export function verifyAccessToken(
   token: string
-): Promise<Error | string | jwt.JwtPayload | undefined> {
+): Promise<Error | string | jwt.JwtPayload | boolean | undefined> {
   return new Promise((resolve, reject) => {
     jwt.verify(
       token,

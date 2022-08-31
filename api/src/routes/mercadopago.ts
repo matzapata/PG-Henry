@@ -19,7 +19,7 @@ async function PaymentService(tournamentid: string, userid: string) {
     back_urls: {
       failure: "/failure",
       pending: "/pending",
-      success: `${process.env.CLIENT_URL}`,
+      success: `${process.env.CLIENT_URL}/success/${tournamentid}`,
     },
     auto_return: "approved",
     metadata: {
@@ -37,7 +37,7 @@ async function PaymentService(tournamentid: string, userid: string) {
   return payment;
 }
 
-router.get("/payment", async function (req, res: any, next) {
+router.get("/payment", async (req, res: any, next) => {
   try {
     const { tournamentid, userid } = req.query;
     const response = await PaymentService(tournamentid as any, userid as any);

@@ -21,9 +21,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
 import {
-  changePassword,
   deleteActiveUser,
   getUserInfo,
+  updateProfile,
 } from "../redux/slices/userThunk";
 import history from "../utils/history";
 import { signOut } from "../redux/slices/authThunk";
@@ -37,9 +37,17 @@ export default function UserProfileEdit(): JSX.Element {
   const success = useAppSelector((state) => state.user.message);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [alias, setAlias] = useState("");
   const dispatch = useAppDispatch();
   const user_detail = useAppSelector((state) => state.user.userDetail);
   const userid: any = useAppSelector((state) => state.auth.decoded?.id);
+
+  function editProfile(email: string, password: string, alias: string) {
+    dispatch(updateProfile({ id: userid, alias_mp: alias, email, password }));
+    setEmail("");
+    setPassword("");
+    setAlias("");
+  }
 
   function onDeleteUser() {
     if (isLoggedIn) dispatch(deleteActiveUser({ id: userid, is_active: true }));
@@ -139,6 +147,16 @@ export default function UserProfileEdit(): JSX.Element {
                   disabled
                 />
               </FormControl>
+              <FormControl id="alias">
+                <FormLabel>Alias Mercado Pago</FormLabel>
+                <Input
+                  placeholder="Alias"
+                  _placeholder={{ color: "gray.500" }}
+                  type="text"
+                  onChange={(e) => setAlias(e.target.value)}
+                  value={alias}
+                />
+              </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
                   bg={"red.400"}
@@ -160,10 +178,8 @@ export default function UserProfileEdit(): JSX.Element {
                   _hover={{
                     bg: "blue.500",
                   }}
-                  onClick={async () => {
-                    await dispatch(changePassword({ email, password }));
-                    setEmail("");
-                    setPassword("");
+                  onClick={() => {
+                    editProfile(email, password, alias);
                   }}
                 >
                   Confirmar
@@ -274,6 +290,16 @@ export default function UserProfileEdit(): JSX.Element {
                   value={password}
                 />
               </FormControl>
+              <FormControl id="alias">
+                <FormLabel>Alias Mercado Pago</FormLabel>
+                <Input
+                  placeholder="Alias"
+                  _placeholder={{ color: "gray.500" }}
+                  type="text"
+                  onChange={(e) => setAlias(e.target.value)}
+                  value={alias}
+                />
+              </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
                   bg={"red.400"}
@@ -296,9 +322,7 @@ export default function UserProfileEdit(): JSX.Element {
                     bg: "blue.500",
                   }}
                   onClick={() => {
-                    dispatch(changePassword({ email, password }));
-                    setEmail("");
-                    setPassword("");
+                    editProfile(email, password, alias);
                   }}
                 >
                   Confirmar

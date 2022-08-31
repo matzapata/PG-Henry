@@ -4,6 +4,7 @@ import { Link as ReactLink } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks";
 import Logo from "./Logo";
 import SignOutButton from "./SignOutButton";
+import ModalReview from "./ModalReview";
 
 export default function NavBar() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
@@ -54,18 +55,23 @@ export default function NavBar() {
         </Link>
       </Flex>
       {isLoggedIn ? (
-        <Box width="150px" display="flex" justifyContent="space-evenly">
-          <Button
-            as={ReactLink}
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
-            size="md"
-            mr={3}
-            to="/auth/perfil"
-          >
-            Perfil
-          </Button>
-          <SignOutButton />
+        <Box width="325px" display="flex" justifyContent="space-evenly">
+          <Box>
+            <ModalReview />
+          </Box>
+          <Box>
+            <Button
+              as={ReactLink}
+              bgColor="#4FBDBA"
+              color="#F7F7F7"
+              size="md"
+              mr={3}
+              to="/auth/perfil"
+            >
+              Perfil
+            </Button>
+            <SignOutButton />
+          </Box>
         </Box>
       ) : (
         <Box width="200px" display="flex" justifyContent="space-evenly">
