@@ -151,6 +151,7 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
         type: tournament.type,
         pool: tournament.pool,
         logo_url: tournament.logo_url,
+        creator_user_id: tournament.creator_user_id,
       });
     else res.status(404).send("Not found.");
   } catch (e: any) {
