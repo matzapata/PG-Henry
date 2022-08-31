@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUserTournaments, getUserInfo, updateProfile, fetchUniqueUserTournament, getReviews } from "./userThunk";
+import {
+  fetchUserTournaments,
+  getUserInfo,
+  updateProfile,
+  fetchUniqueUserTournament,
+  getReviews,
+} from "./userThunk";
 
 type UserTournament = {
   id: string;
