@@ -67,78 +67,64 @@ function PrivatePassword() {
     dispatch(fetchMercadoPago({ tournamentid: id, userid: user_id }));
   }
 
-  if (
-    unido === false &&
-    tournamentDetail?.type === "PRIVATE" &&
-    pass === false
-  ) {
+  if (unido === false && tournamentDetail?.type === "PRIVATE") {
     return (
       <Box>
         <Button onClick={onOpen} mr={3}>
-          Unete{" "}
+          Unete
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Torneo privado</ModalHeader>
-            <ModalBody>Para continuar debes ingresar la contraseña.</ModalBody>
-            <ModalCloseButton />
-            <InputGroup size="md">
-              <Input
-                type={show ? "text" : "password"}
-                placeholder="Ingrese la contraseña"
-                mr={3}
-                name="password"
-                onChange={handleInput}
-              ></Input>
-            </InputGroup>
-            {error === "Contraseña incorrecta" ? (
-              <Text mr={3} color={"red"}>
-                Contraseña incorrecta
-              </Text>
-            ) : (
-              <Text></Text>
-            )}
+          {pass === true ? (
+            <ModalContent>
+              <ModalHeader>Unete comprando con mercadopago!</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                Te redireccionaremos a Mercadopago asi puedes realizar tu compra
+                por 200 pesos argentinos!
+              </ModalBody>
 
-            <ModalFooter>
-              <Button onClick={handlePass} mr={3}>
-                Aceptar
-              </Button>
-              <Button onClick={onClose} colorScheme="blue" mr={3}>
-                Cerrar
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </Box>
-    );
-  } else if (
-    unido === false &&
-    tournamentDetail?.type === "PRIVATE" &&
-    pass === true
-  ) {
-    return (
-      <Box>
-        <Button onClick={onOpen}>Unete</Button>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Unete comprando con mercadopago!</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              Te redireccionaremos a Mercadopago asi puedes realizar tu compra
-              por 200 pesos argentinos!
-            </ModalBody>
-
-            <ModalFooter>
-              <Button onClick={handleMP} mr={3}>
-                Ir a mercadopago
-              </Button>
-              <Button onClick={onClose} colorScheme="blue" mr={3}>
-                Cerrar
-              </Button>
-            </ModalFooter>
-          </ModalContent>
+              <ModalFooter>
+                <Button onClick={handleMP} mr={3}>
+                  Ir a mercadopago
+                </Button>
+                <Button onClick={onClose} colorScheme="blue" mr={3}>
+                  Cerrar
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          ) : (
+            <ModalContent>
+              <ModalBody>
+                Para continuar debes ingresar la contraseña.
+              </ModalBody>
+              <ModalCloseButton />
+              <InputGroup size="md">
+                <Input
+                  type={show ? "text" : "password"}
+                  placeholder="Ingrese la contraseña"
+                  mr={3}
+                  name="password"
+                  onChange={handleInput}
+                ></Input>
+              </InputGroup>
+              {error === "Contraseña incorrecta" ? (
+                <Text mr={3} color={"red"}>
+                  Contraseña incorrecta
+                </Text>
+              ) : (
+                <Text></Text>
+              )}
+              <ModalFooter>
+                <Button onClick={handlePass} mr={3}>
+                  Aceptar
+                </Button>
+                <Button onClick={onClose} colorScheme="blue" mr={3}>
+                  Cerrar
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          )}
         </Modal>
       </Box>
     );
