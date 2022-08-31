@@ -6,17 +6,16 @@ import {
   FormErrorMessage,
   Heading,
   Input,
-  NumberInput,
-  NumberInputField,
-  Stack,
   Text,
 } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 export type Input = {
   scores_a: number | undefined;
   scores_b: number | undefined;
+  match_id: string;
 };
 export type MatchData = {
+  match_id: string;
   team_a: {
     scores?: number;
     shield_url: string;
@@ -59,6 +58,7 @@ function MatchForm({
   const [input, setInput] = useState<Input>({
     scores_a: undefined,
     scores_b: undefined,
+    match_id: "",
   });
   const [errors, setErrors] = useState({
     scores_a: "",
@@ -80,15 +80,22 @@ function MatchForm({
 
   function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!errors.scores_a && !errors.scores_b) onSubmit(input);
+    if (
+      !errors.scores_a &&
+      !errors.scores_b &&
+      input.scores_a != undefined &&
+      input.scores_b != undefined
+    )
+      onSubmit(input);
   }
   useEffect(() => {
     setInput({
       scores_a: match.team_a.scores,
       scores_b: match.team_b.scores,
+      match_id: match.match_id,
     });
   }, []);
-  console.log(errors);
+
   return (
     <form action="" onSubmit={enviar}>
       <Flex flexDirection={"row"} color={"white"} justify="center">
