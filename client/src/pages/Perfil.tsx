@@ -96,17 +96,7 @@ export default function UserProfileEdit(): JSX.Element {
               <FormControl id="userName">
                 <Stack direction={["column", "row"]} spacing={6}>
                   <Center>
-                    <Avatar size="xl" src={user_detail.avatar}>
-                      <AvatarBadge
-                        as={IconButton}
-                        size="sm"
-                        rounded="full"
-                        top="-10px"
-                        colorScheme="red"
-                        aria-label="remove Image"
-                        icon={<SmallCloseIcon />}
-                      />
-                    </Avatar>
+                    <Avatar size="xl" src={user_detail.avatar}></Avatar>
                   </Center>
                   <Center w="full">
                     <UploadFiles

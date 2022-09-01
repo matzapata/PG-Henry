@@ -5,6 +5,7 @@ import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
 import { verifyAccessToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
+import sendEmail from "../utils/sendEmail";
 
 const router: express.Router = express.Router();
 
@@ -198,5 +199,56 @@ router.put(
     }
   }
 );
+
+router.put("/banuser", async (req: express.Request, res: express.Response) => {
+  const { user, admin_email, reason, password } = req.body;
+  const motivo = reason || "No hay descripcion";
+  try {
+    if (!user || !admin_email) return res.send("Faltan parametros requeridos");
+
+    const admin = await db.user.findFirst({
+      where: { OR: [{ email: admin_email }, { username: admin_email }] },
+    });
+    if (!admin) return res.send("No existe ninguna cuenta con este correo");
+    if (!admin.is_admin)
+      return res.send("Esta cuenta no tiene permisos de administrador");
+
+    if (admin.authProvider === "JWT") {
+      const hashedPassword = bcrypt.hashSync(password, 8);
+      console.log(hashedPassword);
+      console.log(admin.password);
+      if (hashedPassword !== admin.password)
+        return res.send("La contraseña no coincide");
+    }
+
+    const ban_user = await db.user.findUnique({ where: { email: user } });
+    if (!ban_user) return res.send("No existe el usuario que quieres banear");
+    if (ban_user.is_banned)
+      return res.send("El usuario ya se encuentra baneado");
+
+    await db.user.update({
+      where: { email: user },
+      data: { is_banned: true },
+    });
+
+    await db.banned.create({
+      data: {
+        admin_name: admin.full_name,
+        reason: motivo,
+        user_id: ban_user.id,
+      },
+    });
+
+    await sendEmail(
+      ban_user.email,
+      "Has sido baneado de Prode master",
+      `El administrador ${admin.full_name} te ha baneado, por el siguiente motivo: ${motivo}`
+    );
+
+    return res.status(200).send("Usuario baneado correctamente!");
+  } catch (err: any) {
+    return res.status(400).json({ msg: err.message });
+  }
+});
 
 export default router;
