@@ -15,6 +15,9 @@ import TournamentDetailPage from "./pages/TournamentDetail";
 import About from "./pages/About";
 import PaymentSuccess from "./pages/SuccessPayment";
 import Admin from "./pages/Admin";
+import AdminUsers from "./pages/AdminUsers";
+import AdminTournaments from "./pages/AdminTournaments";
+import AdminMatches from "./pages/AdminMatches";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -24,7 +27,10 @@ function App() {
 
   return (
     <Switch>
-      <Route exact path="/admin" component={Admin} />
+      <PrivateRoute exact path="/admin/partidos" component={AdminMatches} />
+      <PrivateRoute exact path="/admin/torneos" component={AdminTournaments} />
+      <PrivateRoute exact path="/admin/usuarios" component={AdminUsers} />
+      <PrivateRoute exact path="/admin" component={Admin} />
       <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
       <PrivateRoute
         exact
