@@ -98,6 +98,7 @@ function PublicTournaments(): JSX.Element {
           status={el.status}
           type={el.type}
           logo={el.logo_url}
+          is_official={el.is_official}
         />
       ))}
     </>

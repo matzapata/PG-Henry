@@ -166,7 +166,7 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
     const tournament = await prisma.tournament.findUnique({
       where: { id: id },
     });
-    if (tournament)
+    if (tournament) {
       res.send({
         id: tournament.id,
         name: tournament.name,
@@ -177,8 +177,9 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
         pool: tournament.pool,
         logo_url: tournament.logo_url,
         creator_user_id: tournament.creator_user_id,
+        is_official: tournament.is_official,
       });
-    else res.status(404).send("Not found.");
+    } else res.status(404).send("Not found.");
   } catch (e: any) {
     res.status(400).send({ message: e.message });
   }
@@ -300,6 +301,9 @@ router.post(
       }
 
       if (type === "PUBLIC") {
+        const user = await db.user.findUnique({
+          where: { id: creator_user_id },
+        });
         torneo = await db.tournament.create({
           data: {
             name,
@@ -308,9 +312,13 @@ router.post(
             creator_user_id,
             type,
             logo_url,
+            is_official: user?.is_admin ? true : false,
           },
         });
       } else {
+        const user = await db.user.findUnique({
+          where: { id: creator_user_id },
+        });
         if (!password) return res.status(400).send("Password required.");
         const hashedPassword = bcrypt.hashSync(password, 8);
         torneo = await db.tournament.create({
@@ -322,6 +330,7 @@ router.post(
             type,
             logo_url,
             password: hashedPassword,
+            is_official: user?.is_admin ? true : false,
           },
         });
       }

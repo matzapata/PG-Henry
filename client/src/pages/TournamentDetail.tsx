@@ -11,7 +11,6 @@ import AddPrediction from "../components/AddPrediction";
 
 import PrivatePassword from "../components/TournamentPrivate";
 
-
 function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
 
