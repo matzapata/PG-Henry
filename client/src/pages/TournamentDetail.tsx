@@ -26,11 +26,11 @@ function TournamentDetail() {
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
-        {/*  <Heading color="#F7F7F7">Partidos</Heading>
+        <Heading color="#F7F7F7">Partidos</Heading>
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
         <PrivatePassword />
-        <Mercadopago id={id} /> */}
+        <Mercadopago id={id} />
         <AddPrediction id={id} />
       </Box>
     </Box>
