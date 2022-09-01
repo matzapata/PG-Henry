@@ -67,6 +67,7 @@ router.post("/signin", async (req: express.Request, res: express.Response) => {
       email: user.email,
       username: user.username,
       is_admin: user.is_admin,
+      is_banned: user.is_banned,
     });
 
     res.status(200).send({
@@ -84,6 +85,7 @@ router.post("/refresh", protectedRoute, async function (req, res) {
     email: req.user.email,
     username: req.user.username,
     is_admin: req.user.is_admin,
+    is_banned: req.user.is_banned,
   });
   res.status(200).send({
     message: "Token refreshed",
@@ -142,6 +144,7 @@ router.post("/auth0", async (req: express.Request, res: express.Response) => {
       email: user.email,
       username: user.username,
       is_admin: user.is_admin,
+      is_banned: user.is_banned,
     });
 
     res.status(200).send({

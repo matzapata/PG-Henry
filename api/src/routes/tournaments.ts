@@ -168,7 +168,7 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
     const tournament = await prisma.tournament.findUnique({
       where: { id: id },
     });
-    if (tournament)
+    if (tournament) {
       res.send({
         id: tournament.id,
         name: tournament.name,
@@ -179,12 +179,14 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
         pool: tournament.pool,
         logo_url: tournament.logo_url,
         creator_user_id: tournament.creator_user_id,
+        is_official: tournament.is_official,
       });
-    else res.status(404).send("Not found.");
+    } else res.status(404).send("Not found.");
   } catch (e: any) {
     res.status(400).send({ message: e.message });
   }
 });
+
 router.post(
   "/checkName",
   protectedRoute,
@@ -192,7 +194,9 @@ router.post(
     try {
       const { name } = req.body;
 
-      const torneo: any = await db.tournament.findUnique({
+
+      const torneo = await db.tournament.findUnique({
+
         where: { name },
       });
       if (torneo) {
@@ -208,6 +212,7 @@ router.post(
     }
   }
 );
+
 router.post(
   "/checkTeams",
   protectedRoute,
@@ -301,6 +306,9 @@ router.post(
       }
 
       if (type === "PUBLIC") {
+        const user = await db.user.findUnique({
+          where: { id: creator_user_id },
+        });
         torneo = await db.tournament.create({
           data: {
             name,
@@ -309,9 +317,13 @@ router.post(
             creator_user_id,
             type,
             logo_url,
+            is_official: user?.is_admin ? true : false,
           },
         });
       } else {
+        const user = await db.user.findUnique({
+          where: { id: creator_user_id },
+        });
         if (!password) return res.status(400).send("Password required.");
         const hashedPassword = bcrypt.hashSync(password, 8);
         torneo = await db.tournament.create({
@@ -323,6 +335,7 @@ router.post(
             type,
             logo_url,
             password: hashedPassword,
+            is_official: user?.is_admin ? true : false,
           },
         });
       }
@@ -413,6 +426,115 @@ router.get(
         };
       }),
     });
+  }
+);
+
+router.put(
+  "/:id/match/:match_id/result",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { score_a, score_b } = req.body;
+
+      if ([score_a, score_b].includes(undefined))
+        return res.status(400).send("Missing parameters");
+
+      // validate authenticated user has permissions
+      const tournament = await db.tournament.findUnique({
+        where: { id: req.params.id },
+      });
+      if (!tournament) return res.status(404).send("Tournament not found");
+      if (tournament?.status === "CONCLUDED")
+        return res.status(400).send("Tournament concluded");
+      if (tournament?.creator_user_id !== req.user.id)
+        return res
+          .status(401)
+          .send("Authenticated user is not the creator of the tournament");
+
+      const match = await db.matches.findUnique({
+        where: { id: req.params.match_id },
+      });
+      if (!match) return res.status(404).send("Match not found");
+
+      // Update match result
+      await db.matches.update({
+        where: { id: req.params.match_id },
+        data: { score_a, score_b },
+      });
+
+      const tournamentPredictions = await db.predictions.findMany({
+        where: {
+          match_id: req.params.match_id,
+          tournament_id: req.params.id,
+        },
+      });
+
+      const winners = tournamentPredictions
+        .filter((tp) => tp.score_a === score_a && tp.score_b === score_b)
+        .map((tp) => tp.user_id);
+
+      await db.userTournament.updateMany({
+        where: { user_id: { in: winners } },
+        data: { score: { increment: 3 } },
+      });
+
+      if (match.stage === "FINAL") {
+        const tournamentScores = await db.userTournament.findMany({
+          where: { tournament_id: req.params.id },
+          orderBy: { score: "desc" },
+          distinct: ["score"],
+          select: { score: true },
+        });
+
+        // Money compensation calculation
+        const [firstCount, secondCount, thirdCount] = await Promise.all([
+          db.userTournament.count({
+            where: { score: tournamentScores[0].score },
+          }),
+          db.userTournament.count({
+            where: { score: tournamentScores[1].score },
+          }),
+          db.userTournament.count({
+            where: { score: tournamentScores[2].score },
+          }),
+        ]);
+        const firstComp = Math.floor((tournament.pool * 0.5) / firstCount);
+        const secondComp = Math.floor((tournament.pool * 0.35) / secondCount);
+        const thirdComp = Math.floor((tournament.pool * 0.15) / thirdCount);
+
+        await Promise.all([
+          db.userTournament.updateMany({
+            where: {
+              tournament_id: req.params.id,
+              score: tournamentScores[0].score,
+            },
+            data: { position: "FIRST", compensation: firstComp },
+          }),
+          db.userTournament.updateMany({
+            where: {
+              tournament_id: req.params.id,
+              score: tournamentScores[1].score,
+            },
+            data: { position: "SECOND", compensation: secondComp },
+          }),
+          db.userTournament.updateMany({
+            where: {
+              tournament_id: req.params.id,
+              score: tournamentScores[2].score,
+            },
+            data: { position: "THIRD", compensation: thirdComp },
+          }),
+          db.tournament.update({
+            where: { id: req.params.id },
+            data: { status: "CONCLUDED" },
+          }),
+        ]);
+      }
+
+      return res.send("OK");
+    } catch (e) {
+      return res.status(500).send("ERROR");
+    }
   }
 );
 

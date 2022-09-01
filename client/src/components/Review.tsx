@@ -9,6 +9,7 @@ import {
   Avatar,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { Rating, RatingView } from "react-simple-star-rating";
 
 const Testimonial = ({ children }: { children: ReactNode }) => {
   return <Box>{children}</Box>;
@@ -94,6 +95,9 @@ export default function WithSpeechBubbles(props: any) {
               <TestimonialText>{props.review}</TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar src={props.avatar} name={props.name} />
+            <Flex justifyContent={"center"}>
+              <RatingView ratingValue={props.stars} />
+            </Flex>
           </Testimonial>
         </Stack>
       </Container>

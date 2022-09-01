@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
   Flex,
   Heading,
@@ -19,7 +20,6 @@ function TournamentDetailHeader({ id }: { id: string }) {
   );
   const loading = useAppSelector((state) => state.tournaments.loading);
   const error = useAppSelector((state) => state.tournaments.error);
-
   useEffect(() => {
     dispatch(fetchTournamentDetail(id));
   }, [id]);
@@ -51,6 +51,11 @@ function TournamentDetailHeader({ id }: { id: string }) {
           <Flex direction="column" ml="4">
             <Heading size="lg" mb="3" color="text">
               {tournamentDetail?.name}
+              {tournamentDetail?.is_official === true ? (
+                <CheckCircleIcon />
+              ) : (
+                <Text></Text>
+              )}
             </Heading>
             <HStack spacing="2">
               <Tag size="sm">{tournamentDetail?.type}</Tag>

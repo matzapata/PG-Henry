@@ -20,6 +20,7 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user_id = useAppSelector((state) => state.auth.decoded?.id);
+  const usermail = useAppSelector((state) => state.auth.decoded?.email);
   const unido = useAppSelector(
     (state) => state.user.userTournaments.is_attached
   );
@@ -32,7 +33,13 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   });
 
   function handleMP() {
-    dispatch(fetchMercadoPago({ tournamentid: id, userid: user_id }));
+    dispatch(
+      fetchMercadoPago({
+        tournamentid: id,
+        userid: user_id,
+        useremail: usermail,
+      })
+    );
   }
   if (unido === false && tournamentDetail?.type === "PUBLIC") {
     return (

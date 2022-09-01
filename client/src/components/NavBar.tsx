@@ -8,6 +8,7 @@ import ModalReview from "./ModalReview";
 
 export default function NavBar() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const data = useAppSelector((state) => state.auth.decoded);
 
   return (
     <Flex
@@ -29,6 +30,19 @@ export default function NavBar() {
         >
           ProdeMaster
         </Text>
+        {data?.is_admin && (
+          <Link
+            as={ReactLink}
+            to={"/admin"}
+            color="text"
+            fontSize="20px"
+            fontWeight="medium"
+            mx="4"
+          >
+            Admin
+          </Link>
+        )}
+
         {isLoggedIn && (
           <>
             <Link
