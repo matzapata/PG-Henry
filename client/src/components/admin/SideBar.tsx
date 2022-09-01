@@ -20,7 +20,7 @@ import {
 import { Link as ReactLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { signOut } from "../../redux/slices/authThunk";
-import BanFormulary from "./BanFormulary";
+import BanForm from "./BanForm";
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -61,7 +61,7 @@ function SideBar() {
         </Flex>
         <Flex alignItems={"center"}>
           <Icon as={MdOutlineWarning} color={"buttons"} />
-          <BanFormulary email={data?.email} />
+          <BanForm email={data?.email} />
         </Flex>
         <Flex alignItems={"center"}>
           <Icon as={MdLogout} color={"buttons"} />
