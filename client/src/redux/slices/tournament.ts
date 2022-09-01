@@ -20,6 +20,7 @@ export type Tournament = {
   status: string;
   type: string;
   logo_url: string;
+  is_official: boolean;
 };
 
 export type TournamentDetail = {
@@ -32,6 +33,7 @@ export type TournamentDetail = {
   pool: number;
   logo_url: string;
   creator_user_id: string;
+  is_official: boolean;
 };
 
 export type TournamentMatch = {
