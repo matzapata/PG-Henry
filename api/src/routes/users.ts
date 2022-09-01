@@ -104,11 +104,12 @@ router.put(
     const { email, password, alias_mp } = req.body;
     const { id } = req.params;
 
-    if ((!email && !password && !alias_mp) || (password && !email))
-      return res.status(400).send("Faltan parametros requeridos!");
+    if ((!email && !password && alias_mp !== "") || (password && !email)) {
+      return res.send("Faltan parametros requeridos!");
+    }
 
     try {
-      if (email && password) {
+      if (email && password && !alias_mp) {
         const token = req.headers["x-access-token"];
         if (!token)
           return res.status(403).send({ message: "No token provided!" });
@@ -120,6 +121,7 @@ router.put(
           email: decoded.payload.email,
           username: decoded.payload.username,
           is_admin: decoded.payload.is_admin,
+          is_banned: decoded.payload.is_banned,
         };
         const user: any = await db.user.findUnique({ where: { email } });
 
@@ -138,11 +140,35 @@ router.put(
           });
         }
       }
-      if (alias_mp) {
-        const alias = await db.user.update({
-          where: { id: id },
-          data: { alias_mp: alias_mp },
+      if (email && password && alias_mp) {
+        const token = req.headers["x-access-token"];
+        if (!token)
+          return res.status(403).send({ message: "No token provided!" });
+        const decoded = (await verifyAccessToken(
+          token as string
+        )) as JwtPayload;
+        req.user = {
+          id: decoded.payload.id,
+          email: decoded.payload.email,
+          username: decoded.payload.username,
+          is_admin: decoded.payload.is_admin,
+          is_banned: decoded.payload.is_banned,
+        };
+        const user: any = await db.user.findUnique({
+          where: { email: req.user.email },
         });
+
+        if (email === req.user.email && user.id === req.user.id) {
+          const check = bcrypt.compareSync(password, user.password as string);
+          if (check) {
+            await db.user.update({
+              where: { id: id },
+              data: { alias_mp: alias_mp },
+            });
+          } else {
+            return res.status(404).json({ msg: "La clave no coincide..." });
+          }
+        }
       }
       return res.status(200).json({ msg: "Perfil editado exitosamente." });
     } catch (err) {
