@@ -110,19 +110,6 @@ router.put(
 
     try {
       if (email && password && !alias_mp) {
-        const token = req.headers["x-access-token"];
-        if (!token)
-          return res.status(403).send({ message: "No token provided!" });
-        const decoded = (await verifyAccessToken(
-          token as string
-        )) as JwtPayload;
-        req.user = {
-          id: decoded.payload.id,
-          email: decoded.payload.email,
-          username: decoded.payload.username,
-          is_admin: decoded.payload.is_admin,
-          is_banned: decoded.payload.is_banned,
-        };
         const user: any = await db.user.findUnique({ where: { email } });
 
         if (
@@ -141,19 +128,6 @@ router.put(
         }
       }
       if (email && password && alias_mp) {
-        const token = req.headers["x-access-token"];
-        if (!token)
-          return res.status(403).send({ message: "No token provided!" });
-        const decoded = (await verifyAccessToken(
-          token as string
-        )) as JwtPayload;
-        req.user = {
-          id: decoded.payload.id,
-          email: decoded.payload.email,
-          username: decoded.payload.username,
-          is_admin: decoded.payload.is_admin,
-          is_banned: decoded.payload.is_banned,
-        };
         const user: any = await db.user.findUnique({
           where: { email: req.user.email },
         });
