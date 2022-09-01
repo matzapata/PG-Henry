@@ -252,4 +252,32 @@ router.put(
   }
 );
 
+router.put(
+  "/formAdmin",
+  protectedRoute,
+  isAdmin,
+  async (req: express.Request, res: express.Response) => {
+    const { email } = req.body;
+    try {
+      if (!email)
+        return res.send("Faltan parametros requeridos");
+
+      await db.user.update({
+        where: { email: email },
+        data: { is_admin: true },
+      });
+
+      await sendEmail(
+        email,
+        "Has sido asignado como Administrador de Prode master",
+        `Felicidades ahora haces parte de nuestro equipo de Prode Master!!! 
+        La mejor aplicacion de predicciones deportivas ✔`
+      );
+
+      return res.status(200).send("Usuario asignado como administrador correctamente!");
+    } catch (err: any) {
+      return res.status(400).json({ msg: err.message });
+    }
+  }
+);
 export default router;
