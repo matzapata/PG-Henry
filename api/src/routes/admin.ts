@@ -22,7 +22,16 @@ router.get(
         },
       });
 
-      res.send(payments);
+      res.send(
+        payments.map((p) => ({
+          position: p.position,
+          compensation: p.compensation,
+          email: p.user.email,
+          full_name: p.user.full_name,
+          tournament: p.tournament,
+          user_tournament_id: p.id,
+        }))
+      );
     } catch (e: any) {
       res.status(500).send(e.message);
     }
