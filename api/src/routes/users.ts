@@ -201,7 +201,7 @@ router.put(
 );
 
 router.put("/banuser", async (req: express.Request, res: express.Response) => {
-  const { user, admin_email, reason, password } = req.body;
+  const { user, admin_email, reason, password, admin_name } = req.body;
   const motivo = reason || "No hay descripcion";
   try {
     if (!user || !admin_email) return res.send("Faltan parametros requeridos");
@@ -214,11 +214,8 @@ router.put("/banuser", async (req: express.Request, res: express.Response) => {
       return res.send("Esta cuenta no tiene permisos de administrador");
 
     if (admin.authProvider === "JWT") {
-      const hashedPassword = bcrypt.hashSync(password, 8);
-      console.log(hashedPassword);
-      console.log(admin.password);
-      if (hashedPassword !== admin.password)
-        return res.send("La contraseña no coincide");
+      const check = bcrypt.compareSync(password, admin.password as string);
+      if (!check) return res.send("La contraseña no coincide");
     }
 
     const ban_user = await db.user.findUnique({ where: { email: user } });
@@ -242,7 +239,7 @@ router.put("/banuser", async (req: express.Request, res: express.Response) => {
     await sendEmail(
       ban_user.email,
       "Has sido baneado de Prode master",
-      `El administrador ${admin.full_name} te ha baneado, por el siguiente motivo: ${motivo}`
+      `El administrador ${admin_name} te ha baneado, por el siguiente motivo: ${motivo}`
     );
 
     return res.status(200).send("Usuario baneado correctamente!");
