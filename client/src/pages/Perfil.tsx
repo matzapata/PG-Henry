@@ -33,20 +33,38 @@ import NavBar from "../components/NavBar";
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
   const isLoggedIn = useAppSelector((state) => state.auth.token);
-  const error = useAppSelector((state) => state.user.error);
+  const [error, setError] = useState("");
   const success = useAppSelector((state) => state.user.message);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [alias, setAlias] = useState("");
+  const [input, setInput] = useState({
+    username: "",
+    email: "",
+    password: "",
+    alias: "",
+  });
   const dispatch = useAppDispatch();
   const user_detail = useAppSelector((state) => state.user.userDetail);
   const userid: any = useAppSelector((state) => state.auth.decoded?.id);
 
-  function editProfile(email: string, password: string, alias: string) {
-    dispatch(updateProfile({ id: userid, alias_mp: alias, email, password }));
-    setEmail("");
-    setPassword("");
-    setAlias("");
+  function editProfile() {
+    if (input.email && input.password && input.alias) {
+      dispatch(
+        updateProfile({
+          id: userid,
+          email: input.email,
+          password: input.password,
+          alias_mp: input.alias,
+        })
+      );
+    } else if (input.email && input.password) {
+      dispatch(
+        updateProfile({
+          id: userid,
+          email: input.email,
+          password: input.password,
+          alias_mp: "",
+        })
+      );
+    } else setError("Faltan parametros requeridos");
   }
 
   function onDeleteUser() {
@@ -56,6 +74,14 @@ export default function UserProfileEdit(): JSX.Element {
     history.push("/");
   }
 
+  const handleChange = (e: any) => {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
+    setError("");
+  };
+
   useEffect(() => {
     if (isLoggedIn) dispatch(getUserInfo(null));
     if (isAuthenticated) dispatch(getUserInfo(null));
@@ -64,7 +90,7 @@ export default function UserProfileEdit(): JSX.Element {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-  }, [user_detail.avatar, success]);
+  }, [success]);
 
   return (
     <>
@@ -96,7 +122,7 @@ export default function UserProfileEdit(): JSX.Element {
               <FormControl id="userName">
                 <Stack direction={["column", "row"]} spacing={6}>
                   <Center>
-                    <Avatar size="xl" src={user_detail.avatar}></Avatar>
+                    <Avatar size="xl" src={user_detail?.avatar}></Avatar>
                   </Center>
                   <Center w="full">
                     <UploadFiles
@@ -107,7 +133,7 @@ export default function UserProfileEdit(): JSX.Element {
                   </Center>
                 </Stack>
               </FormControl>
-              <FormControl id="userName" isRequired>
+              <FormControl id="userName">
                 <FormLabel>Usuario</FormLabel>
                 <Input
                   placeholder="Nombre de usuario"
@@ -121,8 +147,6 @@ export default function UserProfileEdit(): JSX.Element {
                   placeholder="No disponible al ingresar con Auth0"
                   _placeholder={{ color: "gray.500" }}
                   type="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
                   disabled
                 />
               </FormControl>
@@ -132,8 +156,6 @@ export default function UserProfileEdit(): JSX.Element {
                   placeholder="No disponible al ingresar con Auth0"
                   _placeholder={{ color: "gray.500" }}
                   type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
                   disabled
                 />
               </FormControl>
@@ -143,8 +165,9 @@ export default function UserProfileEdit(): JSX.Element {
                   placeholder="Alias"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
-                  onChange={(e) => setAlias(e.target.value)}
-                  value={alias}
+                  name="alias"
+                  onChange={handleChange}
+                  value={input.alias}
                 />
               </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
@@ -169,7 +192,7 @@ export default function UserProfileEdit(): JSX.Element {
                     bg: "blue.500",
                   }}
                   onClick={() => {
-                    editProfile(email, password, alias);
+                    editProfile();
                   }}
                 >
                   Confirmar
@@ -190,8 +213,8 @@ export default function UserProfileEdit(): JSX.Element {
               </Stack>
               {error ? (
                 <Flex mt="4" alignItems="center" justifyContent="center">
-                  <Icon as={FaExclamationCircle} color="red.500" mr="2" />
-                  <Text as="span" color="red.500" fontWeight="500">
+                  <Icon as={CheckIcon} color="green.500" mr="2" />
+                  <Text as="span" color="green.500" fontWeight="500">
                     {error}
                   </Text>
                 </Flex>
@@ -231,17 +254,7 @@ export default function UserProfileEdit(): JSX.Element {
               <FormControl id="userName">
                 <Stack direction={["column", "row"]} spacing={6}>
                   <Center>
-                    <Avatar size="xl" src={user_detail.avatar}>
-                      <AvatarBadge
-                        as={IconButton}
-                        size="sm"
-                        rounded="full"
-                        top="-10px"
-                        colorScheme="red"
-                        aria-label="remove Image"
-                        icon={<SmallCloseIcon />}
-                      />
-                    </Avatar>
+                    <Avatar size="xl" src={user_detail?.avatar}></Avatar>
                   </Center>
                   <Center w="full">
                     <UploadFiles
@@ -252,12 +265,15 @@ export default function UserProfileEdit(): JSX.Element {
                   </Center>
                 </Stack>
               </FormControl>
-              <FormControl id="userName" isRequired>
+              <FormControl id="userName">
                 <FormLabel>Usuario</FormLabel>
                 <Input
                   placeholder="Nombre de usuario"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
+                  name="username"
+                  onChange={handleChange}
+                  value={input.username}
                 />
               </FormControl>
               <FormControl id="email" isRequired>
@@ -266,8 +282,9 @@ export default function UserProfileEdit(): JSX.Element {
                   placeholder="Email"
                   _placeholder={{ color: "gray.500" }}
                   type="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
+                  name="email"
+                  onChange={handleChange}
+                  value={input.email}
                 />
               </FormControl>
               <FormControl id="password" isRequired>
@@ -276,8 +293,9 @@ export default function UserProfileEdit(): JSX.Element {
                   placeholder="Contraseña"
                   _placeholder={{ color: "gray.500" }}
                   type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
+                  name="password"
+                  onChange={handleChange}
+                  value={input.password}
                 />
               </FormControl>
               <FormControl id="alias">
@@ -286,8 +304,9 @@ export default function UserProfileEdit(): JSX.Element {
                   placeholder="Alias"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
-                  onChange={(e) => setAlias(e.target.value)}
-                  value={alias}
+                  name="alias"
+                  onChange={handleChange}
+                  value={input.alias}
                 />
               </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
@@ -312,7 +331,7 @@ export default function UserProfileEdit(): JSX.Element {
                     bg: "blue.500",
                   }}
                   onClick={() => {
-                    editProfile(email, password, alias);
+                    editProfile();
                   }}
                 >
                   Confirmar
@@ -332,7 +351,7 @@ export default function UserProfileEdit(): JSX.Element {
                 </Button>
               </Stack>
 
-              {error ? (
+              {error !== "" ? (
                 <Flex mt="4" alignItems="center" justifyContent="center">
                   <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                   <Text as="span" color="red.500" fontWeight="500">
