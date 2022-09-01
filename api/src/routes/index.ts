@@ -17,7 +17,6 @@ router.use("/mercadopago", mercadopagoRouter);
 router.use("/notification", notificationRouter);
 router.use("/feedback", commentsRouter);
 router.use("/predictions", predictionRouter);
-router.use("/predictions", predictionRouter);
 router.use("/stats", statsRouter);
 
 export default router;
