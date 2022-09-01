@@ -13,8 +13,16 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { Stats } from "../../redux/slices/admin";
+import { percentage } from "./Widget";
 
-function Featured() {
+interface FeaturedProps {
+  stats: Stats;
+}
+
+function Featured({ stats }: FeaturedProps) {
+  const revenuePercentage = Math.floor(percentage(stats.revenue, 1500000));
+
   return (
     <Flex
       flex={1}
@@ -28,33 +36,41 @@ function Featured() {
     >
       <Flex>
         <Heading fontSize={"2xl"} fontWeight={"medium"} color={"buttons"}>
-          Cuenta
+          Ingresos
         </Heading>
       </Flex>
       <Flex justifyContent={"center"}>
         <Flex>
-          <CircularProgress value={40} size={"250px"} color={"buttons"}>
+          <CircularProgress
+            value={revenuePercentage}
+            size={"250px"}
+            color={"buttons"}
+          >
             <CircularProgressLabel color={"GrayText"}>
-              40%
+              {`${revenuePercentage}%`}
             </CircularProgressLabel>
           </CircularProgress>
         </Flex>
       </Flex>
       <Flex flexDir={"column"} alignItems={"center"}>
         <Text fontFamily={"heading"} color={"GrayText"}>
-          Total Torneos hoy
+          Total Torneos
         </Text>
-        <Text fontSize={"3xl"}>$100,000</Text>
+        <Text fontSize={"3xl"}>{`$ ${stats.revenue}`}</Text>
         <Divider />
         <Flex>
           <Stat mt={2} textAlign="center">
             <StatLabel fontSize={"large"} color={"GrayText"}>
               Target
             </StatLabel>
-            <Text fontSize={"2xl"}>$80,000</Text>
+            <Text fontSize={"2xl"}>$1500000</Text>
             <StatHelpText fontSize={"md"}>
-              <StatArrow type="increase" />
-              23.36%
+              {revenuePercentage >= 50 ? (
+                <StatArrow type="increase" />
+              ) : (
+                <StatArrow type="decrease" />
+              )}
+              {`${revenuePercentage}%`}
             </StatHelpText>
           </Stat>
         </Flex>
