@@ -6,7 +6,7 @@ import TournamentsPage from "./pages/Tournaments";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import Perfil from "./pages/Perfil";
-import { useAppDispatch } from "./redux/hooks";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
 import PrivateRoute from "./utils/routePrivate";
@@ -18,8 +18,10 @@ import Admin from "./pages/Admin";
 
 function App() {
   const dispatch = useAppDispatch();
+  const jwtToken = useAppSelector((state) => state.auth.token);
+
   useEffect(() => {
-    dispatch(refreshToken());
+    if (!jwtToken) dispatch(refreshToken());
   }, []);
 
   return (

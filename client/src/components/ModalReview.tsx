@@ -17,11 +17,9 @@ import {
 } from "@chakra-ui/react";
 import { Rating } from "react-simple-star-rating";
 import api from "../services/api";
-import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { refreshToken } from "../redux/slices/authThunk";
+import { useAppSelector } from "../redux/hooks";
 
 function ModalReview() {
-  const dispatch = useAppDispatch();
   const infoDecoded = useAppSelector((state) => state.auth.decoded);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = React.useRef(null);
@@ -31,10 +29,6 @@ function ModalReview() {
     titulo: "",
     comentario: "",
   });
-
-  useEffect(() => {
-    dispatch(refreshToken());
-  }, []);
 
   const handleInputChange = (e: any) => {
     setInput({

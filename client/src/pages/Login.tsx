@@ -63,7 +63,6 @@ function Login() {
   useEffect(() => {
     if (isAuthenticated) history.push("/");
     else if (isAuth0Authenticated) {
-      console.log(user);
       dispatch(
         loginAuth0({
           email: user?.email as string,
