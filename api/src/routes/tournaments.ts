@@ -192,8 +192,7 @@ router.post(
     try {
       const { name } = req.body;
 
-      let torneo: any;
-      torneo = await db.tournament.findUnique({
+      const torneo: any = await db.tournament.findUnique({
         where: { name },
       });
       if (torneo) {
@@ -216,7 +215,7 @@ router.post(
     try {
       const { teams } = req.body;
 
-      let encontrados: string[] = [];
+      const encontrados: string[] = [];
       const teamsArray = teams.map(async (team: Team) => {
         const teamName = await db.teams.findUnique({
           where: { name: team.name },
@@ -268,7 +267,7 @@ router.post(
           .send({ message: "Missing required parameters." });
 
       ///////CHEQUEO DE EQUIPOS PREXISTENTES///////
-      let encontrados: string[] = [];
+      const encontrados: string[] = [];
       const teamsArray = teams.map(async (team: Team) => {
         const teamName = await db.teams.findUnique({
           where: { name: team.name },

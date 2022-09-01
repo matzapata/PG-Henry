@@ -16,7 +16,7 @@ import {
 
 import React, { useState, useEffect } from "react";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { useAppSelector } from "../redux/hooks";
 import api from "../services/api";
 import UploadFiles from "./UploadFile";
 type Team = {

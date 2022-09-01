@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   fetchTournamentAllMatches,
@@ -14,7 +8,7 @@ import {
 
 import MatchForm, { Input } from "./PredictionCard";
 import api from "../services/api";
-import { Prediction, TournamentMatch } from "../redux/slices/tournament";
+import { TournamentMatch } from "../redux/slices/tournament";
 
 export default function AddPrediction({ id }: { id: string }) {
   const dispatch = useAppDispatch();
@@ -30,9 +24,6 @@ export default function AddPrediction({ id }: { id: string }) {
   const matches = useAppSelector(
     (state) => state.tournaments.tournamentAllMatches
   );
-  const [userPredictions, setUserPredictions] = useState<
-    Prediction[] | undefined
-  >([]);
   const [newMatches, setNewMatches] = useState<TournamentMatch[]>([]);
 
   const filtrarPredicciones = () => {
@@ -43,14 +34,12 @@ export default function AddPrediction({ id }: { id: string }) {
         if (!!match.match_id.length) {
           match.match_id.map((prediction) => {
             if (prediction.user_id === user_id) {
-              console.log("Tiene predic");
               finalMatches.push({
                 ...match,
                 score_a: prediction.score_a,
                 score_b: prediction.score_b,
               });
             } else {
-              console.log("no tiene prediccio");
               finalMatches.push({
                 ...match,
                 score_a: undefined,
@@ -89,19 +78,17 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     dispatch(fetchTournamentDetail(id));
     if (user_id) dispatch(fetchTournamentAllMatches({ id, user_id }));
-    // if (matches) setNewMatches(matches);
-    //perdirPredicciones();
+
     filtrarPredicciones();
   }, []);
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
-  console.log(newMatches);
   return (
     <Box>
-      {tournamentCreator === user_id && (
+      {tournamentCreator !== user_id && (
         <Box>
-          {!unido && ( //CAMIAR CONDICIONN!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          {unido && (
             <Box marginTop={"5px"}>
               <Heading size="md" color="text">
                 Has tus predicciones
