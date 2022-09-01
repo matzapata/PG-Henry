@@ -1,11 +1,5 @@
-import React, { useEffect } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Heading } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   fetchTournamentAllMatches,
@@ -14,69 +8,107 @@ import {
 
 import MatchForm, { Input } from "./PredictionCard";
 import api from "../services/api";
+import { TournamentMatch } from "../redux/slices/tournament";
 
 export default function AddPrediction({ id }: { id: string }) {
   const dispatch = useAppDispatch();
-  const matches = useAppSelector(
-    (state) => state.tournaments.tournamentAllMatches
-  );
+
   const unido = useAppSelector(
     (state) => state.user.userTournaments.is_attached
   );
-  const userPrediction = useAppSelector((state) => state.auth.decoded?.id);
+  const user_id = useAppSelector((state) => state.auth.decoded?.id);
 
   const tournamentCreator = useAppSelector(
     (state) => state.tournaments.tournamentDetail?.creator_user_id
   );
+  const matches = useAppSelector(
+    (state) => state.tournaments.tournamentAllMatches
+  );
+  const [newMatches, setNewMatches] = useState<TournamentMatch[]>([]);
+
+  const filtrarPredicciones = () => {
+    if (!!matches?.length && user_id) {
+      const finalMatches: TournamentMatch[] = [];
+
+      matches?.map((match) => {
+        if (!!match.match_id.length) {
+          match.match_id.map((prediction) => {
+            if (prediction.user_id === user_id) {
+              finalMatches.push({
+                ...match,
+                score_a: prediction.score_a,
+                score_b: prediction.score_b,
+              });
+            } else {
+              finalMatches.push({
+                ...match,
+                score_a: undefined,
+                score_b: undefined,
+              });
+            }
+          });
+        } else {
+          finalMatches.push({
+            ...match,
+            score_a: undefined,
+            score_b: undefined,
+          });
+        }
+      });
+
+      setNewMatches(finalMatches);
+    }
+  };
 
   async function onSubmit(data: Input) {
     const dataPost = {
-      user_id: userPrediction,
+      user_id,
       tournament_id: id,
       data,
     };
     try {
-      const result = await api.post("/predictions", {
+      await api.post("/predictions", {
         dataPost,
       });
-      console.log(result);
     } catch (e: any) {
       console.log(e.response.data);
     }
-
-    console.log(dataPost);
   }
 
   useEffect(() => {
-    dispatch(fetchTournamentAllMatches({ id }));
     dispatch(fetchTournamentDetail(id));
-  }, []);
+    if (user_id) dispatch(fetchTournamentAllMatches({ id, user_id }));
 
+    filtrarPredicciones();
+  }, []);
+  useEffect(() => {
+    if (matches) filtrarPredicciones();
+  }, [matches]);
   return (
     <Box>
-      {tournamentCreator !== userPrediction && (
+      {tournamentCreator !== user_id && (
         <Box>
-          {!unido && ( //CAMIAR CONDICIONN!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          {unido && (
             <Box marginTop={"5px"}>
               <Heading size="md" color="text">
                 Has tus predicciones
               </Heading>
 
               <Box margin={"5px"} bgColor="secondary" borderRadius="4" p="6">
-                {matches &&
-                  matches.map((match) => (
+                {newMatches &&
+                  newMatches.map((match) => (
                     <MatchForm
-                      key={match.id}
+                      key={match.id + "M"}
                       match={{
                         match_id: match.id,
                         team_a: {
-                          scores: undefined,
+                          scores: match.score_a,
                           shield_url: match.team_a.shield_url,
                           name: match.team_a.name,
                           id: match.team_a_id,
                         },
                         team_b: {
-                          scores: undefined,
+                          scores: match.score_b,
                           shield_url: match.team_b.shield_url,
                           name: match.team_b.name,
                           id: match.team_b_id,

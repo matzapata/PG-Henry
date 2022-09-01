@@ -126,10 +126,11 @@ router.get(
   }
 );
 router.get(
-  "/:id/allmatches",
+  "/:id/allmatches/:user_id",
+  protectedRoute,
   async (req: express.Request, res: express.Response) => {
-    const { id } = req.params;
-    console.log("entró");
+    const { id, user_id } = req.params;
+
     try {
       const result = await prisma.matches.findMany({
         where: {
@@ -150,6 +151,7 @@ router.get(
               id: true,
             },
           },
+          match_id: { where: { user_id } },
         },
       });
 
@@ -192,7 +194,9 @@ router.post(
     try {
       const { name } = req.body;
 
+
       const torneo = await db.tournament.findUnique({
+
         where: { name },
       });
       if (torneo) {
