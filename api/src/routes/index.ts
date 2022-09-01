@@ -6,7 +6,6 @@ import mercadopagoRouter from "./mercadopago";
 import notificationRouter from "./notification";
 import commentsRouter from "./feedback";
 import predictionRouter from "./predictions";
-import predictionRouter from "./predictions";
 import statsRouter from "./stats";
 
 const router: express.Router = express.Router();
