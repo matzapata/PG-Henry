@@ -2,6 +2,7 @@ import prisma from "../db";
 import * as express from "express";
 import { MatchStage, Status, TournamentType } from "@prisma/client";
 import db from "../db";
+import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
 
 type Team = {
@@ -53,6 +54,30 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get("/password", async (req: express.Request, res: express.Response) => {
+  try {
+    const { tournamentid, password } = req.query;
+    if (password && tournamentid) {
+      const tournaments = await prisma.tournament.findUnique({
+        where: {
+          id: tournamentid as string,
+        },
+      });
+      const hashedPassword = await bcrypt.compare(
+        password as string,
+        tournaments?.password as string
+      );
+      if (hashedPassword) {
+        res.status(200).send("Ok");
+      } else {
+        res.status(200).send("Contraseña incorrecta");
+      }
+    }
+  } catch (error: any) {
+    res.status(400).send(error);
+  }
+});
+
 router.get(
   "/:id/matches",
   async (req: express.Request, res: express.Response) => {
@@ -100,6 +125,40 @@ router.get(
     }
   }
 );
+router.get(
+  "/:id/allmatches",
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+    console.log("entró");
+    try {
+      const result = await prisma.matches.findMany({
+        where: {
+          tournament_id: id,
+        },
+        include: {
+          team_a: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+          team_b: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+);
 
 router.get("/:id", async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
@@ -117,6 +176,7 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
         type: tournament.type,
         pool: tournament.pool,
         logo_url: tournament.logo_url,
+        creator_user_id: tournament.creator_user_id,
       });
     else res.status(404).send("Not found.");
   } catch (e: any) {
@@ -252,6 +312,7 @@ router.post(
         });
       } else {
         if (!password) return res.status(400).send("Password required.");
+        const hashedPassword = bcrypt.hashSync(password, 8);
         torneo = await db.tournament.create({
           data: {
             name,
@@ -260,7 +321,7 @@ router.post(
             creator_user_id,
             type,
             logo_url,
-            password,
+            password: hashedPassword,
           },
         });
       }

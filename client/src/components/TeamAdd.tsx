@@ -246,7 +246,7 @@ export default function TeamAdd({
             </FormControl>
           </Flex>
           {checkError && (
-            <Flex mt="4" alignItems="center">
+            <Flex mt="4" alignItems="center" justifyContent="center">
               <Icon as={FaExclamationCircle} color="red.500" mr="2" />
               <Text as="span" color="red.500" fontWeight="500" fontSize="20px">
                 {checkError}
