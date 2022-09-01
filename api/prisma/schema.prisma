@@ -20,13 +20,13 @@ model User {
   password           String? // Optional so we can work with auth0
   authProvider       AuthProvider @default(JWT)
   birth_date         DateTime? // Optional momentarily to work with auth0
-  alias_mp           String?
+  alias_mp           String?      @unique
   is_admin           Boolean      @default(false)
   is_active          Boolean      @default(false)
   is_banned          Boolean      @default(false)
   last_access        DateTime     @default(now())
   verification_token String?
-  url_avatar         String   @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661876193/fepyrsp3x3qqj5zb0qhd.jpg")
+  url_avatar         String       @default("https://res.cloudinary.com/drgqlk8l3/image/upload/v1661876193/fepyrsp3x3qqj5zb0qhd.jpg")
 
   tournament_userid  UserTournament[]
   predictions_userid Predictions[]
@@ -72,9 +72,17 @@ enum Status {
   CONCLUDED
 }
 
+enum TournamentPosition {
+  FIRST
+  SECOND
+  THIRD
+}
+
 model UserTournament {
-  id    String @unique @default(uuid())
-  score Int    @default(0)
+  id                String              @unique @default(uuid())
+  score             Int                 @default(0)
+  position          TournamentPosition?
+  collected_payment Boolean             @default(false)
 
   winner         Teams?     @relation(fields: [winner_team_id], references: [id])
   winner_team_id String?
@@ -125,17 +133,13 @@ model Matches {
   team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
   team_b_id     String
   match_id      Predictions[]
-
-  //@@id([team_a_id, team_b_id])
 }
 
 model Comments {
   id          String @unique @default(uuid())
-
-  stars       Int  
-  comentaries String     
+  stars       Int
+  comentaries String
   titulo      String
-  user        User   @relation(fields:[user_id], references:[id])
-
+  user        User   @relation(fields: [user_id], references: [id])
   user_id     String @unique
 }
