@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as express from "express";
 import db from "../db";
+import sendEmail from "../utils/sendEmail";
 
 const router: express.Router = express.Router();
 
@@ -25,6 +26,11 @@ router.post("/", async (req, res) => {
             tournament_id: response.data.metadata.tournament_id,
           },
         });
+        await sendEmail(
+          response.data.metadata.user_email,
+          "PRODEMASTER",
+          `Te has unido correctamente al torneo. Click aquí para ir: ${process.env.CLIENT_URL}/torneos/${response.data.metadata.tournament_id}`
+        );
       }
     }
     res.status(200).send("OK");
