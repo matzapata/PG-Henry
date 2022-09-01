@@ -126,10 +126,10 @@ router.get(
   }
 );
 router.get(
-  "/:id/allmatches",
+  "/:id/allmatches/:user_id",
   async (req: express.Request, res: express.Response) => {
-    const { id } = req.params;
-    console.log("entró");
+    const { id, user_id } = req.params;
+
     try {
       const result = await prisma.matches.findMany({
         where: {
@@ -150,6 +150,7 @@ router.get(
               id: true,
             },
           },
+          match_id: { where: { user_id } },
         },
       });
 
