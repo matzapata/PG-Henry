@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
+  Button,
   Flex,
   Heading,
   HStack,
@@ -11,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { fetchTournamentDetail } from "../redux/slices/tournamentThunk";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { Link as ReactLink } from "react-router-dom";
 import TournamentPrizeCard from "./TournamentPrizeCard";
 
 function TournamentDetailHeader({ id }: { id: string }) {
@@ -64,6 +66,17 @@ function TournamentDetailHeader({ id }: { id: string }) {
             </HStack>
           </Flex>
         </Skeleton>
+        <Button
+          as={ReactLink}
+          bgColor="buttons"
+          color="text"
+          size="md"
+          mr={3}
+          to={`/torneos/${id}/predicciones`}
+          ml={"50%"}
+        >
+          Prode
+        </Button>
       </Flex>
       <Skeleton isLoaded={!loading}>
         <Text my="4" color="text">
