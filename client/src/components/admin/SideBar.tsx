@@ -21,6 +21,7 @@ import { Link as ReactLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { signOut } from "../../redux/slices/authThunk";
 import BanForm from "./BanForm";
+import AdminFormulary from "./AdminForm";
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -58,6 +59,10 @@ function SideBar() {
           <Link as={ReactLink} to={"/admin/partidos"} ml={2} color="text">
             Partidos
           </Link>
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdOutlineWarning} color={"buttons"} />
+          <AdminFormulary />
         </Flex>
         <Flex alignItems={"center"}>
           <Icon as={MdOutlineWarning} color={"buttons"} />
