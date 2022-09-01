@@ -22,6 +22,15 @@ export type Tournament = {
   logo_url: string;
 };
 
+export type Prediction = {
+  id: string;
+  score_a: number;
+  score_b: number;
+  match_id: string;
+  user_id: string;
+  tournament_id: string;
+};
+
 export type TournamentDetail = {
   id: string;
   name: string;
@@ -38,12 +47,13 @@ export type TournamentMatch = {
   team_b_id: number;
   team_a_id: number;
   id: string;
-  score_a: number;
-  score_b: number;
+  score_a: number | undefined;
+  score_b: number | undefined;
   date: string;
   stage: string;
   team_a: Team;
   team_b: Team;
+  match_id: Prediction[];
 };
 
 export type Team = {

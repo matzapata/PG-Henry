@@ -96,6 +96,8 @@ function MatchForm({
       scores_b: match.team_b.scores,
       match_id: match.match_id,
     });
+    if (match.team_a.scores != undefined && match.team_b.scores != undefined)
+      setEnviado(true);
   }, []);
 
   return (
@@ -121,6 +123,7 @@ function MatchForm({
         <Text>VS</Text>
         <FormControl isInvalid={errors.scores_b !== ""}>
           <Input
+            marginLeft={"100px"}
             isReadOnly={match.team_b.scores !== undefined || enviado}
             w={"50px"}
             type="number"
@@ -133,7 +136,13 @@ function MatchForm({
         <Heading fontSize="md" color="white" ml="110px">
           {match.team_b.name}
         </Heading>
-        <Image src={match.team_b.shield_url} w={10} h={10} />
+        <Image
+          marginRight={"20px"}
+          marginLeft={"20px"}
+          src={match.team_b.shield_url}
+          w={10}
+          h={10}
+        />
       </Flex>
       {input.scores_a !== undefined &&
         input.scores_b !== undefined &&

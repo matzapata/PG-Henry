@@ -127,6 +127,7 @@ router.get(
 );
 router.get(
   "/:id/allmatches/:user_id",
+  protectedRoute,
   async (req: express.Request, res: express.Response) => {
     const { id, user_id } = req.params;
 
