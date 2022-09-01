@@ -84,11 +84,12 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
+  console.log(unido);
   return (
     <Box>
       {tournamentCreator !== user_id && (
         <Box>
-          {unido && (
+          {!unido && (
             <Box marginTop={"5px"}>
               <Heading size="md" color="text">
                 Has tus predicciones
