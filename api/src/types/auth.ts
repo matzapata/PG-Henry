@@ -4,5 +4,6 @@ export interface JwtPayload {
     username: string;
     email: string;
     is_admin: boolean;
+    is_banned: boolean;
   };
 }

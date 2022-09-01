@@ -8,6 +8,7 @@ type InitialState = {
     username: string;
     email: string;
     is_admin: boolean;
+    is_banned: boolean;
   };
   loading: boolean;
   error: string;

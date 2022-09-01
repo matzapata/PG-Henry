@@ -18,6 +18,7 @@ import Admin from "./pages/Admin";
 import AdminUsers from "./pages/AdminUsers";
 import AdminTournaments from "./pages/AdminTournaments";
 import AdminMatches from "./pages/AdminMatches";
+import BanPage from "./pages/BanPage";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -46,6 +47,7 @@ function App() {
       <Route exact path="/" component={HomePage} />
       <Route exact path="/about" component={About} />
       <Route path="/success/:id" component={PaymentSuccess} />
+      <Route path="/banned" component={BanPage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
   );

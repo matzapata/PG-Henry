@@ -19,6 +19,7 @@ export async function protectedRoute(
       email: decoded.payload.email,
       username: decoded.payload.username,
       is_admin: decoded.payload.is_admin,
+      is_banned: decoded.payload.is_banned,
     };
     next();
   } catch (e) {

@@ -32,6 +32,7 @@ model User {
   predictions_userid Predictions[]
   creator            Tournament[]
   comments_userid    Comments?
+  banned_reason      Banned?
 }
 
 model Tournament {
@@ -143,4 +144,12 @@ model Comments {
   titulo      String
   user        User   @relation(fields: [user_id], references: [id])
   user_id     String @unique
+}
+
+model Banned {
+  id          Int             @id @default(autoincrement())
+  admin_name  String
+  reason      String?
+  user        User            @relation(fields:[user_id], references:[id])
+  user_id     String          @unique
 }

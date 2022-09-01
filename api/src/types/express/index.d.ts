@@ -5,6 +5,7 @@ declare global {
     interface Request {
       user: {
         is_admin: boolean;
+        is_banned: boolean;
         id: string;
         email: string;
         username: string;

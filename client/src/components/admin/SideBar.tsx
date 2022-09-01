@@ -8,16 +8,24 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { JsxElement } from "typescript";
 import { FaUsers, FaTrophy } from "react-icons/fa";
-import { MdSpaceDashboard, MdSportsSoccer, MdLogout } from "react-icons/md";
+import {
+  MdSpaceDashboard,
+  MdSportsSoccer,
+  MdLogout,
+  MdOutlineWarning,
+} from "react-icons/md";
 import { Link as ReactLink } from "react-router-dom";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { signOut } from "../../redux/slices/authThunk";
+import BanFormulary from "./BanFormulary";
 
 function SideBar() {
   const dispatch = useAppDispatch();
+  const data = useAppSelector((state) => state.auth.decoded);
+
   return (
     <VStack flex={1} backgroundColor={"primary"}>
       <Box p="5px">
@@ -50,6 +58,10 @@ function SideBar() {
           <Link as={ReactLink} to={"/admin/partidos"} ml={2} color="text">
             Partidos
           </Link>
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdOutlineWarning} color={"buttons"} />
+          <BanFormulary email={data?.email} />
         </Flex>
         <Flex alignItems={"center"}>
           <Icon as={MdLogout} color={"buttons"} />
