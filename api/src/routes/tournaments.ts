@@ -482,27 +482,43 @@ router.put(
           select: { score: true },
         });
 
+        // Money compensation calculation
+        const [firstCount, secondCount, thirdCount] = await Promise.all([
+          db.userTournament.count({
+            where: { score: tournamentScores[0].score },
+          }),
+          db.userTournament.count({
+            where: { score: tournamentScores[1].score },
+          }),
+          db.userTournament.count({
+            where: { score: tournamentScores[2].score },
+          }),
+        ]);
+        const firstComp = Math.floor((tournament.pool * 0.5) / firstCount);
+        const secondComp = Math.floor((tournament.pool * 0.35) / secondCount);
+        const thirdComp = Math.floor((tournament.pool * 0.15) / thirdCount);
+
         await Promise.all([
           db.userTournament.updateMany({
             where: {
               tournament_id: req.params.id,
               score: tournamentScores[0].score,
             },
-            data: { position: "FIRST" },
+            data: { position: "FIRST", compensation: firstComp },
           }),
           db.userTournament.updateMany({
             where: {
               tournament_id: req.params.id,
               score: tournamentScores[1].score,
             },
-            data: { position: "SECOND" },
+            data: { position: "SECOND", compensation: secondComp },
           }),
           db.userTournament.updateMany({
             where: {
               tournament_id: req.params.id,
               score: tournamentScores[2].score,
             },
-            data: { position: "THIRD" },
+            data: { position: "THIRD", compensation: thirdComp },
           }),
           db.tournament.update({
             where: { id: req.params.id },

@@ -84,6 +84,7 @@ model UserTournament {
   id                String              @unique @default(uuid())
   score             Int                 @default(0)
   position          TournamentPosition?
+  compensation      Int                 @default(0)
   collected_payment Boolean             @default(false)
 
   winner         Teams?     @relation(fields: [winner_team_id], references: [id])
