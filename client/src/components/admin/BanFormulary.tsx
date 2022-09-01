@@ -27,11 +27,11 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import api from "../../services/api";
 
-function BanFormulary() {
+function BanFormulary(props: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showPassword, setShowPassword] = useState(false);
   const [input, setInput] = useState({
-    admin_email: "",
+    admin_name: "",
     password: "",
     user: "",
     reason: "",
@@ -49,13 +49,23 @@ function BanFormulary() {
   const handleSubmit = async (e: any) => {
     try {
       const response = await api.put("/users/banuser", {
-        admin_email: input.admin_email,
+        admin_name: input.admin_name,
         password: input.password,
         user: input.user,
         reason: input.reason,
+        admin_email: props.email,
       });
       console.log(response.data);
-      if (response.data === "Usuario baneado correctamente!") onClose();
+      if (response.data === "Usuario baneado correctamente!") {
+        setInput({
+          ...input,
+          admin_name: "",
+          password: "",
+          user: "",
+          reason: "",
+        });
+        onClose();
+      }
     } catch (err: any) {
       console.error(err);
     }
@@ -63,7 +73,15 @@ function BanFormulary() {
 
   return (
     <>
-      <Button onClick={onOpen}>Open Modal</Button>
+      <Button
+        onClick={onOpen}
+        variant={"link"}
+        ml={2}
+        color={"text"}
+        fontWeight={"light"}
+      >
+        Banear Usuario
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
         <ModalOverlay />
@@ -99,8 +117,8 @@ function BanFormulary() {
                           <Input
                             type="text"
                             placeholder="Tu nombre"
-                            name="admin_email"
-                            value={input.admin_email}
+                            name="admin_name"
+                            value={input.admin_name}
                             onChange={handleInputChange}
                           />
                         </FormControl>
