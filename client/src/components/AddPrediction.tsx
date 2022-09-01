@@ -84,40 +84,90 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
-  console.log(unido);
+
   return (
     <Box>
       {tournamentCreator !== user_id && (
         <Box>
-          {!unido && (
-            <Box marginTop={"5px"}>
-              <Heading size="md" color="text">
-                Has tus predicciones
-              </Heading>
+          {unido && (
+            <Box>
+              <Box marginTop={"5px"}>
+                <Heading size="md" color="text">
+                  Has tus predicciones
+                </Heading>
 
-              <Box margin={"5px"} bgColor="secondary" borderRadius="4" p="6">
-                {newMatches &&
-                  newMatches.map((match) => (
-                    <MatchForm
-                      key={match.id + "M"}
-                      match={{
-                        match_id: match.id,
-                        team_a: {
-                          scores: match.score_a,
-                          shield_url: match.team_a.shield_url,
-                          name: match.team_a.name,
-                          id: match.team_a_id,
-                        },
-                        team_b: {
-                          scores: match.score_b,
-                          shield_url: match.team_b.shield_url,
-                          name: match.team_b.name,
-                          id: match.team_b_id,
-                        },
-                      }}
-                      onSubmit={onSubmit}
-                    />
-                  ))}
+                <Box margin={"5px"} bgColor="secondary" borderRadius="4" p="6">
+                  {newMatches &&
+                    newMatches.map((match) => (
+                      <Box key={match.id + "B1"}>
+                        {(match.score_a === undefined ||
+                          match.score_b === undefined) && (
+                          <MatchForm
+                            key={match.id + "M"}
+                            match={{
+                              match_id: match.id,
+                              team_a: {
+                                scores: match.score_a,
+                                shield_url: match.team_a.shield_url,
+                                name: match.team_a.name,
+                                id: match.team_a_id,
+                              },
+                              team_b: {
+                                scores: match.score_b,
+                                shield_url: match.team_b.shield_url,
+                                name: match.team_b.name,
+                                id: match.team_b_id,
+                              },
+                            }}
+                            onSubmit={onSubmit}
+                          />
+                        )}
+                      </Box>
+                    ))}
+                </Box>
+              </Box>
+              <Box>
+                <Box marginTop={"5px"}>
+                  <Heading size="md" color="text">
+                    Prediciones que hiciste
+                  </Heading>
+                  <Box marginTop={"5px"}>
+                    <Box
+                      margin={"5px"}
+                      bgColor="secondary"
+                      borderRadius="4"
+                      p="6"
+                    >
+                      {newMatches &&
+                        newMatches.map((match) => (
+                          <Box key={match.id + "B2"}>
+                            {(match.score_a !== undefined ||
+                              match.score_b !== undefined) && (
+                              <MatchForm
+                                key={match.id + "N"}
+                                match={{
+                                  match_id: match.id,
+                                  team_a: {
+                                    scores: match.score_a,
+                                    shield_url: match.team_a.shield_url,
+                                    name: match.team_a.name,
+                                    id: match.team_a_id,
+                                  },
+                                  team_b: {
+                                    scores: match.score_b,
+                                    shield_url: match.team_b.shield_url,
+                                    name: match.team_b.name,
+                                    id: match.team_b_id,
+                                  },
+                                }}
+                                onSubmit={onSubmit}
+                              />
+                            )}
+                          </Box>
+                        ))}
+                    </Box>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           )}
