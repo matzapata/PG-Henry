@@ -29,6 +29,17 @@ export default function NavBar() {
         >
           ProdeMaster
         </Text>
+        <Link
+          as={ReactLink}
+          to={"/admin"}
+          color="text"
+          fontSize="20px"
+          fontWeight="medium"
+          mx="4"
+        >
+          {" "}
+          Admin{" "}
+        </Link>
         {isLoggedIn && (
           <>
             <Link
