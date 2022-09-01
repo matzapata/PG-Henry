@@ -10,12 +10,15 @@ import ReviewCarousel from "../components/ReviewCarousel";
 import { useAuth0 } from "@auth0/auth0-react";
 import { loginAuth0 } from "../redux/slices/authThunk";
 import { getReviews } from "../redux/slices/userThunk";
+import { useHistory } from "react-router-dom";
 
 function Home() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
   const data = useAppSelector((state) => state.user.userComments);
   const dispatch = useAppDispatch();
   const { isAuthenticated, user } = useAuth0();
+  const infoUser = useAppSelector((state) => state.auth.decoded);
+  const history = useHistory();
 
   useEffect(() => {
     if (isAuthenticated)
@@ -30,6 +33,10 @@ function Home() {
       );
     dispatch(getReviews(null));
   }, []);
+
+  useEffect(() => {
+    if (infoUser?.is_banned === true) history.push("/banned");
+  }, [infoUser]);
 
   return (
     <Container
