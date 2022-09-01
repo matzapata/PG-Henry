@@ -1,15 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Box,
-  Container,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, HStack, Text } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import PublicTournaments from "../components/PublicTournament";
 import Carousel from "../components/NewsCarousel";

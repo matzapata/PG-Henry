@@ -25,6 +25,7 @@ import { Link as ReactLink, useHistory } from "react-router-dom";
 import { isEmail } from "../utils/validations";
 import { useAuth0 } from "@auth0/auth0-react";
 import Auth0SignInButton from "../components/Auth0SignInButton";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -87,6 +88,21 @@ function Login() {
       justifyContent="center"
       alignItems="center"
     >
+      <Box
+        h="80px"
+        display="flex"
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        p="20px"
+      >
+        <Box display="flex" flexDir="row">
+          <Link as={ReactLink} color="teal.400" to="/">
+            <ArrowBackIcon fontSize="30px" />
+          </Link>
+        </Box>
+      </Box>
+
       <Stack
         mb="2"
         flexDir="column"
