@@ -40,8 +40,11 @@ function Payments() {
   const completePayment = async (id: string) => {
     setLoading([...loading, id]);
     try {
-      await api.put(`/admin/payments/${id}/collected`);
-      setDone([...done, id]);
+      const confirmation = confirm("¿Desea marcar el pago como realizado?");
+      if (confirmation) {
+        await api.put(`/admin/payments/${id}/collected`);
+        setDone([...done, id]);
+      }
     } catch (e: any) {
       console.log(e);
       alert(e.response.data);
