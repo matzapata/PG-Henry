@@ -1,10 +1,12 @@
 import { Button, Flex, Image, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
+import api from "../services/api";
 
 type Match = {
   id: string;
   date: string;
   stage: string;
+  tournament_id: string;
   team_a: {
     name: string;
     shield_url: string;
@@ -15,21 +17,14 @@ type Match = {
   };
 };
 
-function LoadMatchResultCard({
-  match,
-  loadMatchResult,
-}: {
-  match: Match;
-  loadMatchResult: (data: {
-    id: string;
-    score_a: number;
-    score_b: number;
-  }) => void;
-}) {
+function LoadMatchResultCard({ match }: { match: Match }) {
   const [state, setState] = useState({
     score_a: 0,
     score_b: 0,
   });
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState({
@@ -38,12 +33,23 @@ function LoadMatchResultCard({
     });
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    loadMatchResult({
-      ...state,
-      id: match.id,
-    });
+    setLoading(true);
+    try {
+      await api.put(
+        `/tournaments/${match.tournament_id}/match/${match.id}/result`,
+        {
+          score_a: state.score_a,
+          score_b: state.score_b,
+        }
+      );
+      setLoaded(true);
+    } catch (e: any) {
+      setError(e.response.data);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isValid = () => state.score_a >= 0 && state.score_b >= 0;
@@ -79,6 +85,7 @@ function LoadMatchResultCard({
               value={state.score_a}
               onChange={onChange}
               name="score_a"
+              isReadOnly={loaded}
             />
             <Text color="text" mx="4">
               VS
@@ -91,6 +98,7 @@ function LoadMatchResultCard({
               value={state.score_b}
               onChange={onChange}
               name="score_b"
+              isReadOnly={loaded}
             />
           </Flex>
           <Flex alignItems="center">
@@ -114,10 +122,21 @@ function LoadMatchResultCard({
           size="sm"
           mt="3"
           colorScheme="whiteAlpha"
-          disabled={!isValid()}
+          disabled={!isValid() || loaded}
+          isLoading={loading}
         >
           Guardar
         </Button>
+        {error && (
+          <Text color="red.300" mt="1">
+            {error}
+          </Text>
+        )}
+        {loaded && (
+          <Text color="green.300" mt="1">
+            Resultado cargado exitosamente
+          </Text>
+        )}
       </Flex>
     </form>
   );
