@@ -20,7 +20,7 @@ model User {
   password           String? // Optional so we can work with auth0
   authProvider       AuthProvider @default(JWT)
   birth_date         DateTime? // Optional momentarily to work with auth0
-  alias_mp           String?      @unique
+  alias_mp           String?
   is_admin           Boolean      @default(false)
   is_active          Boolean      @default(false)
   is_banned          Boolean      @default(false)
@@ -133,7 +133,7 @@ model UserTournament {
 
 model Teams {
   id         String  @unique @default(uuid())
-  name       String  @unique
+  name       String
   shield_url String?
 
   id_team_a      Matches[]        @relation("team_a")
