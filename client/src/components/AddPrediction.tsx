@@ -28,9 +28,34 @@ export default function AddPrediction({ id }: { id: string }) {
 
   const filtrarPredicciones = () => {
     if (!!matches?.length && user_id) {
+      const ROCKMATCHES = [
+        ...matches,
+        {
+          team_b_id: 123,
+          team_a_id: 123,
+          id: "6854173f-c948-44ea-b0ee-2c0485c3d387",
+          score_a: 12,
+          score_b: 12,
+          date: "1212-03",
+          stage: "string",
+          team_a: { name: "RA", shield_url: "/img/Escudo_vacío.png" },
+          team_b: { name: "RE", shield_url: "/img/Escudo_vacío.png" },
+          match_id: [
+            /* {
+              id: "49a690fe-72b6-49d4-ad69-b5babfa6ad58",
+              match_id: "6854173f-c948-44ea-b0ee-2c0485c3d387",
+              score_a: 10,
+              score_b: 10,
+              tournament_id: "616a74d2-635f-4c78-a5a6-aacfbd1f4786",
+              user_id: "e06e026d-36ce-48fb-9ae1-001cee0198ff",
+            }, */
+          ],
+        },
+      ];
+
       const finalMatches: TournamentMatch[] = [];
 
-      matches?.map((match) => {
+      ROCKMATCHES?.map((match) => {
         if (!!match.match_id.length) {
           match.match_id.map((prediction) => {
             if (prediction.user_id === user_id) {
@@ -40,19 +65,36 @@ export default function AddPrediction({ id }: { id: string }) {
                 score_b: prediction.score_b,
               });
             } else {
-              finalMatches.push({
-                ...match,
-                score_a: undefined,
-                score_b: undefined,
-              });
+              console.log(match.score_a);
+              if (match.score_a === undefined && match.score_b === undefined) {
+                finalMatches.push({
+                  ...match,
+                  score_a: undefined,
+                  score_b: undefined,
+                });
+              } else {
+                finalMatches.push({
+                  ...match,
+                  score_a: 999,
+                  score_b: 999,
+                });
+              }
             }
           });
         } else {
-          finalMatches.push({
-            ...match,
-            score_a: undefined,
-            score_b: undefined,
-          });
+          if (match.score_a === undefined && match.score_b === undefined) {
+            finalMatches.push({
+              ...match,
+              score_a: undefined,
+              score_b: undefined,
+            });
+          } else {
+            finalMatches.push({
+              ...match,
+              score_a: 999,
+              score_b: 999,
+            });
+          }
         }
       });
 
@@ -84,7 +126,7 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
-
+  console.log(user_id);
   return (
     <Box>
       {tournamentCreator !== user_id && (
