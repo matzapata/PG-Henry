@@ -21,6 +21,7 @@ import AdminMatches from "./pages/AdminMatches";
 import BanPage from "./pages/BanPage";
 import BannedUsers from "./pages/BannedUsers";
 import Predictions from "./pages/Predictions";
+import error from "./components/PaginaError";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -55,6 +56,7 @@ function App() {
       <Route exact path="/" component={HomePage} />
       <Route exact path="/about" component={About} />
       <Route path="/success/:id" component={PaymentSuccess} />
+      <Route path="/error" component={error} />
       <Route path="/banned" component={BanPage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
