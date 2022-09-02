@@ -5,6 +5,7 @@ import {
   updateProfile,
   fetchUniqueUserTournament,
   getReviews,
+  fetchUserTournamentWinner,
   getOwnerTournament,
 } from "./userThunk";
 
@@ -66,6 +67,7 @@ const initialState: {
     lastPage: number;
     tournaments: UserTournament[];
     is_attached: boolean;
+    winner: boolean;
   };
   ownerTournaments: {
     page: number;
@@ -86,6 +88,7 @@ const initialState: {
     lastPage: 1,
     tournaments: [],
     is_attached: false,
+    winner: false,
   },
   userComments: [],
   ownerTournaments: {
@@ -203,6 +206,25 @@ const userSlice = createSlice({
     builder.addCase(getReviews.rejected, (state, action) => {
       state.userComments = [];
       state.error = action.payload as string;
+    });
+    //fetch winner?
+    builder.addCase(fetchUserTournamentWinner.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournamentWinner.fulfilled, (state, action) => {
+      if (typeof action.payload === "object") {
+        state.userTournaments.winner = true;
+      } else {
+        state.userTournaments.winner = false;
+      }
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournamentWinner.rejected, (state, action) => {
+      state.loading = true;
+      state.error = "";
+      state.userTournaments.winner = false;
     });
   },
 });

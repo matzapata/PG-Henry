@@ -105,6 +105,31 @@ export const getReviews = createAsyncThunk(
     }
   }
 );
+
+export const postUserTournamentWinner = createAsyncThunk(
+  "userTournaments/postUserTournamentWinner",
+  async (id: { tournamentid: any; userid: any; teamid: any }) => {
+    const response = await api.post(
+      `tournaments/winner?${id.tournamentid ? "id=" + id.tournamentid : ""}&${
+        id.userid ? "userid=" + id.userid : ""
+      }&${id.teamid ? "teamid=" + id.teamid : ""}`
+    );
+    return response.data;
+  }
+);
+
+export const fetchUserTournamentWinner = createAsyncThunk(
+  "userTournaments/fetchUserTournamentWinner",
+  async (id: { tournamentid: any; userid: any }) => {
+    const response = await api.get(
+      `tournaments/fetchwinner?${
+        id.tournamentid ? "id=" + id.tournamentid : ""
+      }&${id.userid ? "userid=" + id.userid : ""}`
+    );
+    return response.data;
+    }
+);
+
 export const getOwnerTournament = createAsyncThunk(
   "owner/torunaments",
   async (

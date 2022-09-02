@@ -127,6 +127,28 @@ router.get("/tournamentOwner", protectedRoute, async (req, res) => {
 });
 
 router.get(
+  "/fetchwinner",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { id, userid } = req.query;
+      const result = await db.userTournament.findUnique({
+        where: {
+          user_id_tournament_id: {
+            user_id: userid as string,
+            tournament_id: id as string,
+          },
+        },
+      });
+      if (result?.winner_team_id) {
+        res.status(200).send(result);
+      }
+    } catch (e: any) {
+      res.status(400).send("No tiene asignado un ganador");
+    }
+  }
+);
+
+router.get(
   "/:id/matches",
   async (req: express.Request, res: express.Response) => {
     const { id } = req.params;
@@ -441,6 +463,26 @@ router.post(
     }
   }
 );
+
+router.post("/winner", async (req: express.Request, res: express.Response) => {
+  try {
+    const { id, userid, teamid } = req.query;
+    const response = await db.userTournament.update({
+      where: {
+        user_id_tournament_id: {
+          user_id: userid as string,
+          tournament_id: id as string,
+        },
+      },
+      data: {
+        winner_team_id: teamid as string,
+      },
+    });
+    res.status(200).send("Ok");
+  } catch (e: any) {
+    res.status(400).send({ message: e });
+  }
+});
 
 router.get(
   "/:id/ranking",
