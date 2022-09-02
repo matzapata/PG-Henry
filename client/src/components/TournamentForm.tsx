@@ -113,6 +113,7 @@ export default function TournamentForm({
       validate({ ...input, [e.currentTarget.name]: e.currentTarget.value })
     );
   };
+
   const cambiosENUser_Limit = (e: React.FormEvent<HTMLInputElement>) => {
     setInput({
       ...input,
@@ -203,11 +204,13 @@ export default function TournamentForm({
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
                 {/* SELECT TYPE PRIVADO/PUBLICO */}
-                <Select name="type" onChange={cambiosEnInput}>
+                <Select
+                  name="type"
+                  onChange={cambiosEnInput}
+                  defaultValue="PUBLIC"
+                >
                   <option value="PRIVATE">Privado</option>
-                  <option value="PUBLIC" selected>
-                    Público
-                  </option>
+                  <option value="PUBLIC">Público</option>
                 </Select>
               </Stack>
               {/* CONTRASEÑA */}

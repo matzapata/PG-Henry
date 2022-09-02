@@ -30,6 +30,21 @@ type Match = {
 
 const router: express.Router = express.Router();
 
+router.get(
+  "/mytournaments",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const userCreatedTournaments = await db.tournament.findMany({
+        where: { creator_user_id: req.user.id },
+      });
+      return res.send(userCreatedTournaments);
+    } catch (e) {
+      return res.status(500).send("ERROR");
+    }
+  }
+);
+
 router.get("/", async (req: express.Request, res: express.Response) => {
   try {
     const { page, status, type, name, sort } = req.query;
@@ -204,6 +219,42 @@ router.get(
 );
 
 router.get(
+  "/:id/allmatches",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+
+    try {
+      const result = await prisma.matches.findMany({
+        where: {
+          tournament_id: id,
+        },
+        include: {
+          team_a: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+          team_b: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+);
+
+router.get(
   "/:id/allmatches/:user_id",
   protectedRoute,
   async (req: express.Request, res: express.Response) => {
@@ -332,15 +383,10 @@ router.post(
     try {
       const { tournament, teams, matches } = req.body;
 
-      const {
-        name,
-        description,
-        user_limit,
-        creator_user_id,
-        type,
-        logo_url,
-        password,
-      } = tournament;
+      const { name, description, user_limit, type, logo_url, password } =
+        tournament;
+
+      const creator_user_id = req.user.id;
 
       if ([name, description, user_limit, type].includes(undefined))
         return res
@@ -385,6 +431,7 @@ router.post(
         const user = await db.user.findUnique({
           where: { id: creator_user_id },
         });
+        console.log(user);
         torneo = await db.tournament.create({
           data: {
             name,
