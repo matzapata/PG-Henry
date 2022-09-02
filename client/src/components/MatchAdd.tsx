@@ -95,6 +95,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
   if (agregar) {
     if (errors.teams === "") errors.teams = "Campo Requerido";
     if (errors.date === "") errors.date = "Campo Requerido";
+    if (errors.stage === "") errors.stage = "Campo Requerido";
   }
   return errors;
 }
