@@ -110,9 +110,9 @@ export default function AddPrediction({ id }: { id: string }) {
   return (
     <Box>
       <Heading>{tournamentDetail?.name}</Heading>
-      {tournamentCreator === user_id && (
+      {tournamentCreator !== user_id && (
         <Box>
-          {!unido && (
+          {unido && (
             <Box>
               <Box marginTop={"5px"}>
                 <Heading size="md" color="text">
