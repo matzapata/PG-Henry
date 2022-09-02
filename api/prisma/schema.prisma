@@ -170,8 +170,7 @@ model Matches {
   team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
   team_b_id     String
   match_id      Predictions[]
-  code_stage    CodeStage
-
+  code_stage    CodeStage? //CAMBIAR EL ? cuando esté lista la ruta de creacion de torneos
 }
 
 model Comments {

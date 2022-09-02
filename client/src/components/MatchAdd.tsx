@@ -49,7 +49,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
   const hoyN = new Date(tiempoTranscurrido);
 
   const hoy = hoyN.toLocaleDateString();
-  const yyyy = Number(hoy.slice(5)).toString();
+  const yyyy = Number(hoy.slice(4)).toString();
 
   if (!!input.date.length) {
     errors.date = "Completado";
