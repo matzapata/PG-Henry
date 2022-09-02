@@ -14,7 +14,6 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
-import ErrorScreen from "./PaginaError";
 
 type Match = {
   key: number;
