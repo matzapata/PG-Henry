@@ -450,7 +450,7 @@ router.post(
                   stage: match.stage,
                   team_a_id: team_a?.id,
                   team_b_id: team_b?.id,
-                  code_stage: match.code_stage,
+                  code_stage: matches.code_stage,
                 },
               });
               return newMatch;
