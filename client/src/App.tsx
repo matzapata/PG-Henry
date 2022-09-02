@@ -19,6 +19,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminTournaments from "./pages/AdminTournaments";
 import AdminMatches from "./pages/AdminMatches";
 import BanPage from "./pages/BanPage";
+import BannedUsers from "./pages/BannedUsers";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -33,6 +34,7 @@ function App() {
       <PrivateRoute exact path="/admin/partidos" component={AdminMatches} />
       <PrivateRoute exact path="/admin/torneos" component={AdminTournaments} />
       <PrivateRoute exact path="/admin/usuarios" component={AdminUsers} />
+      <PrivateRoute exact path="/admin/bannedusers" component={BannedUsers} />
       <PrivateRoute exact path="/admin" component={Admin} />
       <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
       <PrivateRoute
