@@ -450,7 +450,7 @@ router.post(
                   stage: match.stage,
                   team_a_id: team_a?.id,
                   team_b_id: team_b?.id,
-                  code_stage: matches.code_stage,
+                  code_stage: match.code_stage,
                 },
               });
               return newMatch;
@@ -535,6 +535,9 @@ router.put(
 
       if ([score_a, score_b].includes(undefined))
         return res.status(400).send("Missing parameters");
+
+      if (score_a === score_b)
+        return res.status(400).send("Empates no permitidos en torneos llave");
 
       // validate authenticated user has permissions
       const tournament = await db.tournament.findUnique({
