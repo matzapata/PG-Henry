@@ -27,14 +27,10 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import api from "../../services/api";
 
-function BanForm(props: any) {
+function AdminFormulary(props: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showPassword, setShowPassword] = useState(false);
   const [input, setInput] = useState({
-    admin_name: "",
-    password: "",
-    user: "",
-    reason: "",
+    email: "",
   });
 
   const handleInputChange = (
@@ -48,21 +44,16 @@ function BanForm(props: any) {
 
   const handleSubmit = async (e: any) => {
     try {
-      const response = await api.put("/users/banuser", {
-        admin_name: input.admin_name,
-        password: input.password,
-        user: input.user,
-        reason: input.reason,
-        admin_email: props.email,
+      const response = await api.put("/users/formAdmin", {
+        email: input.email,
       });
       console.log(response.data);
-      if (response.data === "Usuario baneado correctamente!") {
+      if (
+        response.data === "Usuario asignado como administrador correctamente!"
+      ) {
         setInput({
           ...input,
-          admin_name: "",
-          password: "",
-          user: "",
-          reason: "",
+          email: "",
         });
         onClose();
       }
@@ -80,7 +71,7 @@ function BanForm(props: any) {
         color={"text"}
         fontWeight={"light"}
       >
-        Banear Usuario
+        Crear Administrador
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
@@ -97,7 +88,7 @@ function BanForm(props: any) {
               <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
                 <Stack align={"center"}>
                   <Heading fontSize={"4xl"} textAlign={"center"}>
-                    Formulario de Baneo
+                    Formulario de Crear Administrador
                   </Heading>
                   <Text fontSize={"lg"} color={"gray.600"}>
                     utilizalo con responsabilidad ✌️
@@ -112,63 +103,20 @@ function BanForm(props: any) {
                   <Stack spacing={4}>
                     <HStack>
                       <Box>
-                        <FormControl id="firstName" isRequired>
-                          <FormLabel>Nombre Admin</FormLabel>
-                          <Input
-                            type="text"
-                            placeholder="Tu nombre"
-                            name="admin_name"
-                            value={input.admin_name}
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
-                      </Box>
-                      <Box>
                         <FormControl id="lastName" isRequired>
-                          <FormLabel>Usuario a banear</FormLabel>
+                          <FormLabel>
+                            Usuario a asignar como administrador
+                          </FormLabel>
                           <Input
                             type="text"
-                            placeholder="Usuario o Email"
-                            name="user"
-                            value={input.user}
+                            placeholder="Email"
+                            name="email"
+                            value={input.email}
                             onChange={handleInputChange}
                           />
                         </FormControl>
                       </Box>
                     </HStack>
-                    <FormControl id="password" isRequired>
-                      <FormLabel>Contraseña</FormLabel>
-                      <InputGroup>
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Ingresa tu contraseña"
-                          name="password"
-                          value={input.password}
-                          onChange={handleInputChange}
-                        />
-                        <InputRightElement h={"full"}>
-                          <Button
-                            variant={"ghost"}
-                            onClick={() =>
-                              setShowPassword((showPassword) => !showPassword)
-                            }
-                          >
-                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                          </Button>
-                        </InputRightElement>
-                      </InputGroup>
-                    </FormControl>
-                    <FormControl mt={4}>
-                      <FormLabel>Motivo del ban</FormLabel>
-                      <Textarea
-                        value={input.reason}
-                        onChange={handleInputChange}
-                        placeholder="Escribe la razón correspondiente"
-                        size="md"
-                        borderRadius={"6px"}
-                        name={"reason"}
-                      />
-                    </FormControl>
                     <Stack spacing={10} pt={2}>
                       <Button
                         loadingText="Submitting"
@@ -180,7 +128,7 @@ function BanForm(props: any) {
                         }}
                         onClick={handleSubmit}
                       >
-                        Confirmar Baneo
+                        Confirmar
                       </Button>
                     </Stack>
                   </Stack>
@@ -200,4 +148,4 @@ function BanForm(props: any) {
   );
 }
 
-export default BanForm;
+export default AdminFormulary;

@@ -127,5 +127,25 @@ export const fetchUserTournamentWinner = createAsyncThunk(
       }&${id.userid ? "userid=" + id.userid : ""}`
     );
     return response.data;
+    }
+);
+
+export const getOwnerTournament = createAsyncThunk(
+  "owner/torunaments",
+  async (
+    { page, pageSize }: { page?: number; pageSize?: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.get("/tournaments/tournamentOwner", {
+        params: {
+          page,
+          pageSize,
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
   }
 );

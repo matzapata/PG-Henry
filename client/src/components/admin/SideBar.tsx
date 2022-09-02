@@ -16,15 +16,20 @@ import {
   MdSportsSoccer,
   MdLogout,
   MdOutlineWarning,
+  MdAdminPanelSettings,
+  MdAccountCircle,
 } from "react-icons/md";
 import { Link as ReactLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { signOut } from "../../redux/slices/authThunk";
 import BanForm from "./BanForm";
+import AdminFormulary from "./AdminForm";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function SideBar() {
   const dispatch = useAppDispatch();
   const data = useAppSelector((state) => state.auth.decoded);
+  const { isAuthenticated, logout } = useAuth0();
 
   return (
     <VStack flex={1} backgroundColor={"primary"}>
@@ -60,15 +65,28 @@ function SideBar() {
           </Link>
         </Flex>
         <Flex alignItems={"center"}>
-          <Icon as={MdOutlineWarning} color={"buttons"} />
+          <Icon as={MdAdminPanelSettings} color={"buttons"} />
           <BanForm email={data?.email} />
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdOutlineWarning} color={"buttons"} />
+          <Link as={ReactLink} to={"/admin/bannedusers"} ml={2} color="text">
+            Usuarios Baneados
+          </Link>
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdAccountCircle} color={"buttons"} />
+          <AdminFormulary />
         </Flex>
         <Flex alignItems={"center"}>
           <Icon as={MdLogout} color={"buttons"} />
           <Link
             as={ReactLink}
             to={"/auth/login"}
-            onClick={() => dispatch(signOut)}
+            onClick={() => {
+              if (isAuthenticated) logout();
+              dispatch(signOut());
+            }}
             ml={2}
             color="text"
           >

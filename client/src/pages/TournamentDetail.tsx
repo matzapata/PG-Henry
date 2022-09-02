@@ -22,7 +22,6 @@ function TournamentDetail() {
         <TournamentRanking id={id} />
         <PrivatePassword />
         <Mercadopago id={id} />
-        <AddPrediction id={id} />
       </Box>
     </Box>
   );

@@ -67,8 +67,8 @@ export const fetchTournamentMatches = createAsyncThunk(
 
 export const fetchTournamentAllMatches = createAsyncThunk(
   "tournaments/fetchTournamentAllMatches",
-  async ({ id }: { id: string }) => {
-    const result = await api.get(`/tournaments/${id}/allmatches`);
+  async ({ id, user_id }: { id: string; user_id: string }) => {
+    const result = await api.get(`/tournaments/${id}/allmatches/${user_id}`);
     return result.data;
   }
 );
