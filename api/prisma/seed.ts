@@ -5,6 +5,7 @@ import {
   TournamentType,
   User,
   AuthProvider,
+  CodeStage,
 } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import * as bcrypt from "bcryptjs";
@@ -109,11 +110,13 @@ function createRandomMatch(
   teamBId: string,
   tournamentId: string,
   stage: MatchStage,
+  code_stage: CodeStage,
   score_a?: number,
   score_b?: number
 ) {
   return {
     stage,
+    code_stage,
     date: faker.date.future(),
     score_a,
     score_b,
@@ -123,44 +126,44 @@ function createRandomMatch(
   };
 }
 
-async function createFinalOnlyTournament(dbUsers: User[], status: Status) {
-  const creatorUser = getRandom(dbUsers);
+// async function createFinalOnlyTournament(dbUsers: User[], status: Status) {
+//   const creatorUser = getRandom(dbUsers);
 
-  const tournament = await client.tournament.create({
-    data: createRandomTournament(creatorUser.id, status, "PUBLIC"),
-  });
+//   const tournament = await client.tournament.create({
+//     data: createRandomTournament(creatorUser.id, status, "PUBLIC"),
+//   });
 
-  const team_a = await client.teams.create({ data: createRandomTeam() });
-  const team_b = await client.teams.create({ data: createRandomTeam() });
+//   const team_a = await client.teams.create({ data: createRandomTeam() });
+//   const team_b = await client.teams.create({ data: createRandomTeam() });
 
-  const finalMatch = await client.matches.create({
-    data:
-      status === "INCOMING"
-        ? createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL")
-        : createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL", 1, 0),
-  });
+//   const finalMatch = await client.matches.create({
+//     data:
+//       status === "INCOMING"
+//         ? createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL")
+//         : createRandomMatch(team_a.id, team_b.id, tournament.id, "FINAL", 1, 0),
+//   });
 
-  for (let i = 0; i < 50; i++) {
-    try {
-      const clientUser = getRandom(dbUsers);
-      if (clientUser.id === creatorUser.id) continue;
+//   for (let i = 0; i < 50; i++) {
+//     try {
+//       const clientUser = getRandom(dbUsers);
+//       if (clientUser.id === creatorUser.id) continue;
 
-      await client.userTournament.create({
-        data: createUserTournament(clientUser.id, team_a.id, tournament.id),
-      });
+//       await client.userTournament.create({
+//         data: createUserTournament(clientUser.id, team_a.id, tournament.id),
+//       });
 
-      await client.predictions.create({
-        data: createRandomPrediction(
-          clientUser.id,
-          finalMatch.id,
-          tournament.id
-        ),
-      });
-    } catch (e) {
-      // Some constrains may be violated because of how faker works. We'll just skip those.
-    }
-  }
-}
+//       await client.predictions.create({
+//         data: createRandomPrediction(
+//           clientUser.id,
+//           finalMatch.id,
+//           tournament.id
+//         ),
+//       });
+//     } catch (e) {
+//       // Some constrains may be violated because of how faker works. We'll just skip those.
+//     }
+//   }
+// }
 
 async function createSemifinalTournament(dbUsers: User[], status: Status) {
   const creatorUser = getRandom(dbUsers);
@@ -175,23 +178,22 @@ async function createSemifinalTournament(dbUsers: User[], status: Status) {
   const team_d = await client.teams.create({ data: createRandomTeam() });
 
   const abMatch = await client.matches.create({
-    data:
-      status === "INCOMING"
-        ? createRandomMatch(team_a.id, team_b.id, tournament.id, "SEMIFINAL")
-        : createRandomMatch(
-            team_a.id,
-            team_b.id,
-            tournament.id,
-            "SEMIFINAL",
-            1,
-            0
-          ),
+    data: createRandomMatch(
+      team_a.id,
+      team_b.id,
+      tournament.id,
+      "SEMIFINAL",
+      "SEMIFINALA1"
+    ),
   });
   const cdMatch = await client.matches.create({
-    data: createRandomMatch(team_c.id, team_d.id, tournament.id, "SEMIFINAL"),
-  });
-  const finalMatch = await client.matches.create({
-    data: createRandomMatch(team_a.id, team_d.id, tournament.id, "FINAL"),
+    data: createRandomMatch(
+      team_c.id,
+      team_d.id,
+      tournament.id,
+      "SEMIFINAL",
+      "SEMIFINALB1"
+    ),
   });
 
   for (let i = 0; i < 50; i++) {
@@ -209,13 +211,6 @@ async function createSemifinalTournament(dbUsers: User[], status: Status) {
       await client.predictions.create({
         data: createRandomPrediction(clientUser.id, cdMatch.id, tournament.id),
       });
-      await client.predictions.create({
-        data: createRandomPrediction(
-          clientUser.id,
-          finalMatch.id,
-          tournament.id
-        ),
-      });
     } catch (e) {
       // Some unique constrain may be violated because of the faker random algorithm. In that case we'll just ignore it and keep going
     }
@@ -228,7 +223,7 @@ async function seed() {
   await dropDb();
 
   const users: User[] = [];
-  for (let i = 0; i < 1000; i++) users.push(createRandomUser());
+  for (let i = 0; i < 100; i++) users.push(createRandomUser());
   await client.user.createMany({
     data: users,
     skipDuplicates: true,
@@ -236,12 +231,13 @@ async function seed() {
 
   const dbUsers = await client.user.findMany({});
 
-  for (let i = 0; i < 5; i++) {
-    await createFinalOnlyTournament(dbUsers, "INCOMING");
-    await createFinalOnlyTournament(dbUsers, "INPROGRESS");
-    await createSemifinalTournament(dbUsers, "INCOMING");
-    await createSemifinalTournament(dbUsers, "INPROGRESS");
-  }
+  // for (let i = 0; i < 5; i++) {
+  // await createFinalOnlyTournament(dbUsers, "INCOMING");
+  // await createFinalOnlyTournament(dbUsers, "INPROGRESS");
+  // await createSemifinalTournament(dbUsers, "INPROGRESS");
+  // }
+
+  await createSemifinalTournament(dbUsers, "INCOMING");
 
   console.log("Done");
 }

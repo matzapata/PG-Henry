@@ -577,7 +577,10 @@ router.put(
         FINAL: 1,
       };
 
-      if (playedMatches.length === matchesPerStage[match.stage]) {
+      if (
+        playedMatches.length === matchesPerStage[match.stage] &&
+        match.stage !== "FINAL"
+      ) {
         // Generate next stage matches
         const newMatches = [];
 
@@ -673,6 +676,7 @@ router.put(
 
       return res.send("OK");
     } catch (e) {
+      console.log(e);
       return res.status(500).send("ERROR");
     }
   }
