@@ -21,6 +21,9 @@ export default function AddPrediction({ id }: { id: string }) {
   const tournamentCreator = useAppSelector(
     (state) => state.tournaments.tournamentDetail?.creator_user_id
   );
+  const tournamentDetail = useAppSelector(
+    (state) => state.tournaments.tournamentDetail
+  );
   const matches = useAppSelector(
     (state) => state.tournaments.tournamentAllMatches
   );
@@ -56,7 +59,10 @@ export default function AddPrediction({ id }: { id: string }) {
             }
           });
         } else {
-          if (match.score_a === undefined && match.score_b === undefined) {
+          if (
+            (match.score_a === undefined && match.score_b === undefined) ||
+            (match.score_a === null && match.score_b === null)
+          ) {
             finalMatches.push({
               ...match,
               score_a: undefined,
@@ -100,11 +106,13 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
+  console.log(matches);
   return (
     <Box>
-      {tournamentCreator !== user_id && (
+      <Heading>{tournamentDetail?.name}</Heading>
+      {tournamentCreator === user_id && (
         <Box>
-          {unido && (
+          {!unido && (
             <Box>
               <Box marginTop={"5px"}>
                 <Heading size="md" color="text">
