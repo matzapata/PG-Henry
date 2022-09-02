@@ -26,14 +26,9 @@ function ResetPassword() {
     setEmail(e.target.value);
   };
 
-  useEffect(() => {
-    console.log(email);
-  }, [email]);
-
   const submit = async () => {
     try {
       const response = await api.put("/users/resetpass", { email: email });
-      console.log(response.data);
     } catch (err: any) {
       console.error(err);
     }
