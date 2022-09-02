@@ -40,7 +40,6 @@ export default function AddPrediction({ id }: { id: string }) {
                 score_b: prediction.score_b,
               });
             } else {
-              console.log(match.score_a);
               if (match.score_a === undefined && match.score_b === undefined) {
                 finalMatches.push({
                   ...match,
@@ -101,7 +100,6 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
-  console.log(user_id);
   return (
     <Box>
       {tournamentCreator !== user_id && (
