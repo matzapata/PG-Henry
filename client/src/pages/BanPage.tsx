@@ -1,4 +1,9 @@
-import React from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import {
   Box,
   Flex,
@@ -27,8 +32,40 @@ import {
   MdOutlineEmail,
 } from "react-icons/md";
 import { BsGithub, BsDiscord, BsPerson } from "react-icons/bs";
+import api from "../services/api";
 
 export default function BanPage() {
+  const [input, setInput] = useState({
+    name: "",
+    email: "",
+    mensaje: "",
+  });
+
+  const handleChange = (e: any) => {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSend = async (e: any) => {
+    if (input.name !== "" && input.email !== "" && input.mensaje !== "") {
+      try {
+        const response = await api.post("/users/contact", input);
+        console.log(response.data);
+        setInput({
+          ...input,
+          email: "",
+          name: "",
+          mensaje: "",
+        });
+        alert("Tu mensaje se ha enviado, te contactaremos lo antes posible!");
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else alert("Todos los campos son requeridos !");
+  };
+
   return (
     <Box textAlign="center" py={10} px={6} bgColor="#082032">
       <Box display="inline-block">
@@ -50,7 +87,7 @@ export default function BanPage() {
       </Heading>
       <Text color={"gray.500"}>
         Si estas viendo esta pagina, es debido a que fuiste baneado... Ponte en
-        contacto con la administracion para ver tu situacion.
+        contacto con la administracion para analizar tu situacion.
       </Text>
 
       <Container
@@ -158,7 +195,13 @@ export default function BanPage() {
                             <InputLeftElement pointerEvents="none">
                               <BsPerson color="gray.800" />
                             </InputLeftElement>
-                            <Input type="text" size="md" />
+                            <Input
+                              type="text"
+                              size="md"
+                              name="name"
+                              value={input.name}
+                              onChange={handleChange}
+                            />
                           </InputGroup>
                         </FormControl>
                         <FormControl id="name">
@@ -167,7 +210,13 @@ export default function BanPage() {
                             <InputLeftElement pointerEvents="none">
                               <MdOutlineEmail color="gray.800" />
                             </InputLeftElement>
-                            <Input type="text" size="md" />
+                            <Input
+                              type="text"
+                              size="md"
+                              name="email"
+                              value={input.email}
+                              onChange={handleChange}
+                            />
                           </InputGroup>
                         </FormControl>
                         <FormControl id="name">
@@ -178,6 +227,9 @@ export default function BanPage() {
                               borderRadius: "gray.300",
                             }}
                             placeholder="Cuentanos tu problema"
+                            name="mensaje"
+                            value={input.mensaje}
+                            onChange={handleChange}
                           />
                         </FormControl>
                         <FormControl id="name" float="right">
@@ -186,6 +238,7 @@ export default function BanPage() {
                             bg="#0D74FF"
                             color="white"
                             _hover={{}}
+                            onClick={handleSend}
                           >
                             Enviar Mensaje
                           </Button>
