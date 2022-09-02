@@ -19,7 +19,6 @@ function TournamentDetail() {
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
-        <SelectWinner />
         <Heading color="#F7F7F7">Partidos</Heading>
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
