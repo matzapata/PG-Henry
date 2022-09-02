@@ -102,7 +102,7 @@ export default function TeamAdd({
 
           { name: input.name, shield_url: finalShield_url, key: input.key + 1 },
         ]);
-        setInput({ name: "", shield_url: "", key: input.key + 1 });
+        setInput({ name: "", shield_url: "", key: input.key + 2 });
         setError("");
       }
       setCreateError("");
@@ -200,7 +200,11 @@ export default function TeamAdd({
 
           {!!teams.length &&
             teams.map((el, index) => (
-              <Box key={el.key + index} display="Flex" flexDirection="row">
+              <Box
+                key={el.key + index + "T"}
+                display="Flex"
+                flexDirection="row"
+              >
                 <GridItem
                   boxShadow="dark-lg"
                   transition="200ms ease"

@@ -14,6 +14,7 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
+import ErrorScreen from "./PaginaError";
 
 type Match = {
   key: number;
@@ -61,6 +62,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
       errors.date = " Año inválido";
     }
   }
+  if (input.stage) errors.stage = "Completado";
   matches.map((match: Match) => {
     if (
       (match.team_a_name === input.team_a_name &&
@@ -157,6 +159,7 @@ export default function MatchAdd({
     if (
       newErrors.date === "Completado" &&
       newErrors.teams === "Completado" &&
+      newErrors.stage === "Completado" &&
       newErrors.matches === ""
     ) {
       setMatches([
@@ -166,7 +169,7 @@ export default function MatchAdd({
           team_b_name: input.team_b_name,
           date: input.date,
           key: input.key,
-          stage: _stage,
+          stage: input.stage,
         },
       ]);
       addMatches([
@@ -176,7 +179,7 @@ export default function MatchAdd({
           team_b_name: input.team_b_name,
           date: input.date,
           key: input.key,
-          stage: _stage,
+          stage: input.stage,
         },
       ]);
       setInput({ ...input, key: input.key + 1 });
@@ -271,11 +274,22 @@ export default function MatchAdd({
     if (newMatches.length != matches.length) setMatches(newMatches);
   }
   const crear = async () => {
-    if (!matches.length) {
+    const ml = matches.length;
+    if (!ml) {
       setCreateError("Debe haber al menos 1 partido");
     } else {
-      addMatches(matches);
-      siguientePaso();
+      if (
+        (_stage === "FINAL" && ml !== 1) ||
+        (_stage === "SEMIFINAL" && ml !== 2) ||
+        (_stage === "QUARTERFINAL" && ml !== 4) ||
+        (_stage === "ROUNDOF16" && ml !== 8) ||
+        (_stage === "ROUNDOF32" && ml !== 16)
+      ) {
+        setCreateError("Faltan partidos por asignar");
+      } else {
+        addMatches(matches);
+        siguientePaso();
+      }
     }
   };
 
@@ -396,190 +410,189 @@ export default function MatchAdd({
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A1"}
                     >
                       A1
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A2"}
                     >
                       A2
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A3"}
                     >
                       A3
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A4"}
                     >
                       A4
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A5"}
                     >
                       A5
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A6"}
                     >
                       A6
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A7"}
                     >
                       A7
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32A8"}
                     >
                       A8
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B1"}
                     >
                       B1
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B2"}
                     >
                       B2
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B3"}
                     >
                       B3
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B4"}
                     >
                       B4
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B5"}
                     >
                       B5
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B6"}
                     >
                       B6
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B7"}
                     >
                       B7
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF32" ? false : true}
-                      value={"ROUNDOF32"}
+                      value={"ROUNDOF32B8"}
                     >
                       B8
                     </option>
 
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16A1"}
                     >
                       A1
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16A2"}
                     >
                       A2
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16A3"}
                     >
                       A3
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16A4"}
                     >
                       A4
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16B1"}
                     >
                       B1
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16B2"}
                     >
                       B2
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16B3"}
                     >
                       B3
                     </option>
                     <option
                       hidden={_stage === "ROUNDOF16" ? false : true}
-                      value={"ROUNDOF16"}
+                      value={"ROUNDOF16B4"}
                     >
                       B4
                     </option>
 
                     <option
                       hidden={_stage === "QUARTERFINAL" ? false : true}
-                      value={"QUARTERFINAL"}
+                      value={"QUARTERFINALA1"}
                     >
                       A1
                     </option>
                     <option
                       hidden={_stage === "QUARTERFINAL" ? false : true}
-                      value={"QUARTERFINAL"}
+                      value={"QUARTERFINALA2"}
                     >
                       A2
                     </option>
                     <option
                       hidden={_stage === "QUARTERFINAL" ? false : true}
-                      value={"QUARTERFINAL"}
+                      value={"QUARTERFINALB1"}
                     >
                       B1
                     </option>
                     <option
                       hidden={_stage === "QUARTERFINAL" ? false : true}
-                      value={"QUARTERFINAL"}
+                      value={"QUARTERFINALB2"}
                     >
                       B2
                     </option>
 
                     <option
                       hidden={_stage === "SEMIFINAL" ? false : true}
-                      value={"SEMIFINAL"}
+                      value={"SEMIFINALA"}
                     >
-                      A1
+                      A
                     </option>
                     <option
                       hidden={_stage === "SEMIFINAL" ? false : true}
-                      value={"SEMIFINAL"}
+                      value={"SEMIFINALB"}
                     >
-                      A2
+                      B
                     </option>
 
                     <option
-                      selected
                       hidden={_stage === "FINAL" ? false : true}
                       value={"FINAL"}
                     >
@@ -607,7 +620,7 @@ export default function MatchAdd({
 
           {!!matches.length &&
             matches.map((el) => (
-              <Box key={el.key}>
+              <Box key={el.key + "M"}>
                 <GridItem
                   boxShadow="dark-lg"
                   transition="200ms ease"
