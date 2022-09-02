@@ -6,7 +6,7 @@ import { Box, Heading } from "@chakra-ui/react";
 import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
 import Mercadopago from "../components/Mercadopago";
-
+import SelectWinner from "../components/SelectWinner";
 import AddPrediction from "../components/AddPrediction";
 
 import PrivatePassword from "../components/TournamentPrivate";
@@ -19,6 +19,7 @@ function TournamentDetail() {
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
+        <SelectWinner />
         <Heading color="#F7F7F7">Partidos</Heading>
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
