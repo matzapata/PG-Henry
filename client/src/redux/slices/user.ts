@@ -5,11 +5,20 @@ import {
   updateProfile,
   fetchUniqueUserTournament,
   getReviews,
+  getOwnerTournament,
 } from "./userThunk";
 
 type UserTournament = {
   id: string;
   score: number;
+  name: string;
+  logo_url: string;
+  status: string;
+  type: string;
+};
+
+type OwnerTournaments = {
+  id: string;
   name: string;
   logo_url: string;
   status: string;
@@ -37,6 +46,11 @@ type InitialState = {
     lastPage: number;
     tournaments: UserTournament[];
   };
+  ownerTournaments: {
+    page: number;
+    lastPage: number;
+    tournaments: OwnerTournaments[];
+  };
 };
 
 const initialState: {
@@ -52,6 +66,11 @@ const initialState: {
     lastPage: number;
     tournaments: UserTournament[];
     is_attached: boolean;
+  };
+  ownerTournaments: {
+    page: number;
+    lastPage: number;
+    tournaments: OwnerTournaments[];
   };
   userComments: any[];
 } = {
@@ -69,6 +88,11 @@ const initialState: {
     is_attached: false,
   },
   userComments: [],
+  ownerTournaments: {
+    page: 1,
+    lastPage: 1,
+    tournaments: [],
+  },
 };
 
 // const initialState: InitialState = {
@@ -131,6 +155,20 @@ const userSlice = createSlice({
     });
     builder.addCase(fetchUserTournaments.rejected, (state, action) => {
       state.userTournaments = initialState.userTournaments;
+      state.error = action.payload as string;
+    });
+    // fetch owner tournaments
+    builder.addCase(getOwnerTournament.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getOwnerTournament.fulfilled, (state, action) => {
+      state.loading = false;
+      state.ownerTournaments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getOwnerTournament.rejected, (state, action) => {
+      state.ownerTournaments = initialState.ownerTournaments;
       state.error = action.payload as string;
     });
     // fetch if user is attached tournaments

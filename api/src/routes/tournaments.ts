@@ -78,6 +78,54 @@ router.get("/password", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get("/tournamentOwner", protectedRoute, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 1 : Number(req.query.pageSize);
+
+
+      const [tournaments, tournamentsCount] = await prisma.$transaction([
+        db.tournament.findMany({
+          where: {
+            creator_user_id: userId,
+          },
+          select: {
+            id: true,
+            name: true,
+            logo_url: true,
+            status: true,
+            type: true,
+          },
+          take: pageSize,
+          skip: pageSize * (page - 1),
+        }),
+        prisma.tournament.count({ where: { creator_user_id: userId } }),
+      ]);
+
+    if (tournaments.length === 0) {
+      res.status(404).send("Este usuario no creó ningun torneo.");
+    } else {
+      res.send({
+        page,
+        lastPage: Math.ceil(tournamentsCount / pageSize),
+        tournaments: tournaments.map((t) => {
+          return {
+            id: t.id,
+            name: t.name,
+            logo_url: t.logo_url,
+            status: t.status,
+            type: t.type,
+          };
+        }),
+      });
+    }
+  } catch (error: any) {
+    res.status(400).json({ status: "failed", msg: error.message });
+  }
+});
+
 router.get(
   "/:id/matches",
   async (req: express.Request, res: express.Response) => {
@@ -125,6 +173,7 @@ router.get(
     }
   }
 );
+
 router.get(
   "/:id/allmatches/:user_id",
   protectedRoute,
