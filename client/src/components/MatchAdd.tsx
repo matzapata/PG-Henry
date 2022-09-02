@@ -377,6 +377,216 @@ export default function MatchAdd({
                   />
                   <FormErrorMessage>{errors.date}</FormErrorMessage>
                 </FormControl>
+
+                <FormControl
+                  isInvalid={
+                    errors.stage === "Completado" || errors.stage === ""
+                      ? false
+                      : true
+                  }
+                >
+                  <Select name="stage" onChange={cambiosEnInput}>
+                    <option
+                      hidden={_stage !== "FINAL" ? false : true}
+                      selected
+                      value=""
+                    >
+                      Código
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A2
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A3
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A4
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A5
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A6
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A7
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      A8
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B1
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B2
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B3
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B4
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B5
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B6
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B7
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF32" ? false : true}
+                      value={"ROUNDOF32"}
+                    >
+                      B8
+                    </option>
+
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      A2
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      A3
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      A4
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      B1
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      B2
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      B3
+                    </option>
+                    <option
+                      hidden={_stage === "ROUNDOF16" ? false : true}
+                      value={"ROUNDOF16"}
+                    >
+                      B4
+                    </option>
+
+                    <option
+                      hidden={_stage === "QUARTERFINAL" ? false : true}
+                      value={"QUARTERFINAL"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={_stage === "QUARTERFINAL" ? false : true}
+                      value={"QUARTERFINAL"}
+                    >
+                      A2
+                    </option>
+                    <option
+                      hidden={_stage === "QUARTERFINAL" ? false : true}
+                      value={"QUARTERFINAL"}
+                    >
+                      B1
+                    </option>
+                    <option
+                      hidden={_stage === "QUARTERFINAL" ? false : true}
+                      value={"QUARTERFINAL"}
+                    >
+                      B2
+                    </option>
+
+                    <option
+                      hidden={_stage === "SEMIFINAL" ? false : true}
+                      value={"SEMIFINAL"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={_stage === "SEMIFINAL" ? false : true}
+                      value={"SEMIFINAL"}
+                    >
+                      A2
+                    </option>
+
+                    <option
+                      selected
+                      hidden={_stage === "FINAL" ? false : true}
+                      value={"FINAL"}
+                    >
+                      Final
+                    </option>
+                  </Select>
+                  <FormErrorMessage>{errors.stage}</FormErrorMessage>
+                </FormControl>
               </Stack>
 
               {errors.matches != "Completado" && (
