@@ -107,32 +107,41 @@ function MatchForm({
         <Heading fontSize="md" color="white" mr="110px">
           {match.team_a.name}
         </Heading>
-        <FormControl isInvalid={errors.scores_a !== ""}>
-          <Input
-            isReadOnly={match.team_a.scores !== undefined || enviado}
-            w={"50px"}
-            color={"white"}
-            type="number"
-            value={input.scores_a}
-            name="scores_a"
-            onChange={cambiosInput}
-          />
-          <FormErrorMessage>{errors.scores_a}</FormErrorMessage>
-        </FormControl>
+        {input.scores_a === 999 ? (
+          <Input marginLeft={"100px"} w={"70px"} readOnly value={"X"}></Input>
+        ) : (
+          <FormControl isInvalid={errors.scores_a !== ""}>
+            <Input
+              marginLeft={"100px"}
+              isReadOnly={match.team_a.scores !== undefined || enviado}
+              w={"70px"}
+              type="number"
+              value={input.scores_a}
+              name="scores_b"
+              onChange={cambiosInput}
+            />
+            <FormErrorMessage>{errors.scores_a}</FormErrorMessage>
+          </FormControl>
+        )}
 
         <Text>VS</Text>
-        <FormControl isInvalid={errors.scores_b !== ""}>
-          <Input
-            marginLeft={"100px"}
-            isReadOnly={match.team_b.scores !== undefined || enviado}
-            w={"50px"}
-            type="number"
-            value={input.scores_b}
-            name="scores_b"
-            onChange={cambiosInput}
-          />
-          <FormErrorMessage>{errors.scores_b}</FormErrorMessage>
-        </FormControl>
+        {input.scores_b === 999 ? (
+          <Input marginLeft={"100px"} w={"70px"} readOnly value={"X"}></Input>
+        ) : (
+          <FormControl isInvalid={errors.scores_b !== ""}>
+            <Input
+              marginLeft={"100px"}
+              isReadOnly={match.team_b.scores !== undefined || enviado}
+              w={"70px"}
+              type="number"
+              value={input.scores_b}
+              name="scores_b"
+              onChange={cambiosInput}
+            />
+            <FormErrorMessage>{errors.scores_b}</FormErrorMessage>
+          </FormControl>
+        )}
+
         <Heading fontSize="md" color="white" ml="110px">
           {match.team_b.name}
         </Heading>
