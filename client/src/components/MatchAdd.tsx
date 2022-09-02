@@ -63,7 +63,6 @@ function validate(input: Match, matches: Match[], agregar = false) {
       errors.date = " Año inválido";
     }
   }
-  console.log(!!input.code_stage.length);
   if (!!input.code_stage.length) errors.code_stage = "Completado";
   matches.map((match: Match) => {
     if (
