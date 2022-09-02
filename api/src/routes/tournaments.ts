@@ -85,24 +85,23 @@ router.get("/tournamentOwner", protectedRoute, async (req, res) => {
     const pageSize =
       req.query.pageSize === undefined ? 1 : Number(req.query.pageSize);
 
-
-      const [tournaments, tournamentsCount] = await prisma.$transaction([
-        db.tournament.findMany({
-          where: {
-            creator_user_id: userId,
-          },
-          select: {
-            id: true,
-            name: true,
-            logo_url: true,
-            status: true,
-            type: true,
-          },
-          take: pageSize,
-          skip: pageSize * (page - 1),
-        }),
-        prisma.tournament.count({ where: { creator_user_id: userId } }),
-      ]);
+    const [tournaments, tournamentsCount] = await prisma.$transaction([
+      db.tournament.findMany({
+        where: {
+          creator_user_id: userId,
+        },
+        select: {
+          id: true,
+          name: true,
+          logo_url: true,
+          status: true,
+          type: true,
+        },
+        take: pageSize,
+        skip: pageSize * (page - 1),
+      }),
+      prisma.tournament.count({ where: { creator_user_id: userId } }),
+    ]);
 
     if (tournaments.length === 0) {
       res.status(404).send("Este usuario no creó ningun torneo.");
@@ -243,9 +242,7 @@ router.post(
     try {
       const { name } = req.body;
 
-
       const torneo = await db.tournament.findUnique({
-
         where: { name },
       });
       if (torneo) {
@@ -423,6 +420,7 @@ router.post(
                   stage: match.stage,
                   team_a_id: team_a?.id,
                   team_b_id: team_b?.id,
+                  code_stage: matches.code_stage,
                 },
               });
               return newMatch;
