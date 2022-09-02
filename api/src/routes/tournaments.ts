@@ -282,7 +282,7 @@ router.post(
     }
   }
 );
-
+/* 
 router.post(
   "/checkTeams",
   protectedRoute,
@@ -318,10 +318,10 @@ router.post(
     }
   }
 );
-
+ */
 router.post(
   "/create",
-  /* protectedRoute, */
+  protectedRoute,
   async (req: express.Request, res: express.Response) => {
     try {
       const { tournament, teams, matches } = req.body;
@@ -423,8 +423,7 @@ router.post(
           return newTeam;
         });
         const equipos: Team[] = await Promise.all(teamsPromises);
-        console.log(equipos);
-        console.log(matches);
+
         //////PROBLEM///////
         if (!matches.length) {
           return res
@@ -448,12 +447,6 @@ router.post(
             if (team_a && team_b) {
               const newMatch = await db.matches.create({
                 data: {
-                  /*  "stage": "FINAL",
-                  "team_a_name": "",
-                  "team_b_name:"" ,
-                  "date":"2022-11-11"
-                  "code_stage: "FINAL" */
-
                   tournament_id: torneo.id,
                   date: newDate,
                   stage: match.stage,
