@@ -172,7 +172,6 @@ model Matches {
   match_id      Predictions[]
   code_stage    CodeStage
 
-  @@id([stage, tournament_id, code_stage])
 }
 
 model Comments {
