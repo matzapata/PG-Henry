@@ -86,4 +86,35 @@ router.put(
   }
 );
 
+router.get(
+  "/allcomments",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const comments = await db.comments.findMany();
+      if (!comments) return res.send({ message: "No hay comentarios..." });
+
+      const resultado = [];
+
+      for (let i = 0; i < comments.length; i++) {
+        const rv: any = {};
+        const user = await db.user.findUnique({
+          where: { id: comments[i].user_id },
+        });
+        rv.email = user?.email;
+        rv.url_avatar = user?.url_avatar;
+        rv.comentario = comments[i].comentaries;
+        rv.full_name = user?.full_name;
+        rv.username = user?.username;
+        rv.stars = comments[i].stars;
+        rv.id = user?.id;
+        resultado.push(rv);
+      }
+
+      return res.send(resultado);
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
+);
+
 export default router;
