@@ -99,7 +99,7 @@ model UserTournament {
 
 model Teams {
   id         String  @unique @default(uuid())
-  name       String  @unique
+  name       String  
   shield_url String?
 
   id_team_a      Matches[]        @relation("team_a")
