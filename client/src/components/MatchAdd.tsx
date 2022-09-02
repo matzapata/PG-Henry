@@ -336,8 +336,6 @@ export default function MatchAdd({
   useEffect(() => {
     setInput({ ...input, stage: _stage });
   }, [_stage]);
-  console.log(input);
-  console.log(errors);
   return (
     <Container p="0px">
       <Box
