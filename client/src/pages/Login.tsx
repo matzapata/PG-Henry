@@ -26,6 +26,7 @@ import { isEmail } from "../utils/validations";
 import { useAuth0 } from "@auth0/auth0-react";
 import Auth0SignInButton from "../components/Auth0SignInButton";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import ResetPassword from "../components/ResetPassword";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -164,14 +165,19 @@ function Login() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <Checkbox
-                  onChange={() => {
-                    setCheck(!check);
-                  }}
-                  mt="2"
-                >
-                  Mantener sesión iniciada
-                </Checkbox>
+                <Flex justifyContent={"space-between"}>
+                  <Checkbox
+                    onChange={() => {
+                      setCheck(!check);
+                    }}
+                    mt="2"
+                  >
+                    Mantener sesión iniciada
+                  </Checkbox>
+                  <Flex mt={"0.5rem"}>
+                    <ResetPassword />
+                  </Flex>
+                </Flex>
               </FormControl>
               <Button
                 width="full"
