@@ -49,6 +49,12 @@ function SideBar() {
           </Link>
         </Flex>
         <Flex alignItems={"center"}>
+          <Icon as={FaUsers} color={"buttons"} />
+          <Link as={ReactLink} to={"/admin/bannedusers"} ml={2} color="text">
+            Usuarios Baneados
+          </Link>
+        </Flex>
+        <Flex alignItems={"center"}>
           <Icon as={FaTrophy} color={"buttons"} />
           <Link as={ReactLink} to={"/admin/torneos"} ml={2} color="text">
             Torneos
