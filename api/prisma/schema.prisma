@@ -55,7 +55,6 @@ model Tournament {
 }
 
 enum MatchStage {
-  FASEGROUP
   ROUNDOF32
   ROUNDOF16
   QUARTERFINAL
@@ -92,8 +91,8 @@ enum CodeStage {
   QUARTERFINALA2
   QUARTERFINALB1
   QUARTERFINALB2
-  SEMIFINALA
-  SEMIFINALB
+  SEMIFINALA1
+  SEMIFINALB1
   FINAL
 }
 
@@ -160,7 +159,7 @@ model Matches {
   id      String     @unique @default(uuid())
   score_a Int?
   score_b Int?
-  date    DateTime
+  date    DateTime?
   stage   MatchStage
 
   tournament    Tournament    @relation(fields: [tournament_id], references: [id])
