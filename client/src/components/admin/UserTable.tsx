@@ -34,7 +34,7 @@ function UserTable(props: any) {
   const desbanear = (email: string) => {
     dispatch(unbanUser({ email }));
     alert(`Felicitaciones, se ha desbaneado al usuario ${email}`);
-    window.location.reload();
+    dispatch(getBannedUser());
   };
 
   const nextHandler = () => {
