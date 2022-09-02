@@ -53,12 +53,6 @@ function SideBar() {
           </Link>
         </Flex>
         <Flex alignItems={"center"}>
-          <Icon as={MdOutlineWarning} color={"buttons"} />
-          <Link as={ReactLink} to={"/admin/bannedusers"} ml={2} color="text">
-            Usuarios Baneados
-          </Link>
-        </Flex>
-        <Flex alignItems={"center"}>
           <Icon as={FaTrophy} color={"buttons"} />
           <Link as={ReactLink} to={"/admin/torneos"} ml={2} color="text">
             Torneos
@@ -71,12 +65,18 @@ function SideBar() {
           </Link>
         </Flex>
         <Flex alignItems={"center"}>
-          <Icon as={MdAccountCircle} color={"buttons"} />
-          <AdminFormulary />
-        </Flex>
-        <Flex alignItems={"center"}>
           <Icon as={MdAdminPanelSettings} color={"buttons"} />
           <BanForm email={data?.email} />
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdOutlineWarning} color={"buttons"} />
+          <Link as={ReactLink} to={"/admin/bannedusers"} ml={2} color="text">
+            Usuarios Baneados
+          </Link>
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdAccountCircle} color={"buttons"} />
+          <AdminFormulary />
         </Flex>
         <Flex alignItems={"center"}>
           <Icon as={MdLogout} color={"buttons"} />

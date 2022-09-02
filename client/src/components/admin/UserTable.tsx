@@ -73,7 +73,7 @@ function UserTable(props: any) {
               <Tr key={i}>
                 <Td>
                   <Flex alignItems={"center"}>
-                    <Image width={"40px"} src={`${u.url_avatar}`} />
+                    <Image width={"40px"} src={`${u.url_avatar}`} mr="1rem" />
                     {u.username}
                   </Flex>
                 </Td>
