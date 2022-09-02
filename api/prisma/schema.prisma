@@ -63,6 +63,40 @@ enum MatchStage {
   FINAL
 }
 
+enum CodeStage {
+  ROUNDOF32A1
+  ROUNDOF32A2
+  ROUNDOF32A3
+  ROUNDOF32A4
+  ROUNDOF32A5
+  ROUNDOF32A6
+  ROUNDOF32A7
+  ROUNDOF32A8
+  ROUNDOF32B1
+  ROUNDOF32B2
+  ROUNDOF32B3
+  ROUNDOF32B4
+  ROUNDOF32B5
+  ROUNDOF32B6
+  ROUNDOF32B7
+  ROUNDOF32B8
+  ROUNDOF16A1
+  ROUNDOF16A2
+  ROUNDOF16A3
+  ROUNDOF16A4
+  ROUNDOF16B1
+  ROUNDOF16B2
+  ROUNDOF16B3
+  ROUNDOF16B4
+  QUARTERFINALA1
+  QUARTERFINALA2
+  QUARTERFINALB1
+  QUARTERFINALB2
+  SEMIFINALA
+  SEMIFINALB
+  FINAL
+}
+
 enum TournamentType {
   PRIVATE
   PUBLIC
@@ -136,6 +170,9 @@ model Matches {
   team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
   team_b_id     String
   match_id      Predictions[]
+  code_stage    CodeStage
+
+  @@id([stage, tournament_id, code_stage])
 }
 
 model Comments {
@@ -148,9 +185,9 @@ model Comments {
 }
 
 model Banned {
-  id          Int             @id @default(autoincrement())
-  admin_name  String
-  reason      String?
-  user        User            @relation(fields:[user_id], references:[id])
-  user_id     String          @unique
+  id         Int     @id @default(autoincrement())
+  admin_name String
+  reason     String?
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String  @unique
 }
