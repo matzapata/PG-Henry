@@ -100,7 +100,6 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
-  console.log(user_id);
   return (
     <Box>
       {tournamentCreator !== user_id && (
