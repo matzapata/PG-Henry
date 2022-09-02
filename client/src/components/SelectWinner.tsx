@@ -2,10 +2,7 @@ import React, { ReactComponentElement, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Select, Box, Button, Text, Input } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import {
-  fetchUniqueUserTournament,
-  fetchUserTournaments,
-} from "../redux/slices/userThunk";
+import { fetchUniqueUserTournament } from "../redux/slices/userThunk";
 import {
   postUserTournamentWinner,
   fetchUserTournamentWinner,
@@ -33,7 +30,7 @@ function SelectWinner() {
   );
 
   useEffect(() => {
-    dispatch(fetchTournamentAllMatches({ id: id }));
+    dispatch(fetchTournamentAllMatches({ id: id, user_id: user_id }));
   }, []);
 
   useEffect(() => {
