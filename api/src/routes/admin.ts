@@ -55,4 +55,35 @@ router.put(
   }
 );
 
+router.get(
+  "/bannedusers",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const users = await db.user.findMany({ where: { is_banned: true } });
+      if (!users) return res.send({ message: "No hay usuarios baneados..." });
+      return res.send(users.slice(0, 20));
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
+);
+
+router.put(
+  "/unbanuser",
+  async (req: express.Request, res: express.Response) => {
+    const { email } = req.body;
+    try {
+      if (!email) return res.send("Faltan parametros requeridos...");
+      await db.user.update({
+        where: { email },
+        data: { is_banned: false },
+      });
+
+      return res.send("El usuario ha sido desbaneado!");
+    } catch (err: any) {
+      return res.status(400).send({ message: "Intenta nuevamente" });
+    }
+  }
+);
+
 export default router;

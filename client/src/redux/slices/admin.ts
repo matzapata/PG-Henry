@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchStats } from "./adminThunk";
+import { fetchStats, getBannedUser } from "./adminThunk";
 
 export type Stats = {
   tournaments: number;
@@ -16,6 +16,7 @@ export type InitialState = {
   stats: Stats;
   loading: boolean;
   error: string;
+  bannedUsers: [];
 };
 
 const initialState: InitialState = {
@@ -31,6 +32,7 @@ const initialState: InitialState = {
   },
   loading: false,
   error: "",
+  bannedUsers: [],
 };
 
 const adminSlice = createSlice({
@@ -59,6 +61,18 @@ const adminSlice = createSlice({
         banned: 0,
         revenue: 0,
       };
+    });
+    // Get banned users
+    builder.addCase(getBannedUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getBannedUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.bannedUsers = action.payload;
+    });
+    builder.addCase(getBannedUser.rejected, (state, action) => {
+      state.loading = false;
+      state.bannedUsers = [];
     });
   },
 });
