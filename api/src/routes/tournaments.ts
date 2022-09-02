@@ -1,6 +1,6 @@
 import prisma from "../db";
 import * as express from "express";
-import { MatchStage, Status, TournamentType } from "@prisma/client";
+import { MatchStage, Status, TournamentType, CodeStage } from "@prisma/client";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
@@ -14,6 +14,7 @@ type Team = {
 type Match = {
   date: string;
   stage: MatchStage;
+  code_stage: CodeStage;
   tournament_id: string;
   team_a_name: string;
   team_b_name: string;
@@ -78,6 +79,75 @@ router.get("/password", async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get("/tournamentOwner", protectedRoute, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    const pageSize =
+      req.query.pageSize === undefined ? 1 : Number(req.query.pageSize);
+
+    const [tournaments, tournamentsCount] = await prisma.$transaction([
+      db.tournament.findMany({
+        where: {
+          creator_user_id: userId,
+        },
+        select: {
+          id: true,
+          name: true,
+          logo_url: true,
+          status: true,
+          type: true,
+        },
+        take: pageSize,
+        skip: pageSize * (page - 1),
+      }),
+      prisma.tournament.count({ where: { creator_user_id: userId } }),
+    ]);
+
+    if (tournaments.length === 0) {
+      res.status(404).send("Este usuario no creó ningun torneo.");
+    } else {
+      res.send({
+        page,
+        lastPage: Math.ceil(tournamentsCount / pageSize),
+        tournaments: tournaments.map((t) => {
+          return {
+            id: t.id,
+            name: t.name,
+            logo_url: t.logo_url,
+            status: t.status,
+            type: t.type,
+          };
+        }),
+      });
+    }
+  } catch (error: any) {
+    res.status(400).json({ status: "failed", msg: error.message });
+  }
+});
+
+router.get(
+  "/fetchwinner",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { id, userid } = req.query;
+      const result = await db.userTournament.findUnique({
+        where: {
+          user_id_tournament_id: {
+            user_id: userid as string,
+            tournament_id: id as string,
+          },
+        },
+      });
+      if (result?.winner_team_id) {
+        res.status(200).send(result);
+      }
+    } catch (e: any) {
+      res.status(400).send("No tiene asignado un ganador");
+    }
+  }
+);
+
 router.get(
   "/:id/matches",
   async (req: express.Request, res: express.Response) => {
@@ -125,11 +195,13 @@ router.get(
     }
   }
 );
+
 router.get(
-  "/:id/allmatches",
+  "/:id/allmatches/:user_id",
+  protectedRoute,
   async (req: express.Request, res: express.Response) => {
-    const { id } = req.params;
-    console.log("entró");
+    const { id, user_id } = req.params;
+
     try {
       const result = await prisma.matches.findMany({
         where: {
@@ -150,6 +222,7 @@ router.get(
               id: true,
             },
           },
+          match_id: { where: { user_id } },
         },
       });
 
@@ -370,6 +443,7 @@ router.post(
                   stage: match.stage,
                   team_a_id: team_a?.id,
                   team_b_id: team_b?.id,
+                  code_stage: match.code_stage,
                 },
               });
               return newMatch;
@@ -389,6 +463,26 @@ router.post(
     }
   }
 );
+
+router.post("/winner", async (req: express.Request, res: express.Response) => {
+  try {
+    const { id, userid, teamid } = req.query;
+    const response = await db.userTournament.update({
+      where: {
+        user_id_tournament_id: {
+          user_id: userid as string,
+          tournament_id: id as string,
+        },
+      },
+      data: {
+        winner_team_id: teamid as string,
+      },
+    });
+    res.status(200).send("Ok");
+  } catch (e: any) {
+    res.status(400).send({ message: e });
+  }
+});
 
 router.get(
   "/:id/ranking",

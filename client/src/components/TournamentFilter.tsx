@@ -8,6 +8,7 @@ import {
   Button,
   Select,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
@@ -51,14 +52,14 @@ function TournamentFilter(): JSX.Element {
 
   return (
     <Box p="20px" backdropFilter="auto" backdropBrightness="0.5">
-      <Stack direction="row" spacing="5px">
+      <Stack direction="row" spacing="10px">
         <Input
           name="name"
           placeholder="Buscar torneo..."
           value={filter.name}
           color="text"
           borderColor="buttons"
-          w="30%"
+          w="380px"
           type="text"
           onChange={(e) => setFilter({ ...filter, name: e.target.value })}
         />
@@ -70,7 +71,7 @@ function TournamentFilter(): JSX.Element {
           onClick={handleFilter}
         />
         <Select
-          w="20%"
+          w="280px"
           color="text"
           borderColor="buttons"
           placeholder="Estado"
@@ -87,7 +88,7 @@ function TournamentFilter(): JSX.Element {
           <option value="INCOMING">Próximos</option>
         </Select>
         <Select
-          w="20%"
+          w="280px"
           color="text"
           borderColor="buttons"
           placeholder="Acceso"
@@ -103,7 +104,7 @@ function TournamentFilter(): JSX.Element {
           <option value="PUBLIC">Públicos</option>
         </Select>
         <Select
-          w="20%"
+          w="280px"
           color="text"
           borderColor="buttons"
           id="sorts"
@@ -149,7 +150,9 @@ function TournamentFilter(): JSX.Element {
         >
           <ArrowBackIcon />
         </Button>
-        <Box bgColor="buttons">{currentPage}</Box>
+        <Text pl="4" pr="4" pt="2" pb="2" bgColor="buttons" borderRadius="6px">
+          {currentPage}
+        </Text>
         <Button
           onClick={() => setCurrentPage(currentPage + 1)}
           name="fowardbutton"

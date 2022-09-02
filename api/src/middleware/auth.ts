@@ -21,6 +21,11 @@ export async function protectedRoute(
       is_admin: decoded.payload.is_admin,
       is_banned: decoded.payload.is_banned,
     };
+
+    if (req.user.is_banned)
+      return res
+        .status(403)
+        .send({ message: "Estas baneado, no puedes hacer peticiones..." });
     next();
   } catch (e) {
     return res.status(401).send({ message: "Unauthorized" });

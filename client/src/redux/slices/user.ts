@@ -5,11 +5,21 @@ import {
   updateProfile,
   fetchUniqueUserTournament,
   getReviews,
+  fetchUserTournamentWinner,
+  getOwnerTournament,
 } from "./userThunk";
 
 type UserTournament = {
   id: string;
   score: number;
+  name: string;
+  logo_url: string;
+  status: string;
+  type: string;
+};
+
+type OwnerTournaments = {
+  id: string;
   name: string;
   logo_url: string;
   status: string;
@@ -37,6 +47,11 @@ type InitialState = {
     lastPage: number;
     tournaments: UserTournament[];
   };
+  ownerTournaments: {
+    page: number;
+    lastPage: number;
+    tournaments: OwnerTournaments[];
+  };
 };
 
 const initialState: {
@@ -52,6 +67,12 @@ const initialState: {
     lastPage: number;
     tournaments: UserTournament[];
     is_attached: boolean;
+    winner: boolean;
+  };
+  ownerTournaments: {
+    page: number;
+    lastPage: number;
+    tournaments: OwnerTournaments[];
   };
   userComments: any[];
 } = {
@@ -67,8 +88,14 @@ const initialState: {
     lastPage: 1,
     tournaments: [],
     is_attached: false,
+    winner: false,
   },
   userComments: [],
+  ownerTournaments: {
+    page: 1,
+    lastPage: 1,
+    tournaments: [],
+  },
 };
 
 // const initialState: InitialState = {
@@ -133,6 +160,20 @@ const userSlice = createSlice({
       state.userTournaments = initialState.userTournaments;
       state.error = action.payload as string;
     });
+    // fetch owner tournaments
+    builder.addCase(getOwnerTournament.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getOwnerTournament.fulfilled, (state, action) => {
+      state.loading = false;
+      state.ownerTournaments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getOwnerTournament.rejected, (state, action) => {
+      state.ownerTournaments = initialState.ownerTournaments;
+      state.error = action.payload as string;
+    });
     // fetch if user is attached tournaments
     builder.addCase(fetchUniqueUserTournament.pending, (state) => {
       state.loading = true;
@@ -165,6 +206,25 @@ const userSlice = createSlice({
     builder.addCase(getReviews.rejected, (state, action) => {
       state.userComments = [];
       state.error = action.payload as string;
+    });
+    //fetch winner?
+    builder.addCase(fetchUserTournamentWinner.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournamentWinner.fulfilled, (state, action) => {
+      if (typeof action.payload === "object") {
+        state.userTournaments.winner = true;
+      } else {
+        state.userTournaments.winner = false;
+      }
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournamentWinner.rejected, (state, action) => {
+      state.loading = true;
+      state.error = "";
+      state.userTournaments.winner = false;
     });
   },
 });
