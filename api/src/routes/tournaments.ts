@@ -1,9 +1,16 @@
 import prisma from "../db";
 import * as express from "express";
-import { MatchStage, Status, TournamentType, CodeStage } from "@prisma/client";
+import {
+  MatchStage,
+  Status,
+  TournamentType,
+  CodeStage,
+  Matches,
+} from "@prisma/client";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
+import matchGenerator from "../utils/matchGenerator";
 
 type Team = {
   name: string;
@@ -467,7 +474,7 @@ router.post(
 router.post("/winner", async (req: express.Request, res: express.Response) => {
   try {
     const { id, userid, teamid } = req.query;
-    const response = await db.userTournament.update({
+    await db.userTournament.update({
       where: {
         user_id_tournament_id: {
           user_id: userid as string,
@@ -552,6 +559,49 @@ router.put(
         data: { score_a, score_b },
       });
 
+      // Create next stage matches
+      const playedMatches = await db.matches.findMany({
+        where: {
+          tournament_id: tournament.id,
+          stage: match.stage,
+          score_a: { not: null },
+          score_b: { not: null },
+        },
+      });
+
+      const matchesPerStage = {
+        ROUNDOF32: 16,
+        ROUNDOF16: 8,
+        QUARTERFINAL: 4,
+        SEMIFINAL: 2,
+        FINAL: 1,
+      };
+
+      if (playedMatches.length === matchesPerStage[match.stage]) {
+        // Generate next stage matches
+        const newMatches = [];
+
+        playedMatches.sort();
+
+        for (let i = 0; i < playedMatches.length / 2; i = i + 2) {
+          const generatedMatch = matchGenerator(
+            playedMatches[i],
+            playedMatches[i + 1]
+          );
+
+          newMatches.push({
+            team_a_id: generatedMatch.team_a,
+            team_b_id: generatedMatch.team_b,
+            code_stage: generatedMatch.code_stage,
+            stage: generatedMatch.stage,
+            tournament_id: tournament.id,
+          });
+        }
+
+        await db.matches.createMany({ data: newMatches });
+      }
+
+      // Update user score
       const tournamentPredictions = await db.predictions.findMany({
         where: {
           match_id: req.params.match_id,

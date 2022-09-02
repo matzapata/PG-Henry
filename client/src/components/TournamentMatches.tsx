@@ -45,7 +45,7 @@ function TournamentMatches({ id }: { id: string }) {
           placeholder="Etapa..."
           onChange={(e) => onChange(e)}
         >
-          <option value="FASEGROUP">FASE-GRUPOS</option>
+          <option value="ROUNDOF32">ELIMINACIONES</option>
           <option value="ROUNDOF16">OCTAVOS-FINAL</option>
           <option value="QUARTERFINAL">CUARTOS-FINAL</option>
           <option value="SEMIFINAL">SEMI-FINAL</option>
