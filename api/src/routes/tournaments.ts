@@ -621,7 +621,24 @@ router.put(
         data: { score: { increment: 3 } },
       });
 
-      if (match.stage === "FINAL") {
+      if (
+        match.stage === "FINAL" &&
+        match.score_a !== null &&
+        match.score_b !== null
+      ) {
+        const winnerId =
+          match.score_a > match.score_b ? match.team_a_id : match.team_b_id;
+
+        await db.userTournament.updateMany({
+          where: {
+            tournament_id: tournament.id,
+            winner_team_id: winnerId,
+          },
+          data: {
+            score: { increment: 20 },
+          },
+        });
+
         const tournamentScores = await db.userTournament.findMany({
           where: { tournament_id: req.params.id },
           orderBy: { score: "desc" },
