@@ -43,7 +43,10 @@ export default function AddPrediction({ id }: { id: string }) {
                 score_b: prediction.score_b,
               });
             } else {
-              if (match.score_a === undefined && match.score_b === undefined) {
+              if (
+                (match.score_a === undefined && match.score_b === undefined) ||
+                (match.score_a === null && match.score_b === null)
+              ) {
                 finalMatches.push({
                   ...match,
                   score_a: undefined,
@@ -106,13 +109,13 @@ export default function AddPrediction({ id }: { id: string }) {
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
-  console.log(matches);
+
   return (
     <Box>
-      <Heading>{tournamentDetail?.name}</Heading>
-      {tournamentCreator === user_id && (
+      <Heading color={"white"}>{tournamentDetail?.name}</Heading>
+      {tournamentCreator !== user_id && (
         <Box>
-          {!unido && (
+          {unido && (
             <Box>
               <Box marginTop={"5px"}>
                 <Heading size="md" color="text">
@@ -121,7 +124,8 @@ export default function AddPrediction({ id }: { id: string }) {
 
                 <Box margin={"5px"} bgColor="secondary" borderRadius="4" p="6">
                   {newMatches &&
-                    newMatches.map((match) => (
+                    matches &&
+                    newMatches.map((match, index) => (
                       <Box key={match.id + "B1"}>
                         {(match.score_a === undefined ||
                           match.score_b === undefined) && (
@@ -141,6 +145,7 @@ export default function AddPrediction({ id }: { id: string }) {
                                 name: match.team_b.name,
                                 id: match.team_b_id,
                               },
+                              match_result: matches[index],
                             }}
                             onSubmit={onSubmit}
                           />
@@ -162,7 +167,8 @@ export default function AddPrediction({ id }: { id: string }) {
                       p="6"
                     >
                       {newMatches &&
-                        newMatches.map((match) => (
+                        matches &&
+                        newMatches.map((match, index) => (
                           <Box key={match.id + "B2"}>
                             {(match.score_a !== undefined ||
                               match.score_b !== undefined) && (
@@ -182,6 +188,7 @@ export default function AddPrediction({ id }: { id: string }) {
                                     name: match.team_b.name,
                                     id: match.team_b_id,
                                   },
+                                  match_result: matches[index],
                                 }}
                                 onSubmit={onSubmit}
                               />
