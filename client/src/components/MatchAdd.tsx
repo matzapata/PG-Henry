@@ -12,6 +12,7 @@ import {
   Select,
   useColorModeValue,
   Flex,
+  Heading,
 } from "@chakra-ui/react";
 
 type Match = {
@@ -91,11 +92,8 @@ function validate(input: Match, matches: Match[], agregar = false) {
     }
   });
 
-  if (!!input.stage.length) errors.stage = "Completado";
-
   if (agregar) {
     if (errors.teams === "") errors.teams = "Campo Requerido";
-    if (errors.stage === "") errors.stage = "Campo Requerido";
     if (errors.date === "") errors.date = "Campo Requerido";
   }
   return errors;
@@ -122,6 +120,7 @@ export default function MatchAdd({
     date: "",
     matches: "",
   });
+  const [_stage, set_stage] = useState("");
 
   const cambiosEnInput = (
     e:
@@ -156,7 +155,6 @@ export default function MatchAdd({
     setErrors(newErrors);
     if (
       newErrors.date === "Completado" &&
-      newErrors.stage === "Completado" &&
       newErrors.teams === "Completado" &&
       newErrors.matches === ""
     ) {
@@ -167,7 +165,7 @@ export default function MatchAdd({
           team_b_name: input.team_b_name,
           date: input.date,
           key: input.key,
-          stage: input.stage,
+          stage: _stage,
         },
       ]);
       addMatches([
@@ -177,7 +175,7 @@ export default function MatchAdd({
           team_b_name: input.team_b_name,
           date: input.date,
           key: input.key,
-          stage: input.stage,
+          stage: _stage,
         },
       ]);
       setInput({ ...input, key: input.key + 1 });
@@ -279,9 +277,35 @@ export default function MatchAdd({
       siguientePaso();
     }
   };
+
+  const llenar_stage = () => {
+    const el = equipos.length;
+    let newStage = "";
+
+    if (el === 2) {
+      newStage = "FINAL";
+    } else {
+      if (el === 4) {
+        newStage = "SEMIFINAL";
+      } else {
+        if (el === 8) {
+          newStage = "QUARTERFINAL";
+        } else {
+          if (el === 16) {
+            newStage = "ROUNDOF16";
+          } else {
+            newStage = "ROUNDOF32";
+          }
+        }
+      }
+    }
+    set_stage(newStage);
+  };
+
   useEffect(() => {
     setMatches(partidos);
     actualizarMatches();
+    llenar_stage();
   }, []);
 
   useEffect(() => {
@@ -312,6 +336,7 @@ export default function MatchAdd({
                     : true
                 }
               >
+                <Heading marginBottom={"55px"}>{_stage}</Heading>
                 <Stack direction="row" spacing={4} alignItems="center">
                   <Select
                     id="team_a"
@@ -351,25 +376,6 @@ export default function MatchAdd({
                     onChange={cambiosEnInput}
                   />
                   <FormErrorMessage>{errors.date}</FormErrorMessage>
-                </FormControl>
-                <FormControl
-                  isInvalid={
-                    errors.stage === "Completado" || errors.stage === ""
-                      ? false
-                      : true
-                  }
-                >
-                  <Select name="stage" onChange={cambiosEnInput}>
-                    <option selected value="">
-                      Instacia
-                    </option>
-                    <option value={"FASEGROUP"}>Fase de Grupo</option>
-                    <option value={"ROUNDOF32"}>Ronda de 32</option>
-                    <option value={"QUARTERFINAL"}>Cuartos de final</option>
-                    <option value={"SEMIFINAL"}>Semifinal</option>
-                    <option value={"FINAL"}>Final</option>
-                  </Select>
-                  <FormErrorMessage>{errors.stage}</FormErrorMessage>
                 </FormControl>
               </Stack>
 

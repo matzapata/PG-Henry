@@ -95,12 +95,12 @@ export default function TeamAdd({
         setTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key },
+          { name: input.name, shield_url: finalShield_url, key: input.key + 1 },
         ]);
         addTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key },
+          { name: input.name, shield_url: finalShield_url, key: input.key + 1 },
         ]);
         setInput({ name: "", shield_url: "", key: input.key + 1 });
         setError("");
@@ -119,15 +119,23 @@ export default function TeamAdd({
   };
 
   const crear = async () => {
-    if (teams.length < 2) {
+    const tl = teams.length;
+
+    if (tl < 2) {
       setCreateError("Debe haber al menos 2 equipos");
     } else {
-      try {
-        await api.post("/tournaments/checkTeams", { teams: teams });
-        addTeams(teams);
-        siguientePaso();
-      } catch (e: any) {
-        setCheckError(e.response.data.message);
+      if (tl !== 2 && tl !== 4 && tl !== 8 && tl !== 16 && tl !== 32) {
+        setCreateError(
+          "Este tipo de torneos solo acepta 2, 4, 8, 16 o 32 equipos"
+        );
+      } else {
+        try {
+          await api.post("/tournaments/checkTeams", { teams: teams });
+          addTeams(teams);
+          siguientePaso();
+        } catch (e: any) {
+          setCheckError(e.response.data.message);
+        }
       }
     }
   };
@@ -191,8 +199,8 @@ export default function TeamAdd({
           </Stack>
 
           {!!teams.length &&
-            teams.map((el) => (
-              <Box key={el.key} display="Flex" flexDirection="row">
+            teams.map((el, index) => (
+              <Box key={el.key + index} display="Flex" flexDirection="row">
                 <GridItem
                   boxShadow="dark-lg"
                   transition="200ms ease"
