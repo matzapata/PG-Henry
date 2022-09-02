@@ -61,7 +61,7 @@ router.get(
     try {
       const users = await db.user.findMany({ where: { is_banned: true } });
       if (!users) return res.send({ message: "No hay usuarios baneados..." });
-      return res.send(users.slice(0, 20));
+      return res.send(users);
     } catch (err: any) {
       console.error(err);
     }
