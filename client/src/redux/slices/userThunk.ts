@@ -127,7 +127,7 @@ export const fetchUserTournamentWinner = createAsyncThunk(
       }&${id.userid ? "userid=" + id.userid : ""}`
     );
     return response.data;
-    }
+  }
 );
 
 export const getOwnerTournament = createAsyncThunk(

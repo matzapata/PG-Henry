@@ -91,7 +91,8 @@ export default function TeamAdd({
           setLogo(logo_a);
           finalShield_url = logo_a;
         }
-        if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
+        if (finalShield_url === "")
+          finalShield_url = "/img/team-shield-placeholder.jpg";
         setTeams([
           ...teams,
 
@@ -130,7 +131,7 @@ export default function TeamAdd({
         );
       } else {
         try {
-          await api.post("/tournaments/checkTeams", { teams: teams });
+          // await api.post("/tournaments/checkTeams", { teams: teams });
           addTeams(teams);
           siguientePaso();
         } catch (e: any) {

@@ -43,7 +43,9 @@ function Home() {
     <Container
       maxW="100vw"
       h="100vh"
-      p="0"
+      px="0"
+      pt="0"
+      pb="10"
       bgColor="DPrimary"
       bgSize="cover"
       bgImage="url('/img/bgImg.png')"

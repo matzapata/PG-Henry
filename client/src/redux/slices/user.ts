@@ -98,18 +98,6 @@ const initialState: {
   },
 };
 
-// const initialState: InitialState = {
-//   loading: false,
-//   error: "",
-//   message: "",
-//   userDetail: null,
-//   userTournaments: {
-//     page: 1,
-//     lastPage: 1,
-//     tournaments: [],
-//   },
-// };
-
 const userSlice = createSlice({
   name: "users",
   initialState,
