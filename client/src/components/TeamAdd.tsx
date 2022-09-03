@@ -129,13 +129,13 @@ export default function TeamAdd({
           "Este tipo de torneos solo acepta 2, 4, 8, 16 o 32 equipos"
         );
       } else {
-        try {
-          await api.post("/tournaments/checkTeams", { teams: teams });
-          addTeams(teams);
-          siguientePaso();
-        } catch (e: any) {
+        /* try { */
+        //await api.post("/tournaments/checkTeams", { teams: teams });
+        addTeams(teams);
+        siguientePaso();
+        /*  } catch (e: any) {
           setCheckError(e.response.data.message);
-        }
+        } */
       }
     }
   };

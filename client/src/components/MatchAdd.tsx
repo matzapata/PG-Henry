@@ -629,7 +629,7 @@ export default function MatchAdd({
 
           {!!matches.length &&
             matches.map((el) => (
-              <Box key={input.team_a_name + input.team_b_name}>
+              <Box key={el.key}>
                 <GridItem
                   boxShadow="dark-lg"
                   transition="200ms ease"
