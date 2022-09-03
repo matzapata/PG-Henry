@@ -590,13 +590,13 @@ export default function MatchAdd({
 
                     <option
                       hidden={_stage === "SEMIFINAL" ? false : true}
-                      value={"SEMIFINALA"}
+                      value={"SEMIFINALA1"}
                     >
                       A
                     </option>
                     <option
                       hidden={_stage === "SEMIFINAL" ? false : true}
-                      value={"SEMIFINALB"}
+                      value={"SEMIFINALB1"}
                     >
                       B
                     </option>

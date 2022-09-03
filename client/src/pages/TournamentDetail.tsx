@@ -7,6 +7,7 @@ import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
 import Mercadopago from "../components/Mercadopago";
 import PrivatePassword from "../components/TournamentPrivate";
+import TournamentLoadResults from "../components/TournamentLoadResults";
 
 function TournamentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -16,7 +17,8 @@ function TournamentDetail() {
       <NavBar />
       <Box maxW="3xl" mx="auto" mt="10">
         <TournamentDetailHeader id={id} />
-        <Heading color="#F7F7F7">Partidos</Heading>
+        <TournamentLoadResults id={id} />
+        <Heading color="text">Partidos</Heading>
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
         <PrivatePassword />

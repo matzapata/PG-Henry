@@ -1,5 +1,5 @@
 import { Button, Flex, Image, Input, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../services/api";
 
 type Match = {
@@ -25,6 +25,7 @@ function LoadMatchResultCard({ match }: { match: Match }) {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState({
@@ -52,13 +53,24 @@ function LoadMatchResultCard({ match }: { match: Match }) {
     }
   };
 
-  const isValid = () => state.score_a >= 0 && state.score_b >= 0;
+  useEffect(() => {
+    if (state.score_a < 0 && state.score_b < 0) {
+      setError("Goles mayor que 0");
+      setIsValid(false);
+    } else if (state.score_a === state.score_b) {
+      setError("Empate no permitidos");
+      setIsValid(false);
+    } else {
+      setIsValid(true);
+      setError("");
+    }
+  }, [state]);
 
   return (
     <form onSubmit={onSubmit}>
       <Flex bg="secondary" borderRadius="1" p="4" flexDir="column">
         <Text fontSize="xs" mb="2" color="text" textAlign="center">
-          {match.date} - {match.stage}
+          {new Date(match.date).toLocaleDateString()} - {match.stage}
         </Text>
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
@@ -122,7 +134,7 @@ function LoadMatchResultCard({ match }: { match: Match }) {
           size="sm"
           mt="3"
           colorScheme="whiteAlpha"
-          disabled={!isValid() || loaded}
+          disabled={!isValid || loaded}
           isLoading={loading}
         >
           Guardar

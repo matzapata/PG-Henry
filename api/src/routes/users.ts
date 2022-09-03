@@ -3,8 +3,6 @@ import * as express from "express";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { isAdmin, protectedRoute } from "../middleware/auth";
-import { verifyAccessToken } from "../utils/jwt";
-import { JwtPayload } from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail";
 import "dotenv/config";
 

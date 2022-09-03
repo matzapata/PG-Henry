@@ -113,6 +113,7 @@ export default function TournamentForm({
       validate({ ...input, [e.currentTarget.name]: e.currentTarget.value })
     );
   };
+
   const cambiosENUser_Limit = (e: React.FormEvent<HTMLInputElement>) => {
     setInput({
       ...input,
