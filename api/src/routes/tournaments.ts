@@ -107,7 +107,7 @@ router.get("/tournamentOwner", protectedRoute, async (req, res) => {
     const userId = req.user.id;
     const page = req.query.page === undefined ? 1 : Number(req.query.page);
     const pageSize =
-      req.query.pageSize === undefined ? 1 : Number(req.query.pageSize);
+      req.query.pageSize === undefined ? 3 : Number(req.query.pageSize);
 
     const [tournaments, tournamentsCount] = await prisma.$transaction([
       db.tournament.findMany({
@@ -340,43 +340,7 @@ router.post(
     }
   }
 );
-/* 
-router.post(
-  "/checkTeams",
-  protectedRoute,
-  async (req: express.Request, res: express.Response) => {
-    try {
-      const { teams } = req.body;
 
-      const encontrados: string[] = [];
-      const teamsArray = teams.map(async (team: Team) => {
-        const teamName = await db.teams.findUnique({
-          where: { name: team.name },
-        });
-        if (teamName) {
-          encontrados.push(teamName.name);
-        }
-        return teamName;
-      });
-      await Promise.all(teamsArray);
-      if (!!encontrados.length) {
-        if (encontrados.length === 1)
-          return res.status(400).send({
-            message: "El equipo " + encontrados[0] + " ya está registrado.",
-          });
-        return res.status(400).send({
-          message:
-            "Los equipos " + encontrados.toString() + " ya están registrados.",
-        });
-      } else {
-        res.status(200).send({ message: "Equipos disponibles" });
-      }
-    } catch (e: any) {
-      res.status(400).send({ message: e.message });
-    }
-  }
-);
- */
 router.post(
   "/create",
   protectedRoute,
@@ -464,12 +428,7 @@ router.post(
         } else {
           const matchesPromises = matches.map(async (match: Match) => {
             const newDate = match.date + "T00:00:00.000Z";
-            /* const team_a = await prisma.teams.findUnique({
-              where: { name: match.team_a_name },
-            });
-            const team_b = await prisma.teams.findUnique({
-              where: { name: match.team_b_name },
-            }); */
+
             const team_a: Team | undefined = equipos.find((team: Team) => {
               return match.team_a_name === team.name;
             });

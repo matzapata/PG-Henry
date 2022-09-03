@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import api from "../services/api";
 import LoadMatchResultCard from "./LoadMatchResult";
 
@@ -27,24 +27,22 @@ type Match = {
 
 function TournamentLoadResults({ id }: { id: string }) {
   const [matches, setMatches] = useState<Match[]>([]);
-  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     (async () => {
       const allmatches = await api.get(`/tournaments/${id}/allmatches`);
-      const resMyTournaments = await api.get(`/tournaments/mytournaments`);
       setMatches(allmatches.data);
-      setIsOwner(resMyTournaments.data.find((t: any) => t.id === id));
     })();
   }, []);
 
-  if (isOwner) {
-    return (
-      <Box my="8">
-        <Heading color="text" size="md" mb="4">
-          Carga los resultados de los partidos
-        </Heading>
-        {matches.map((m, i) => (
+  return (
+    <Box my="8">
+      <Heading color="text" size="md" mb="4">
+        Carga los resultados de los partidos
+      </Heading>
+      {matches
+        .filter((m) => m.score_a === null)
+        .map((m, i) => (
           <LoadMatchResultCard
             key={i}
             match={{
@@ -63,11 +61,11 @@ function TournamentLoadResults({ id }: { id: string }) {
             }}
           />
         ))}
-      </Box>
-    );
-  } else {
-    return null;
-  }
+      {matches.filter((m) => m.score_a === null).length === 0 && (
+        <Text color="text">No hay partidos actualmente</Text>
+      )}
+    </Box>
+  );
 }
 
 export default TournamentLoadResults;

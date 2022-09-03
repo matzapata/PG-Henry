@@ -119,7 +119,7 @@ export default function AddPrediction({ id }: { id: string }) {
             <Box>
               <Box marginTop={"5px"}>
                 <Heading size="md" color="text">
-                  Has tus predicciones
+                  Haz tus predicciones
                 </Heading>
 
                 <Box margin={"5px"} bgColor="secondary" borderRadius="4" p="6">

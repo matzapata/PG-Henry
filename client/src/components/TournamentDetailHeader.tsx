@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   Flex,
   Heading,
@@ -58,13 +59,26 @@ function TournamentDetailHeader({ id }: { id: string }) {
               {tournamentDetail?.name}
               {tournamentDetail?.is_official === true ? (
                 <CheckCircleIcon />
-              ) : (
-                <Text></Text>
-              )}
+              ) : null}
             </Heading>
             <HStack spacing="2">
-              <Tag size="sm">{tournamentDetail?.type}</Tag>
-              <Tag size="sm">{tournamentDetail?.status}</Tag>
+              {tournamentDetail?.status === "INPROGRESS" && (
+                <Tag size="sm">En progreso</Tag>
+              )}
+              {tournamentDetail?.status === "CONCLUDED" && (
+                <Tag size="sm">Finalizado</Tag>
+              )}
+              {tournamentDetail?.status === "INCOMING" && (
+                <Tag size="sm">Proximamente</Tag>
+              )}
+
+              {tournamentDetail?.type === "PRIVATE" && (
+                <Tag size="sm">Privado</Tag>
+              )}
+              {tournamentDetail?.type === "PUBLIC" && (
+                <Tag size="sm">Publico</Tag>
+              )}
+
               <Tag size="sm">{tournamentDetail?.pool}</Tag>
             </HStack>
           </Flex>
@@ -88,7 +102,9 @@ function TournamentDetailHeader({ id }: { id: string }) {
           {tournamentDetail?.description}
         </Text>
       </Skeleton>
-      <TournamentPrizeCard poolSize={tournamentDetail?.pool} />
+      <Box mb="4">
+        <TournamentPrizeCard poolSize={tournamentDetail?.pool} />
+      </Box>
     </>
   );
 }
