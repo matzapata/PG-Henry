@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   Flex,
   Heading,
@@ -101,7 +102,9 @@ function TournamentDetailHeader({ id }: { id: string }) {
           {tournamentDetail?.description}
         </Text>
       </Skeleton>
-      <TournamentPrizeCard poolSize={tournamentDetail?.pool} />
+      <Box mb="4">
+        <TournamentPrizeCard poolSize={tournamentDetail?.pool} />
+      </Box>
     </>
   );
 }

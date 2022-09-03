@@ -41,8 +41,8 @@ function LoadMatchResultCard({ match }: { match: Match }) {
       await api.put(
         `/tournaments/${match.tournament_id}/match/${match.id}/result`,
         {
-          score_a: state.score_a,
-          score_b: state.score_b,
+          score_a: Number(state.score_a),
+          score_b: Number(state.score_b),
         }
       );
       setLoaded(true);
