@@ -133,6 +133,7 @@ export default function AddPrediction({ id }: { id: string }) {
                             key={match.id + "M"}
                             match={{
                               match_id: match.id,
+                              stage: match.stage,
                               team_a: {
                                 scores: match.score_a,
                                 shield_url: match.team_a.shield_url,
@@ -176,6 +177,7 @@ export default function AddPrediction({ id }: { id: string }) {
                                 key={match.id + "N"}
                                 match={{
                                   match_id: match.id,
+                                  stage: match.stage,
                                   team_a: {
                                     scores: match.score_a,
                                     shield_url: match.team_a.shield_url,

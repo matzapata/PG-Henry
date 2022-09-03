@@ -5,7 +5,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  Heading,
   Input,
   Stack,
   Text,
@@ -21,6 +20,7 @@ export type Input = {
 };
 export type MatchData = {
   match_id: string;
+  stage: string;
   team_a: {
     scores?: number;
     shield_url: string;
