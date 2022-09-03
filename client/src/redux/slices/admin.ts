@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchStats, getBannedUser } from "./adminThunk";
+import { fetchStats, getAllComments, getBannedUser } from "./adminThunk";
 
 export type Stats = {
   tournaments: number;
@@ -17,6 +17,7 @@ export type InitialState = {
   loading: boolean;
   error: string;
   bannedUsers: [];
+  allComments: [];
 };
 
 const initialState: InitialState = {
@@ -33,6 +34,7 @@ const initialState: InitialState = {
   loading: false,
   error: "",
   bannedUsers: [],
+  allComments: [],
 };
 
 const adminSlice = createSlice({
@@ -73,6 +75,18 @@ const adminSlice = createSlice({
     builder.addCase(getBannedUser.rejected, (state, action) => {
       state.loading = false;
       state.bannedUsers = [];
+    });
+    // Get all comments
+    builder.addCase(getAllComments.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getAllComments.fulfilled, (state, action) => {
+      state.loading = false;
+      state.allComments = action.payload;
+    });
+    builder.addCase(getAllComments.rejected, (state, action) => {
+      state.loading = false;
+      state.allComments = [];
     });
   },
 });

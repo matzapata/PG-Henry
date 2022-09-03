@@ -1,9 +1,16 @@
 import React, { useEffect } from "react";
-import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import Slider from "react-slick";
 import Review from "./Review";
 import { useAppSelector } from "../redux/hooks";
+import api from "../services/api";
 
 const settings = {
   dots: true,
@@ -20,6 +27,18 @@ const settings = {
 export default function Carousel(props: any) {
   const [slider, setSlider] = React.useState<Slider | null>(null);
   const data1 = useAppSelector((state) => state.user.userComments);
+
+  const denunciar = async (email: string, comentario: string) => {
+    try {
+      const response = await api.post("/feedback/denunciar", {
+        email,
+        comentario,
+      });
+      console.log(response.data);
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
 
   const top = useBreakpointValue({ base: "90%", md: "50%" });
   const side = useBreakpointValue({ base: "30%", md: "10px" });
@@ -80,6 +99,18 @@ export default function Carousel(props: any) {
               avatar={review.avatar}
               titulo={review.titulo}
             />
+            <Flex justifyContent={"center"}>
+              <Button
+                key={index}
+                colorScheme={"red"}
+                onClick={(e) => {
+                  denunciar(review.email, review.comentario);
+                  alert("Has denunciado correctamente el comentario !");
+                }}
+              >
+                Denunciar
+              </Button>
+            </Flex>
           </Box>
         ))}
       </Slider>

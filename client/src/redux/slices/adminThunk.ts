@@ -22,3 +22,23 @@ export const unbanUser = createAsyncThunk(
     }
   }
 );
+
+export const getAllComments = createAsyncThunk("get/allComments", async () => {
+  const response = await api.get("/admin/allcomments");
+  return response.data;
+});
+
+export const deleteComment = createAsyncThunk(
+  "delete/Comment",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      console.log(payload);
+      const response = await api.delete("/feedback/deletereview", {
+        data: { id: payload.id },
+      });
+      console.log(response.data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);

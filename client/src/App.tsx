@@ -22,6 +22,7 @@ import BanPage from "./pages/BanPage";
 import BannedUsers from "./pages/BannedUsers";
 import Predictions from "./pages/Predictions";
 import error from "./components/PaginaError";
+import Reviews from "./pages/ReviewUsers";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -37,6 +38,7 @@ function App() {
       <PrivateRoute exact path="/admin/torneos" component={AdminTournaments} />
       <PrivateRoute exact path="/admin/usuarios" component={AdminUsers} />
       <PrivateRoute exact path="/admin/bannedusers" component={BannedUsers} />
+      <PrivateRoute exact path="/admin/allreviews" component={Reviews} />
       <PrivateRoute exact path="/admin" component={Admin} />
       <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
       <PrivateRoute
