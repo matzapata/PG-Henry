@@ -16,6 +16,7 @@ type Team = {
   name: string;
   shield_url: string;
   key: number;
+  id: string;
 };
 
 type Match = {
@@ -288,7 +289,7 @@ router.post(
     }
   }
 );
-
+/* 
 router.post(
   "/checkTeams",
   protectedRoute,
@@ -324,14 +325,14 @@ router.post(
     }
   }
 );
-
+ */
 router.post(
   "/create",
   protectedRoute,
   async (req: express.Request, res: express.Response) => {
     try {
       const { tournament, teams, matches } = req.body;
-
+      console.log(matches);
       const {
         name,
         description,
@@ -348,7 +349,7 @@ router.post(
           .send({ message: "Missing required parameters." });
 
       ///////CHEQUEO DE EQUIPOS PREXISTENTES///////
-      const encontrados: string[] = [];
+      /* const encontrados: string[] = [];
       const teamsArray = teams.map(async (team: Team) => {
         const teamName = await db.teams.findUnique({
           where: { name: team.name },
@@ -368,7 +369,7 @@ router.post(
           message:
             "Los equipos " + encontrados.toString() + " ya están registrados.",
         });
-      }
+      } */
       /////////CHEQUEO DE TORNEO PREXISTENTE///////////
       let torneo: any;
       torneo = await db.tournament.findUnique({
@@ -428,7 +429,9 @@ router.post(
 
           return newTeam;
         });
-        await Promise.all(teamsPromises);
+        const equipos: Team[] = await Promise.all(teamsPromises);
+
+        //////PROBLEM///////
         if (!matches.length) {
           return res
             .status(400)
@@ -436,11 +439,17 @@ router.post(
         } else {
           const matchesPromises = matches.map(async (match: Match) => {
             const newDate = match.date + "T00:00:00.000Z";
-            const team_a = await prisma.teams.findUnique({
+            /* const team_a = await prisma.teams.findUnique({
               where: { name: match.team_a_name },
             });
             const team_b = await prisma.teams.findUnique({
               where: { name: match.team_b_name },
+            }); */
+            const team_a: Team | undefined = equipos.find((team: Team) => {
+              return match.team_a_name === team.name;
+            });
+            const team_b: Team | undefined = equipos.find((team: Team) => {
+              return match.team_b_name === team.name;
             });
             if (team_a && team_b) {
               const newMatch = await db.matches.create({

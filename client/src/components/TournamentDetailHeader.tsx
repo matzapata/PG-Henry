@@ -22,6 +22,9 @@ function TournamentDetailHeader({ id }: { id: string }) {
   );
   const loading = useAppSelector((state) => state.tournaments.loading);
   const error = useAppSelector((state) => state.tournaments.error);
+  const unido = useAppSelector(
+    (state) => state.user.userTournaments.is_attached
+  );
   useEffect(() => {
     dispatch(fetchTournamentDetail(id));
   }, [id]);
@@ -66,17 +69,19 @@ function TournamentDetailHeader({ id }: { id: string }) {
             </HStack>
           </Flex>
         </Skeleton>
-        <Button
-          as={ReactLink}
-          bgColor="buttons"
-          color="text"
-          size="md"
-          mr={3}
-          to={`/torneos/${id}/predicciones`}
-          ml={"50%"}
-        >
-          Prode
-        </Button>
+        {unido && (
+          <Button
+            as={ReactLink}
+            bgColor="buttons"
+            color="text"
+            size="md"
+            mr={3}
+            to={`/torneos/${id}/predicciones`}
+            ml={"50%"}
+          >
+            Prode
+          </Button>
+        )}
       </Flex>
       <Skeleton isLoaded={!loading}>
         <Text my="4" color="text">

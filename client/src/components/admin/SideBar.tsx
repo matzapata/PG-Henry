@@ -18,6 +18,7 @@ import {
   MdOutlineWarning,
   MdAdminPanelSettings,
   MdAccountCircle,
+  MdMessage,
 } from "react-icons/md";
 import { Link as ReactLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -25,6 +26,7 @@ import { signOut } from "../../redux/slices/authThunk";
 import BanForm from "./BanForm";
 import AdminFormulary from "./AdminForm";
 import { useAuth0 } from "@auth0/auth0-react";
+import ReviewsTable from "./UserReviews";
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -62,6 +64,12 @@ function SideBar() {
           <Icon as={MdSportsSoccer} color={"buttons"} />
           <Link as={ReactLink} to={"/admin/partidos"} ml={2} color="text">
             Partidos
+          </Link>
+        </Flex>
+        <Flex alignItems={"center"}>
+          <Icon as={MdMessage} color={"buttons"} />
+          <Link as={ReactLink} to={"/admin/allreviews"} ml={2} color="text">
+            Comentarios
           </Link>
         </Flex>
         <Flex alignItems={"center"}>
