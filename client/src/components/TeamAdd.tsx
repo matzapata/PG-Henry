@@ -22,7 +22,7 @@ import UploadFiles from "./UploadFile";
 type Team = {
   name: string;
   shield_url: string;
-  key: number;
+  key: string;
 };
 
 const validateTeamNames = (teams: Team[], newName: string) => {
@@ -61,7 +61,7 @@ export default function TeamAdd({
   const [input, setInput] = useState<Team>({
     name: "",
     shield_url: "",
-    key: 0,
+    key: "",
   });
 
   const cambiosEnInput = (
@@ -96,14 +96,22 @@ export default function TeamAdd({
         setTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key + 1 },
+          {
+            name: input.name,
+            shield_url: finalShield_url,
+            key: input.key + input.name,
+          },
         ]);
         addTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key + 1 },
+          {
+            name: input.name,
+            shield_url: finalShield_url,
+            key: input.key + input.name,
+          },
         ]);
-        setInput({ name: "", shield_url: "", key: input.key + 2 });
+        setInput({ name: "", shield_url: "", key: "" });
         setError("");
       }
       setCreateError("");
@@ -200,12 +208,8 @@ export default function TeamAdd({
           </Stack>
 
           {!!teams.length &&
-            teams.map((el, index) => (
-              <Box
-                key={el.key + index + "T"}
-                display="Flex"
-                flexDirection="row"
-              >
+            teams.map((el) => (
+              <Box key={el.key} display="Flex" flexDirection="row">
                 <GridItem
                   boxShadow="dark-lg"
                   transition="200ms ease"
