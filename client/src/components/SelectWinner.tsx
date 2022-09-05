@@ -1,6 +1,6 @@
-import React, { ReactComponentElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { Select, Box, Button, Text, Input } from "@chakra-ui/react";
+import { Select, Box, Button, Text, Input, Flex } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { fetchUniqueUserTournament } from "../redux/slices/userThunk";
 import {
@@ -61,7 +61,7 @@ function SelectWinner() {
     return (
       <Box>
         {!winner ? (
-          <Box>
+          <Flex>
             <Select
               onChange={handleWinner}
               placeholder="Elige al ganador del torneo"
@@ -78,16 +78,26 @@ function SelectWinner() {
                 </option>
               ))}
             </Select>
-            <Button onClick={postWinner}>Enviar ganador</Button>
-          </Box>
+            <Button
+              bgColor="buttons"
+              color="text"
+              _hover={{
+                bg: "secondary",
+                color: "primary",
+              }}
+              size="md"
+              ml="2"
+              onClick={postWinner}
+            >
+              Enviar ganador
+            </Button>
+          </Flex>
         ) : (
           <Text color={"white"}>Ya has seleccionado un ganador</Text>
         )}
       </Box>
     );
-  } else {
-    return <Text></Text>;
-  }
+  } else return null;
 }
 
 export default SelectWinner;

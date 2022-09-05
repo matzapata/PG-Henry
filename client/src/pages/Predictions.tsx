@@ -1,9 +1,10 @@
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { Flex, Heading, Stack } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import AddPrediction from "../components/AddPrediction";
 import NavBar from "../components/NavBar";
+import SelectWinner from "../components/SelectWinner";
 
 function Predictions() {
   const { id } = useParams<{ id: string }>();

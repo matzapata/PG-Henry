@@ -9,6 +9,7 @@ import {
 import MatchForm, { Input } from "./PredictionCard";
 import api from "../services/api";
 import { TournamentMatch } from "../redux/slices/tournament";
+import SelectWinner from "./SelectWinner";
 
 export default function AddPrediction({ id }: { id: string }) {
   const dispatch = useAppDispatch();
@@ -123,9 +124,11 @@ export default function AddPrediction({ id }: { id: string }) {
           {unido && (
             <Box>
               <Box marginTop="4">
-                <Heading size="md" color="text">
+                <Heading size="md" color="text" mb="4">
                   Haz tus predicciones
                 </Heading>
+
+                <SelectWinner />
 
                 <Box
                   mt="4"
