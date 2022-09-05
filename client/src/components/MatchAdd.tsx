@@ -13,6 +13,14 @@ import {
   useColorModeValue,
   Flex,
   Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  Image,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 type Match = {
@@ -110,6 +118,7 @@ export default function MatchAdd({
   volverPaso,
 }: any): JSX.Element {
   const [createError, setCreateError] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [matches, setMatches] = useState<Match[]>([]);
   const [input, setInput] = useState<Match>({
     key: 1000,
@@ -795,7 +804,31 @@ export default function MatchAdd({
                   </Select>
                   <FormErrorMessage>{errors.code_stage}</FormErrorMessage>
                 </FormControl>
+                <Button
+                  paddingLeft={"2rem"}
+                  paddingRight={"2rem"}
+                  onClick={onOpen}
+                >
+                  Fixture
+                </Button>
               </Stack>
+              <Box>
+                <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Image src="/img/Esquema_1.png" />
+                    </ModalBody>
+
+                    <ModalFooter justifyContent={"center"}>
+                      <Button onClick={onClose} colorScheme="blue" mr={3}>
+                        Cerrar
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              </Box>
 
               {errors.matches != "Completado" && (
                 <Text color="red.500">{errors.matches}</Text>
@@ -844,9 +877,7 @@ export default function MatchAdd({
                     <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
                       {el.team_b_name}
                     </Text>
-                    <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                      {el.stage}
-                    </Text>
+
                     <Button
                       value={el.key}
                       onClick={quitarPartido}
