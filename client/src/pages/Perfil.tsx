@@ -15,6 +15,14 @@ import {
   Icon,
   Text,
   Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -32,9 +40,9 @@ import NavBar from "../components/NavBar";
 
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
-  const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const isLoggedIn = useAppSelector((state: any) => state.auth.token);
   const [error, setError] = useState("");
-  const success = useAppSelector((state) => state.user.message);
+  const success = useAppSelector((state: any) => state.user.message);
   const [input, setInput] = useState({
     username: "",
     email: "",
@@ -44,6 +52,7 @@ export default function UserProfileEdit(): JSX.Element {
   const dispatch = useAppDispatch();
   const user_detail = useAppSelector((state) => state.user.userDetail);
   const userid: any = useAppSelector((state) => state.auth.decoded?.id);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   function editProfile() {
     if (input.email && input.password && input.alias) {
@@ -206,10 +215,38 @@ export default function UserProfileEdit(): JSX.Element {
                   _hover={{
                     bg: "red.500",
                   }}
-                  onClick={onDeleteUser}
+                  onClick={onOpen}
                 >
                   Eliminar Cuenta
                 </Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Advertencia!</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Text>
+                        Seguro que queres eliminar tu cuenta ? Este cambio es
+                        irreversible y perderas todo lo que tengas dentro de
+                        ella.
+                      </Text>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={onClose}>
+                        Cancelar
+                      </Button>
+                      <Button
+                        fontSize={"12.5px"}
+                        onClick={() => {
+                          onDeleteUser();
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </Stack>
               {error ? (
                 <Flex mt="4" alignItems="center" justifyContent="center">
@@ -345,10 +382,37 @@ export default function UserProfileEdit(): JSX.Element {
                   _hover={{
                     bg: "red.500",
                   }}
-                  onClick={onDeleteUser}
+                  onClick={onOpen}
                 >
                   Eliminar Cuenta
                 </Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Advertencia!</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Text>
+                        Seguro que queres eliminar tu cuenta ? Este cambio es
+                        irreversible, y perderas todo lo que tengas dentro de
+                        ella.
+                      </Text>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={onClose}>
+                        Cancelar
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          onDeleteUser();
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </Stack>
 
               {error !== "" ? (
