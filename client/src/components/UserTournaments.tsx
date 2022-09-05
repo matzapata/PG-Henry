@@ -16,7 +16,7 @@ function UserTournament() {
 
   return (
     <>
-      <Heading color="text" size="lg" mb="4">
+      <Heading color="text" size="lg" my="4">
         Tus torneos
       </Heading>
       {userTournaments.tournaments.length === 0 && (
@@ -24,7 +24,7 @@ function UserTournament() {
           <Text color="text" mb="2">
             Aún no participas de ningún torneo
           </Text>
-          <Button size="sm" as={ReactLink} to="/torneos">
+          <Button size="sm" as={ReactLink} to="/torneos" w="min">
             Explorar torneos
           </Button>
         </>

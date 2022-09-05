@@ -107,7 +107,13 @@ function MatchForm({
 
   return (
     <form onSubmit={enviar}>
-      <Flex bg="secondary" borderRadius="1" p="4" flexDir="column">
+      <Flex
+        bg="rgba(0, 161, 171,0.5)"
+        borderRadius="5"
+        p="4"
+        mb="1"
+        flexDir="column"
+      >
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
             <Image

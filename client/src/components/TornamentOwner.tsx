@@ -26,7 +26,7 @@ function OwnerTournament() {
           <Text color="text" mb="2">
             Aún no participas de ningún torneo
           </Text>
-          <Button size="sm" as={ReactLink} to="/torneos">
+          <Button size="sm" as={ReactLink} to="/torneos" w="min">
             Explorar torneos
           </Button>
         </>

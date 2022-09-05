@@ -53,7 +53,7 @@ function Home() {
       h="100vh"
       px="0"
       pt="0"
-      pb="10"
+      pb="0"
       bgColor="DPrimary"
       bgSize="cover"
       bgImage="url('/img/bgImg.png')"
@@ -92,10 +92,8 @@ function Home() {
             Participá de los torneos mas famosos por premios en efectivo, o creá
             el tuyo personalizado para competir con tus amigos!
           </Text>
-          {/* <Divider mt="5%" /> */}
         </Box>
       </Flex>
-      {/* <Box height="50vh" width={"50%"}> */}
       {!isLoggedIn && (
         <Box marginTop="75px" mx={20}>
           <Box>
@@ -112,19 +110,16 @@ function Home() {
         </Box>
       )}
       {isLoggedIn && (
-        <VStack spacing={10} mx={20} alignSelf="baseline" mt={20}>
+        <VStack spacing={10} mx={20} alignSelf="baseline">
           <Box width={"full"}>
             <PublicTournaments />
           </Box>
           <Flex flexDir={"column"} width="full">
-            <Box>
-              <OwnerTournament />
-              {/* <Box width={"100%"} marginTop="100px" paddingLeft={"80px"}></Box> */}
-            </Box>
+            <OwnerTournament />
             <UserTournaments />
             <Flex mt="12">
               {data.length === 0 ? null : (
-                <Box width={"100%"}>
+                <Box width={"100%"} mb="10">
                   <ReviewCarousel />
                 </Box>
               )}
@@ -132,7 +127,6 @@ function Home() {
           </Flex>
         </VStack>
       )}
-      {/*  </Box> */}
     </Container>
   );
 }
