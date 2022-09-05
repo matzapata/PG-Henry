@@ -46,6 +46,7 @@ model Tournament {
   pool        Int            @default(0)
   logo_url    String?
   is_official Boolean        @default(false)
+  is_active   Boolean        @default(true)
 
   creator         User             @relation(fields: [creator_user_id], references: [id])
   creator_user_id String

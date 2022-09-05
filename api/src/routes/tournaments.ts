@@ -62,6 +62,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
         },
         status: status as Status,
         type: type as TournamentType,
+        is_active: true,
       },
       orderBy:
         sort === "asc" || sort === "desc"
@@ -348,8 +349,14 @@ router.post(
     try {
       const { tournament, teams, matches } = req.body;
 
-      const { name, description, user_limit, type, logo_url, password } =
-        tournament;
+      const {
+        name,
+        description,
+        user_limit,
+        type,
+        logo_url,
+        password,
+      } = tournament;
 
       const creator_user_id = req.user.id;
 
