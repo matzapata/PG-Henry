@@ -134,6 +134,7 @@ const userSlice = createSlice({
       state.ownerTournaments = initialState.ownerTournaments;
       state.error = action.payload as string;
     });
+
     // fetch if user is attached tournaments
     builder.addCase(fetchUniqueUserTournament.pending, (state) => {
       state.loading = true;
@@ -153,6 +154,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = "";
     });
+
     // fetch user comments
     builder.addCase(getReviews.pending, (state) => {
       state.loading = true;
@@ -167,21 +169,18 @@ const userSlice = createSlice({
       state.userComments = [];
       state.error = action.payload as string;
     });
+
     //fetch winner?
     builder.addCase(fetchUserTournamentWinner.pending, (state) => {
       state.loading = true;
       state.error = "";
     });
     builder.addCase(fetchUserTournamentWinner.fulfilled, (state, action) => {
-      if (typeof action.payload === "object") {
-        state.userTournaments.winner = true;
-      } else {
-        state.userTournaments.winner = false;
-      }
+      state.userTournaments.winner = action.payload.winner_team_id;
       state.loading = false;
       state.error = "";
     });
-    builder.addCase(fetchUserTournamentWinner.rejected, (state, action) => {
+    builder.addCase(fetchUserTournamentWinner.rejected, (state) => {
       state.loading = true;
       state.error = "";
       state.userTournaments.winner = false;

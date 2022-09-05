@@ -5,48 +5,50 @@ import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 function Pagination({
   onPageChange,
   lastPage,
-  initalPage,
+  initialPage,
 }: {
   onPageChange: (newPage: number) => void;
-  initalPage?: number;
+  initialPage?: number;
   lastPage?: number;
 }) {
-  const [page, setPage] = useState(initalPage ? initalPage : 1);
+  const [page, setPage] = useState(initialPage ? initialPage : 1);
 
   useEffect(() => {
     onPageChange(page);
   }, [page]);
 
-  return (
-    <Flex w="100%" justifyContent="space-between">
-      <Button
-        onClick={() => setPage((page) => page - 1)}
-        disabled={page === 1}
-        _hover={{
-          color: "primary",
-          bg: "secondary",
-        }}
-        bgColor="buttons"
-        color="text"
-      >
-        <ArrowBackIcon />
-      </Button>
-      <Button
-        _hover={{
-          color: "primary",
-          bg: "secondary",
-        }}
-        bgColor="buttons"
-        color="text"
-        onClick={() => setPage((page) => page + 1)}
-        disabled={
-          lastPage !== undefined ? page === lastPage || lastPage === 0 : false
-        }
-      >
-        <ArrowForwardIcon />
-      </Button>
-    </Flex>
-  );
+  if (lastPage === 1 || lastPage === 0) return null;
+  else
+    return (
+      <Flex w="100%" justifyContent="space-between">
+        <Button
+          onClick={() => setPage((page) => page - 1)}
+          disabled={page === 1}
+          _hover={{
+            color: "primary",
+            bg: "secondary",
+          }}
+          bgColor="buttons"
+          color="text"
+        >
+          <ArrowBackIcon />
+        </Button>
+        <Button
+          _hover={{
+            color: "primary",
+            bg: "secondary",
+          }}
+          bgColor="buttons"
+          color="text"
+          onClick={() => setPage((page) => page + 1)}
+          disabled={
+            lastPage !== undefined ? page === lastPage || lastPage === 0 : false
+          }
+        >
+          <ArrowForwardIcon />
+        </Button>
+      </Flex>
+    );
 }
 
 export default Pagination;

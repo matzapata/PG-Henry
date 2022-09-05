@@ -23,16 +23,8 @@ function Tournaments(): JSX.Element {
   const history = useHistory();
 
   return (
-    <Container
-      maxW="100vw"
-      h="100vh"
-      bgColor={"primary"}
-      /* bgSize="cover"
-      bgImage="url('/img/landing-wallpaper.jpg')" */
-      p="0"
-    >
+    <Container maxW="100vw" h="100vh" bgColor={"primary"} p="0">
       <Box
-        h="8%"
         display="flex"
         flexDir="row"
         alignItems="center"
@@ -70,7 +62,17 @@ function Tournaments(): JSX.Element {
       {!currentTournaments.loading && currentTournaments.error ? (
         <Text>Error: {currentTournaments.error}</Text>
       ) : null}
-      <Grid templateColumns="repeat(3, 3fr)" gap={10} m="20px" pt="50px">
+      <Grid
+        templateColumns={[
+          "repeat(1, 1fr)",
+          "repeat(1, 1fr)",
+          "repeat(2, 2fr)",
+          "repeat(3, 3fr)",
+        ]}
+        gap={[4, 4, 4, 10]}
+        m="20px"
+        pt="50px"
+      >
         {!currentTournaments.loading &&
           showingTournaments.map((el) => (
             <TournamentCard

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   fetchTournamentAllMatches,
@@ -9,6 +9,7 @@ import {
 import MatchForm, { Input } from "./PredictionCard";
 import api from "../services/api";
 import { TournamentMatch } from "../redux/slices/tournament";
+import SelectWinner from "./SelectWinner";
 
 export default function AddPrediction({ id }: { id: string }) {
   const dispatch = useAppDispatch();
@@ -106,6 +107,7 @@ export default function AddPrediction({ id }: { id: string }) {
 
     filtrarPredicciones();
   }, []);
+
   useEffect(() => {
     if (matches) filtrarPredicciones();
   }, [matches]);
@@ -117,15 +119,21 @@ export default function AddPrediction({ id }: { id: string }) {
         <Box>
           {unido && (
             <Box>
-              <Box marginTop={"5px"}>
-                <Heading size="md" color="text">
+              <Box marginTop="4">
+                <Heading size="md" color="text" mb="4">
                   Haz tus predicciones
                 </Heading>
 
-                <Box margin={"5px"} bgColor="secondary" borderRadius="4" p="6">
-                  {newMatches &&
-                    matches &&
-                    newMatches.map((match, index) => (
+                <SelectWinner />
+
+                <Box
+                  mt="4"
+                  bgColor="rgba(0, 161, 171,0.5)"
+                  borderRadius="4"
+                  p="6"
+                >
+                  {matches &&
+                    newMatches?.map((match, index) => (
                       <Box key={match.id + "B1"}>
                         {(match.score_a === undefined ||
                           match.score_b === undefined) && (
@@ -155,49 +163,43 @@ export default function AddPrediction({ id }: { id: string }) {
                     ))}
                 </Box>
               </Box>
-              <Box>
+
+              <Box marginTop="6">
+                <Heading size="md" color="text" mb="4">
+                  Prediciones que hiciste
+                </Heading>
                 <Box marginTop={"5px"}>
-                  <Heading size="md" color="text">
-                    Prediciones que hiciste
-                  </Heading>
-                  <Box marginTop={"5px"}>
-                    <Box
-                      margin={"5px"}
-                      bgColor="secondary"
-                      borderRadius="4"
-                      p="6"
-                    >
-                      {newMatches &&
-                        matches &&
-                        newMatches.map((match, index) => (
-                          <Box key={match.id + "B2"}>
-                            {(match.score_a !== undefined ||
-                              match.score_b !== undefined) && (
-                              <MatchForm
-                                key={match.id + "N"}
-                                match={{
-                                  match_id: match.id,
-                                  stage: match.stage,
-                                  team_a: {
-                                    scores: match.score_a,
-                                    shield_url: match.team_a.shield_url,
-                                    name: match.team_a.name,
-                                    id: match.team_a_id,
-                                  },
-                                  team_b: {
-                                    scores: match.score_b,
-                                    shield_url: match.team_b.shield_url,
-                                    name: match.team_b.name,
-                                    id: match.team_b_id,
-                                  },
-                                  match_result: matches[index],
-                                }}
-                                onSubmit={onSubmit}
-                              />
-                            )}
-                          </Box>
-                        ))}
-                    </Box>
+                  <Box margin={"5px"} borderRadius="4">
+                    {newMatches &&
+                      matches &&
+                      newMatches.map((match, index) => (
+                        <Box key={match.id + "B2"}>
+                          {(match.score_a !== undefined ||
+                            match.score_b !== undefined) && (
+                            <MatchForm
+                              key={match.id + "N"}
+                              match={{
+                                match_id: match.id,
+                                stage: match.stage,
+                                team_a: {
+                                  scores: match.score_a,
+                                  shield_url: match.team_a.shield_url,
+                                  name: match.team_a.name,
+                                  id: match.team_a_id,
+                                },
+                                team_b: {
+                                  scores: match.score_b,
+                                  shield_url: match.team_b.shield_url,
+                                  name: match.team_b.name,
+                                  id: match.team_b_id,
+                                },
+                                match_result: matches[index],
+                              }}
+                              onSubmit={onSubmit}
+                            />
+                          )}
+                        </Box>
+                      ))}
                   </Box>
                 </Box>
               </Box>

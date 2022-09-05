@@ -1,5 +1,5 @@
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
+import { Flex, Heading, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import AddPrediction from "../components/AddPrediction";
@@ -9,15 +9,10 @@ function Predictions() {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <Flex
-      backgroundColor={"primary"}
-      width={"100vw"}
-      height={"100vh"}
-      flexDirection={"column"}
-    >
+    <Flex backgroundColor={"primary"} flexDirection={"column"}>
       <NavBar />
-      <Stack margin={"22px"}>
-        <Stack>
+      <Stack margin={"22px"} maxW="3xl" mx={["4", "4", "auto"]} mt="10">
+        <Stack mb="10">
           <Heading color={"text"}>Prode</Heading>
           <Link color={"white.500"} to={`/torneos/${id}`}>
             <Heading color={"text"} size={"md"}>
@@ -25,9 +20,8 @@ function Predictions() {
             </Heading>
           </Link>
         </Stack>
-        <Box margin={"100px"} p={"100px"} pt={"50px"}>
-          <AddPrediction id={id} />
-        </Box>
+
+        <AddPrediction id={id} />
       </Stack>
     </Flex>
   );
