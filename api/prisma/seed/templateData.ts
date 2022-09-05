@@ -50,6 +50,7 @@ export const templateTournament = (
   logo_url: faker.image.abstract(),
   is_official: false,
   creator_user_id: creatorId,
+  is_active: true,
 });
 
 export const templateUserTournament = (
