@@ -110,13 +110,17 @@ export default function UserProfileEdit(): JSX.Element {
               spacing={4}
               w={"full"}
               maxW={"md"}
-              bg={useColorModeValue("white", "gray.700")}
+              bg={useColorModeValue("primary", "text")}
               rounded={"xl"}
               boxShadow={"lg"}
               p={6}
               my={12}
             >
-              <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
+              <Heading
+                lineHeight={1.1}
+                fontSize={{ base: "2xl", sm: "3xl" }}
+                color="text"
+              >
                 Editar Perfil
               </Heading>
               <FormControl id="userName">
@@ -134,16 +138,18 @@ export default function UserProfileEdit(): JSX.Element {
                 </Stack>
               </FormControl>
               <FormControl id="userName">
-                <FormLabel>Usuario</FormLabel>
+                <FormLabel color={"text"}>Usuario</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Nombre de usuario"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
                 />
               </FormControl>
               <FormControl id="email" isRequired>
-                <FormLabel>Correo Electronico</FormLabel>
+                <FormLabel color={"text"}>Correo Electronico</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="No disponible al ingresar con Auth0"
                   _placeholder={{ color: "gray.500" }}
                   type="email"
@@ -151,8 +157,9 @@ export default function UserProfileEdit(): JSX.Element {
                 />
               </FormControl>
               <FormControl id="password" isRequired>
-                <FormLabel>Contraseña</FormLabel>
+                <FormLabel color={"text"}>Contraseña</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="No disponible al ingresar con Auth0"
                   _placeholder={{ color: "gray.500" }}
                   type="password"
@@ -160,8 +167,9 @@ export default function UserProfileEdit(): JSX.Element {
                 />
               </FormControl>
               <FormControl id="alias">
-                <FormLabel>Alias Mercado Pago</FormLabel>
+                <FormLabel color={"text"}>Alias Mercado Pago</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Alias"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
@@ -172,11 +180,12 @@ export default function UserProfileEdit(): JSX.Element {
               </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
                   onClick={() => {
                     history.push("/");
@@ -185,11 +194,12 @@ export default function UserProfileEdit(): JSX.Element {
                   Cancelar
                 </Button>
                 <Button
-                  bg={"blue.400"}
-                  color={"white"}
+                  bg="buttons"
+                  color="text"
                   w="full"
                   _hover={{
-                    bg: "blue.500",
+                    bg: "secondary",
+                    color: "primary",
                   }}
                   onClick={() => {
                     editProfile();
@@ -200,11 +210,12 @@ export default function UserProfileEdit(): JSX.Element {
               </Stack>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
                   onClick={onDeleteUser}
                 >
@@ -242,13 +253,17 @@ export default function UserProfileEdit(): JSX.Element {
               spacing={4}
               w={"full"}
               maxW={"md"}
-              bg={useColorModeValue("white", "gray.700")}
+              bg={useColorModeValue("primary", "text")}
               rounded={"xl"}
               boxShadow={"lg"}
               p={6}
               my={12}
             >
-              <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
+              <Heading
+                lineHeight={1.1}
+                fontSize={{ base: "2xl", sm: "3xl" }}
+                color={"text"}
+              >
                 Editar Perfil
               </Heading>
               <FormControl id="userName">
@@ -266,8 +281,9 @@ export default function UserProfileEdit(): JSX.Element {
                 </Stack>
               </FormControl>
               <FormControl id="userName">
-                <FormLabel>Usuario</FormLabel>
+                <FormLabel color={"text"}>Usuario</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Nombre de usuario"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
@@ -277,8 +293,9 @@ export default function UserProfileEdit(): JSX.Element {
                 />
               </FormControl>
               <FormControl id="email" isRequired>
-                <FormLabel>Correo Electronico</FormLabel>
+                <FormLabel color={"text"}>Correo Electronico</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Email"
                   _placeholder={{ color: "gray.500" }}
                   type="email"
@@ -288,8 +305,9 @@ export default function UserProfileEdit(): JSX.Element {
                 />
               </FormControl>
               <FormControl id="password" isRequired>
-                <FormLabel>Contraseña</FormLabel>
+                <FormLabel color={"text"}>Contraseña</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Contraseña"
                   _placeholder={{ color: "gray.500" }}
                   type="password"
@@ -299,8 +317,9 @@ export default function UserProfileEdit(): JSX.Element {
                 />
               </FormControl>
               <FormControl id="alias">
-                <FormLabel>Alias Mercado Pago</FormLabel>
+                <FormLabel color={"text"}>Alias Mercado Pago</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Alias"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
@@ -311,11 +330,12 @@ export default function UserProfileEdit(): JSX.Element {
               </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
                   onClick={() => {
                     history.push("/");
@@ -324,11 +344,12 @@ export default function UserProfileEdit(): JSX.Element {
                   Cancelar
                 </Button>
                 <Button
-                  bg={"blue.400"}
-                  color={"white"}
+                  bg={"buttons"}
+                  color={"text"}
                   w="full"
                   _hover={{
-                    bg: "blue.500",
+                    bg: "secondary",
+                    color: "primary",
                   }}
                   onClick={() => {
                     editProfile();
@@ -339,11 +360,12 @@ export default function UserProfileEdit(): JSX.Element {
               </Stack>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
                   onClick={onDeleteUser}
                 >

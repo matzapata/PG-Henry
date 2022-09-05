@@ -11,6 +11,7 @@ import {
   Divider,
   Stack,
   Grid,
+  Flex,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
@@ -18,48 +19,43 @@ import Logo from "../components/Logo";
 
 function Tournaments(): JSX.Element {
   const currentTournaments = useAppSelector((state) => state.tournaments);
-  const showingTournaments = currentTournaments.tournaments.slice(0, 9);
+  const showingTournaments = currentTournaments.tournaments.slice(0, 12);
   const history = useHistory();
 
   return (
     <Container
       maxW="100vw"
-      h="950px"
-      bgSize="cover"
-      bgImage="url('/img/landing-wallpaper.jpg')"
+      h="100vh"
+      bgColor={"primary"}
+      /* bgSize="cover"
+      bgImage="url('/img/landing-wallpaper.jpg')" */
       p="0"
     >
       <Box
-        h="80px"
+        h="8%"
         display="flex"
         flexDir="row"
         alignItems="center"
         justifyContent="space-between"
         p="20px"
       >
-        <Stack flexDir="row" alignItems="center">
+        <Flex flexDir="row" alignItems="center">
           <Logo />
-          <Text fontSize="30px" fontWeight="bold" color="text" ml="40px">
+          <Text fontSize="30px" fontWeight="bold" color="text" ml={2}>
             Torneos
           </Text>
-        </Stack>
-        <Box display="flex" flexDir="row">
+        </Flex>
+        <Box display="flex" flexDir="row" alignItems={"center"}>
           <Link to="/">
             <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
           </Link>
-          <Text
-            color="text"
-            mr="10px"
-            fontSize="20px"
-            fontWeight="bold"
-            pt="5px"
-          >
+          <Text color="text" mr="10px" fontSize="20px" fontWeight="bold">
             Inicio
           </Text>
           <Button
             onClick={() => history.push("torneos/crear")}
             _hover={{
-              color: "#082032",
+              color: "primary",
             }}
             bgColor="buttons"
             color="text"

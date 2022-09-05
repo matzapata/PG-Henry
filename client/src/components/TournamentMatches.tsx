@@ -56,8 +56,13 @@ function TournamentMatches({ id }: { id: string }) {
             <option value="FINAL">FINAL</option>
           </Select>
           <IconButton
+            _hover={{
+              color: "primary",
+              bg: "secondary",
+            }}
+            bgColor="buttons"
+            color="text"
             onClick={() => onClick()}
-            colorScheme="blue"
             aria-label="Clear Filters"
             icon={<CloseIcon />}
           />

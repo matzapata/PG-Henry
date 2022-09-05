@@ -16,6 +16,10 @@ function SignOutButton() {
       }}
       bgColor="buttons"
       color="text"
+      _hover={{
+        bg: "secondary",
+        color: "primary",
+      }}
       size="md"
     >
       Salir

@@ -15,9 +15,9 @@ function RankingCard({
       px="4"
       py="3"
       mb="0.5"
-      borderRadius="1"
+      borderRadius={5}
       alignItems="center"
-      bg="secondary"
+      backgroundColor="rgba(0, 161, 171,0.5)"
       justifyContent="space-between"
     >
       <Flex flexDir="column">

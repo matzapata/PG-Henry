@@ -50,10 +50,10 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   try {
     const { page, status, type, name, sort } = req.query;
     const pageN = Number(page) - 1;
-    const paginado = page ? pageN * 9 : 0;
+    const paginado = page ? pageN * 12 : 0;
 
     const result = await prisma.tournament.findMany({
-      take: 10,
+      take: 12,
       skip: paginado,
       where: {
         name: {
@@ -348,8 +348,14 @@ router.post(
     try {
       const { tournament, teams, matches } = req.body;
 
-      const { name, description, user_limit, type, logo_url, password } =
-        tournament;
+      const {
+        name,
+        description,
+        user_limit,
+        type,
+        logo_url,
+        password,
+      } = tournament;
 
       const creator_user_id = req.user.id;
 

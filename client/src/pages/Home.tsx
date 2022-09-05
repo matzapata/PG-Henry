@@ -1,5 +1,13 @@
 import React, { useEffect } from "react";
-import { Box, Container, Flex, Heading, HStack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import PublicTournaments from "../components/PublicTournament";
 import Carousel from "../components/NewsCarousel";
@@ -53,14 +61,16 @@ function Home() {
     >
       <NavBar />
       <Flex
-        backgroundColor="gray.800"
+        backgroundColor="primary"
         mt="90vh"
         pl="5%"
         borderTopWidth={5}
         borderTopColor="Dtext"
         justifyContent="space-between"
       >
-        <IoTrophy size="20em" color="#0096FF" />
+        <Box mt={10}>
+          <IoTrophy size="20em" color="#0096FF" />
+        </Box>
         <Box maxWidth="3xl" me={20} mt={10} mb={10}>
           <Heading
             fontSize={["2xl", "5xl"]}
@@ -85,48 +95,44 @@ function Home() {
           {/* <Divider mt="5%" /> */}
         </Box>
       </Flex>
-      <HStack
-        margin={"5%"}
-        alignItems="start"
-        spacing={10}
-        justifyContent="space-between"
-      >
-        <Box>
-          <PublicTournaments />
+      {/* <Box height="50vh" width={"50%"}> */}
+      {!isLoggedIn && (
+        <Box marginTop="75px" mx={20}>
+          <Box>
+            <PublicTournaments />
+          </Box>
+          <HStack height={"50vh"}>
+            <Carousel />
+            {data.length === 0 ? null : (
+              <Box width={"100%"} marginTop="75px" paddingLeft={"80px"}>
+                <ReviewCarousel />
+              </Box>
+            )}
+          </HStack>
         </Box>
-        <Box height="50vh" width={"50%"}>
-          {!isLoggedIn && (
-            <Box height="50vh" width={"100%"} marginTop="75px">
-              <Carousel />
+      )}
+      {isLoggedIn && (
+        <VStack spacing={10} mx={20} alignSelf="baseline" mt={20}>
+          <Box width={"full"}>
+            <PublicTournaments />
+          </Box>
+          <Flex flexDir={"column"} width="full">
+            <Box>
+              <OwnerTournament />
+              {/* <Box width={"100%"} marginTop="100px" paddingLeft={"80px"}></Box> */}
+            </Box>
+            <UserTournaments />
+            <Flex mt="12">
               {data.length === 0 ? null : (
-                <Box width={"100%"} marginTop="75px" paddingLeft={"80px"}>
+                <Box width={"100%"}>
                   <ReviewCarousel />
                 </Box>
               )}
-            </Box>
-          )}
-          {isLoggedIn && (
-            <>
-              <Box mt="12">
-                <OwnerTournament />
-                <Box
-                  width={"100%"}
-                  marginTop="100px"
-                  paddingLeft={"80px"}
-                ></Box>
-              </Box>
-              <Box mt="12">
-                <UserTournaments />
-                {data.length === 0 ? null : (
-                  <Box width={"100%"} marginTop="100px" paddingLeft={"80px"}>
-                    <ReviewCarousel />
-                  </Box>
-                )}
-              </Box>
-            </>
-          )}
-        </Box>
-      </HStack>
+            </Flex>
+          </Flex>
+        </VStack>
+      )}
+      {/*  </Box> */}
     </Container>
   );
 }
