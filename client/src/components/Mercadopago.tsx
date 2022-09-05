@@ -71,11 +71,15 @@ function Mercadopago({ id }: { id: string }) {
       })
     );
   }
-  if (unido === false && tournamentDetail?.type === "PRIVATE") {
+  if (
+    unido === false &&
+    tournamentDetail?.type === "PRIVATE" &&
+    tournamentDetail?.status !== "CONCLUDED"
+  ) {
     return (
       <Box>
         <Button onClick={onOpen} mr={3}>
-          Unete
+          Unirse
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
@@ -132,8 +136,38 @@ function Mercadopago({ id }: { id: string }) {
         </Modal>
       </Box>
     );
-  } else if (unido === true && tournamentDetail?.type === "PUBLIC") {
-    return null;
+  } else if (
+    unido === false &&
+    tournamentDetail?.type === "PUBLIC" &&
+    tournamentDetail?.status !== "CONCLUDED"
+  ) {
+    return (
+      <Box>
+        <Button onClick={onOpen} mr={3}>
+          Unirse
+        </Button>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Unete comprando con mercadopago!</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Te redireccionaremos a Mercadopago asi puedes realizar tu compra
+              por 200 pesos argentinos!
+            </ModalBody>
+
+            <ModalFooter>
+              <Button onClick={handleMP} mr={3}>
+                Ir a mercadopago
+              </Button>
+              <Button onClick={onClose} colorScheme="blue" mr={3}>
+                Cerrar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
+    );
   } else {
     return null;
   }
