@@ -1,9 +1,19 @@
 import { faker } from "@faker-js/faker";
-import { AuthProvider, MatchStage, TournamentType } from "@prisma/client";
+import {
+  AuthProvider,
+  Matches,
+  MatchStage,
+  Predictions,
+  Teams,
+  Tournament,
+  TournamentType,
+  User,
+  UserTournament,
+} from "@prisma/client";
 import { getRandom } from "./randomUtilities";
 import * as bcrypt from "bcryptjs";
 
-export const templateUser = (password = "password") => {
+export const templateUser = (password = "password"): User => {
   const full_name = faker.name.fullName();
   return {
     id: faker.datatype.uuid(),
@@ -26,7 +36,7 @@ export const templateUser = (password = "password") => {
 export const templateTournament = (
   creatorId: string,
   password = "password"
-) => ({
+): Tournament => ({
   id: faker.datatype.uuid(),
   name: faker.company.name(),
   description: faker.lorem.sentences(),
@@ -44,7 +54,7 @@ export const templateUserTournament = (
   userId: string,
   tournamentId: string,
   winnerTeamId: null | string
-) => ({
+): UserTournament => ({
   id: faker.datatype.uuid(),
   score: faker.datatype.number({ min: 0, max: 50 }),
   position: null,
@@ -55,7 +65,7 @@ export const templateUserTournament = (
   winner_team_id: winnerTeamId,
 });
 
-export const templateTeam = () => ({
+export const templateTeam = (): Teams => ({
   id: faker.datatype.uuid(),
   name: faker.company.name(),
   shield_url: faker.image.abstract(640, 480, true),
@@ -65,7 +75,7 @@ export const templatePrediction = (
   matchId: string,
   userId: string,
   tournamentId: string
-) => ({
+): Predictions => ({
   id: faker.datatype.uuid(),
   score_a: faker.datatype.number({ min: 0, max: 8 }),
   score_b: faker.datatype.number({ min: 0, max: 8 }),
@@ -78,7 +88,7 @@ export const templateMatch = (
   teamAId: string,
   teamBId: string,
   tournamentId: string
-) => ({
+): Matches => ({
   id: faker.datatype.uuid(),
   stage: "FINAL" as MatchStage,
   date: faker.date.future(),
@@ -87,4 +97,5 @@ export const templateMatch = (
   team_a_id: teamAId,
   team_b_id: teamBId,
   tournament_id: tournamentId,
+  code_stage: null,
 });

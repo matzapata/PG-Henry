@@ -16,13 +16,13 @@ async function dropDb() {
   await dropDb();
 
   console.log("Seeding...");
-  await db.user.createMany({ data: seedData.dbUsers });
-  await db.tournament.createMany({ data: seedData.dbTournaments });
-  await db.teams.createMany({ data: seedData.dbTeams });
-  await db.matches.createMany({ data: seedData.dbMatches });
-  await db.userTournament.createMany({ data: seedData.dbUserTournaments });
-  await db.predictions.createMany({ data: seedData.dbPredictions });
+  await db.user.createMany({ data: seedData.users });
+  await db.tournament.createMany({ data: seedData.tournaments });
+  await db.teams.createMany({ data: seedData.teams });
+  await db.matches.createMany({ data: seedData.matches });
+  await db.userTournament.createMany({ data: seedData.userTournaments });
+  await db.predictions.createMany({ data: seedData.predictions });
 
-  await db.comments.createMany({ data: seedData.dbComments });
-  await db.banned.createMany({ data: seedData.dbBanned });
+  await db.comments.createMany({ data: seedData.comments });
+  await db.banned.createMany({ data: seedData.banned });
 })();
