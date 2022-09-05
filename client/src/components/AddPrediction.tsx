@@ -112,10 +112,6 @@ export default function AddPrediction({ id }: { id: string }) {
     if (matches) filtrarPredicciones();
   }, [matches]);
 
-  useEffect(() => {
-    console.log("New matches", newMatches);
-  }, [newMatches]);
-
   return (
     <Box>
       <Heading color={"white"}>{tournamentDetail?.name}</Heading>

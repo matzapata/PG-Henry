@@ -12,56 +12,54 @@ export default function NavBar() {
 
   return (
     <Flex
-      justify="space-between"
-      alignItems="center"
-      px={[4, 10]}
       py="4"
+      px={[4, 10]}
+      alignItems="center"
       borderBottom="1px"
+      justify="space-between"
       borderColor="gray.300"
     >
       <Flex alignItems="center">
         <Logo />
         <Text
+          ml="2"
+          color="text"
           fontSize="30px"
           fontWeight="bold"
-          color="text"
-          ml="2"
           mr={["4", "10"]}
         >
           ProdeMaster
         </Text>
         {data?.is_admin && (
           <Link
+            mx="4"
             as={ReactLink}
             to={"/admin"}
             color="text"
             fontSize="20px"
             fontWeight="medium"
-            mx="4"
           >
             Admin
           </Link>
         )}
 
         {isLoggedIn && (
-          <>
-            <Link
-              color="text"
-              fontSize="20px"
-              fontWeight="medium"
-              mx="4"
-              as={ReactLink}
-              to="/torneos"
-            >
-              Torneos
-            </Link>
-          </>
+          <Link
+            mx="4"
+            color="text"
+            fontSize="20px"
+            fontWeight="medium"
+            as={ReactLink}
+            to="/torneos"
+          >
+            Torneos
+          </Link>
         )}
         <Link
+          mx="4"
           color="text"
           fontSize="20px"
           fontWeight="medium"
-          mx="4"
           as={ReactLink}
           to="/about"
         >
@@ -70,26 +68,22 @@ export default function NavBar() {
       </Flex>
       {isLoggedIn ? (
         <Box width="325px" display="flex" justifyContent="space-evenly">
-          <Box>
-            <ModalReview />
-          </Box>
-          <Box>
-            <Button
-              as={ReactLink}
-              bgColor="buttons"
-              color="text"
-              _hover={{
-                bg: "secondary",
-                color: "primary",
-              }}
-              size="md"
-              mr={3}
-              to="/auth/perfil"
-            >
-              Perfil
-            </Button>
-            <SignOutButton />
-          </Box>
+          <ModalReview />
+
+          <Button
+            size="md"
+            as={ReactLink}
+            bgColor="buttons"
+            color="text"
+            _hover={{
+              bg: "secondary",
+              color: "primary",
+            }}
+            to="/auth/perfil"
+          >
+            Perfil
+          </Button>
+          <SignOutButton />
         </Box>
       ) : (
         <Box width="200px" display="flex" justifyContent="space-evenly">

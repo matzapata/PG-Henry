@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { Select, Box, Button, Text, Input, Flex } from "@chakra-ui/react";
+import { Select, Box, Button, Text, Flex } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { fetchUniqueUserTournament } from "../redux/slices/userThunk";
-import {
-  postUserTournamentWinner,
-  fetchUserTournamentWinner,
-} from "../redux/slices/userThunk";
+import { fetchUserTournamentWinner } from "../redux/slices/userThunk";
 import { fetchTournamentAllMatches } from "../redux/slices/tournamentThunk";
+import api from "../services/api";
 
 const teamInitialState = {
   team_id: "",
@@ -28,6 +26,8 @@ function SelectWinner() {
   const currentTeams = useAppSelector(
     (state) => state.tournaments.tournamentAllMatches
   );
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(false);
 
   useEffect(() => {
     dispatch(fetchTournamentAllMatches({ id: id, user_id: user_id }));
@@ -38,8 +38,10 @@ function SelectWinner() {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchUserTournamentWinner({ tournamentid: id, userid: user_id }));
-  });
+    dispatch(
+      fetchUserTournamentWinner({ tournamentid: id, userid: user_id as string })
+    );
+  }, []);
 
   function handleWinner(e: React.ChangeEvent<HTMLSelectElement>) {
     setTeam({
@@ -47,25 +49,24 @@ function SelectWinner() {
     });
   }
 
-  function postWinner(e: React.MouseEvent<HTMLButtonElement>) {
-    dispatch(
-      postUserTournamentWinner({
-        tournamentid: id,
-        userid: user_id,
-        teamid: team.team_id,
-      })
+  async function postWinner() {
+    setLoading(true);
+    await api.post(
+      `tournaments/winner?id=${id}&userid=${user_id}&teamid=${team.team_id}`
     );
+    setLoading(false);
+    setSelected(true);
   }
 
   if (tournamentDetail?.status === "INCOMING" && unido === true) {
     return (
       <Box>
-        {!winner ? (
+        {!winner && !selected ? (
           <Flex>
             <Select
+              color="white"
               onChange={handleWinner}
               placeholder="Elige al ganador del torneo"
-              color={"white"}
             >
               {currentTeams?.map((e) => (
                 <option key={e.id} value={e.team_a_id}>
@@ -88,6 +89,7 @@ function SelectWinner() {
               size="md"
               ml="2"
               onClick={postWinner}
+              isLoading={loading}
             >
               Enviar ganador
             </Button>

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Container, Box, Text, Stack, Divider } from "@chakra-ui/react";
+import { Container, Box, Text, Stack, Divider, Flex } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Logo from "../components/Logo";
@@ -22,48 +22,34 @@ export default function TournamentCreate(): JSX.Element {
         justifyContent="space-between"
         p="20px"
       >
-        <Stack flexDir="row" alignItems="center" p={"10px"}>
+        <Flex alignItems="center">
           <Logo />
-          <Text
-            p={"10px"}
-            fontSize="30px"
-            fontWeight="bold"
-            color="text"
-            ml="40px"
-          >
+          <Text fontSize="30px" fontWeight="bold" color="text" ml="2">
             Crear torneo
           </Text>
-        </Stack>
+        </Flex>
 
-        <Box display="flex" flexDir="row">
+        <Flex>
           <Link to="/torneos">
-            <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
+            <ArrowBackIcon color="text" fontSize="30px" />
           </Link>
-          <Text
-            color="text"
-            mr="10px"
-            fontSize="20px"
-            fontWeight="bold"
-            pt="5px"
-          >
+          <Text color="text" fontSize="20px" fontWeight="bold" ml="2">
             Torneos
           </Text>
-        </Box>
+        </Flex>
       </Box>
       <Divider />
-      <Box
+      <Container
         display="flex"
         flexDir="column"
         justifyContent="start"
         alignItems="center"
-        p={"10px"}
         maxW={"60%"}
         h={"800px"}
-        margin="50px"
-        marginLeft="10%"
+        mt="40px"
       >
         <Steper />
-      </Box>
+      </Container>
     </Container>
   );
 }
