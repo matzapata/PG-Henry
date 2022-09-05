@@ -15,7 +15,7 @@ async function dropDb() {
 }
 
 (async function seed() {
-  await dropDb();
+  // await dropDb();
 
   console.log("Seeding...");
   await db.user.createMany({ data: seedData.users });
