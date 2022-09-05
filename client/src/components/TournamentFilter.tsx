@@ -56,7 +56,11 @@ function TournamentFilter(): JSX.Element {
 
   return (
     <Box p="20px" backdropFilter="auto" backdropBrightness="0.5">
-      <Stack direction="row" spacing="10px" justifyContent={"space-between"}>
+      <Stack
+        direction={["column", "column", "column", "row"]}
+        spacing="10px"
+        justifyContent={"space-between"}
+      >
         <HStack spacing={2}>
           <Input
             name="name"
@@ -81,7 +85,7 @@ function TournamentFilter(): JSX.Element {
           />
         </HStack>
         <Select
-          w="280px"
+          w={["100%", "100%", "100%", "280px"]}
           color="text"
           borderColor="buttons"
           placeholder="Estado"
@@ -98,7 +102,7 @@ function TournamentFilter(): JSX.Element {
           <option value="INCOMING">Próximos</option>
         </Select>
         <Select
-          w="280px"
+          w={["100%", "100%", "100%", "280px"]}
           color="text"
           borderColor="buttons"
           placeholder="Acceso"
@@ -114,7 +118,7 @@ function TournamentFilter(): JSX.Element {
           <option value="PUBLIC">Públicos</option>
         </Select>
         <Select
-          w="280px"
+          w={["100%", "100%", "100%", "280px"]}
           color="text"
           borderColor="buttons"
           id="sorts"
@@ -129,7 +133,7 @@ function TournamentFilter(): JSX.Element {
           <option value="mostpopular">Más popular</option>
           <option value="leastpopular">Menos popular</option>
         </Select>
-        <HStack>
+        <Stack direction={["column", "row"]}>
           <Button
             _hover={{
               color: "primary",
@@ -154,46 +158,40 @@ function TournamentFilter(): JSX.Element {
           >
             Cargar todos
           </Button>
-          <Button
-            _hover={{
-              color: "primary",
-              bg: "secondary",
-            }}
-            bgColor="buttons"
-            color="text"
-            onClick={() =>
-              setCurrentPage(currentPage === 1 ? 1 : currentPage - 1)
-            }
-            name="backbutton"
-            disabled={currentPage === 1 ? true : false}
-          >
-            <ArrowBackIcon />
-          </Button>
-          {/* <Text
-          pl="4"
-          pr="4"
-          pt="2"
-          pb="2"
-          bgColor="buttons"
-          color="text"
-          borderRadius="6px"
-        >
-          {currentPage}
-        </Text> */}
-          <Button
-            _hover={{
-              color: "primary",
-              bg: "secondary",
-            }}
-            bgColor="buttons"
-            color="text"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            name="fowardbutton"
-            disabled={currentTournaments.tournaments.length < 12 ? true : false}
-          >
-            <ArrowForwardIcon />
-          </Button>
-        </HStack>
+          <Flex>
+            <Button
+              _hover={{
+                color: "primary",
+                bg: "secondary",
+              }}
+              bgColor="buttons"
+              color="text"
+              mr="2"
+              onClick={() =>
+                setCurrentPage(currentPage === 1 ? 1 : currentPage - 1)
+              }
+              name="backbutton"
+              disabled={currentPage === 1 ? true : false}
+            >
+              <ArrowBackIcon />
+            </Button>
+            <Button
+              _hover={{
+                color: "primary",
+                bg: "secondary",
+              }}
+              bgColor="buttons"
+              color="text"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              name="fowardbutton"
+              disabled={
+                currentTournaments.tournaments.length < 12 ? true : false
+              }
+            >
+              <ArrowForwardIcon />
+            </Button>
+          </Flex>
+        </Stack>
       </Stack>
     </Box>
   );

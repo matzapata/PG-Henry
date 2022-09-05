@@ -107,8 +107,8 @@ export const getReviews = createAsyncThunk(
 );
 
 export const postUserTournamentWinner = createAsyncThunk(
-  "userTournaments/postUserTournamentWinner",
-  async (id: { tournamentid: any; userid: any; teamid: any }) => {
+  "user/postUserTournamentWinner",
+  async (id: { tournamentid: string; userid: any; teamid: any }) => {
     const response = await api.post(
       `tournaments/winner?${id.tournamentid ? "id=" + id.tournamentid : ""}&${
         id.userid ? "userid=" + id.userid : ""
@@ -119,8 +119,8 @@ export const postUserTournamentWinner = createAsyncThunk(
 );
 
 export const fetchUserTournamentWinner = createAsyncThunk(
-  "userTournaments/fetchUserTournamentWinner",
-  async (id: { tournamentid: any; userid: any }) => {
+  "user/fetchUserTournamentWinner",
+  async (id: { tournamentid: string; userid: string }) => {
     const response = await api.get(
       `tournaments/fetchwinner?${
         id.tournamentid ? "id=" + id.tournamentid : ""
@@ -131,7 +131,7 @@ export const fetchUserTournamentWinner = createAsyncThunk(
 );
 
 export const getOwnerTournament = createAsyncThunk(
-  "owner/torunaments",
+  "user/torunaments",
   async (
     { page, pageSize }: { page?: number; pageSize?: number },
     { rejectWithValue }

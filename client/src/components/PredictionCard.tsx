@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Button,
   Flex,
   FormControl,
   FormErrorMessage,
   Input,
-  Stack,
   Text,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { TournamentMatch } from "../redux/slices/tournament";
@@ -107,9 +104,15 @@ function MatchForm({
 
   return (
     <form onSubmit={enviar}>
-      <Flex bg="secondary" borderRadius="1" p="4" flexDir="column">
+      <Flex
+        bg="rgba(0, 161, 171,0.5)"
+        borderRadius="5"
+        p="4"
+        mb="1"
+        flexDir="column"
+      >
         <Flex justifyContent="space-between" alignItems="center">
-          <Flex alignItems="center">
+          <Flex alignItems="center" w="40%">
             <Image
               src={
                 match.team_a.shield_url === ""
@@ -195,7 +198,7 @@ function MatchForm({
               </FormControl>
             )}
           </Flex>
-          <Flex alignItems="center">
+          <Flex alignItems="center" justifyContent="right" w="40%">
             <Text color="text" fontSize="lg" fontWeight="medium" mr="4">
               {match.team_b.name}
             </Text>

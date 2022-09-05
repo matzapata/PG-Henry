@@ -349,14 +349,8 @@ router.post(
     try {
       const { tournament, teams, matches } = req.body;
 
-      const {
-        name,
-        description,
-        user_limit,
-        type,
-        logo_url,
-        password,
-      } = tournament;
+      const { name, description, user_limit, type, logo_url, password } =
+        tournament;
 
       const creator_user_id = req.user.id;
 

@@ -74,7 +74,17 @@ function About() {
           Equipo de Desarrollo
         </Heading>
       </Box>
-      <Grid templateColumns="repeat(3, 3fr)" gap={35} m="20px" pt="50px">
+      <Grid
+        templateColumns={[
+          "repeat(1, 1fr)",
+          "repeat(1, 1fr)",
+          "repeat(2, 2fr)",
+          "repeat(3, 3fr)",
+        ]}
+        gap={35}
+        m="20px"
+        pt="50px"
+      >
         <Box
           p={5}
           shadow="md"
@@ -87,7 +97,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Matias Zapata</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a
@@ -142,7 +152,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Melina Maccio</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a
@@ -197,7 +207,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Alejandro Guil</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a
@@ -252,7 +262,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Santiago Hayase</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a
@@ -307,7 +317,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Diego Cerda Celis</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a
@@ -362,7 +372,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Nicolas De Carolis</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a
@@ -417,7 +427,7 @@ function About() {
           display={"flex"}
         >
           <Heading fontSize="xl">Santiago Tobar</Heading>
-          <Text pl={12} pr={12} mt={4}>
+          <Text pl={12} pr={12}>
             Full-Stack Developer
           </Text>
           <a

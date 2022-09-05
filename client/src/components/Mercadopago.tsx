@@ -44,7 +44,18 @@ function Mercadopago({ id }: { id: string }): JSX.Element {
   if (unido === false && tournamentDetail?.type === "PUBLIC") {
     return (
       <Box>
-        <Button onClick={onOpen}>Unirse</Button>
+        <Button
+          onClick={onOpen}
+          bgColor="buttons"
+          color="text"
+          _hover={{
+            bg: "secondary",
+            color: "primary",
+          }}
+          size="md"
+        >
+          Unirse
+        </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
