@@ -10,6 +10,8 @@ import {
 import { DbData } from "./data";
 import { getRandom } from "./randomUtilities";
 import {
+  templateBanned,
+  templateComment,
   templateMatch,
   templatePrediction,
   templateTeam,
@@ -56,16 +58,10 @@ export const createTournament = (db: DbData, data: TournamentData): void => {
         data.tournament.id,
         getRandom(teams).id
       ),
-      score: 0,
+      score: faker.datatype.number({ min: 0, max: matches.length }) * 3,
     };
     matches.forEach((m) => {
       const prediction = templatePrediction(m.id, user.id, data.tournament.id);
-      if (
-        prediction.score_a === m.score_a &&
-        prediction.score_b === m.score_b
-      ) {
-        userTournament.score += 3;
-      }
 
       db.predictions.push(prediction);
     });
@@ -92,6 +88,7 @@ export const createAdminUser = (
     username: full_name.toLowerCase().split(" ").join(""),
     is_active: true,
     is_admin: true,
+    is_banned: false,
   };
   db.users.push(user);
   return user;
@@ -102,18 +99,21 @@ export const createActiveUser = (db: DbData, email: string): User => {
     ...templateUser(),
     email,
     is_active: true,
+    is_banned: false,
   };
   db.users.push(user);
   return user;
 };
 
 export const randomIncomingQuarterTournament = (
-  creatorId: string
+  creatorId: string,
+  isPrivate?: boolean
 ): TournamentData => ({
   tournament: {
     ...templateTournament(creatorId),
     name: faker.company.name(),
     status: "INCOMING",
+    type: isPrivate ? "PRIVATE" : "PUBLIC",
   },
   matches: [
     {
@@ -169,3 +169,32 @@ export const randomConcludedFinalTournament = (
   ],
   userPredictions: faker.datatype.number({ min: 30, max: 50 }),
 });
+
+export const createComment = (
+  db: DbData,
+  message?: string,
+  userId?: string
+): void => {
+  let creatorId = userId;
+  if (creatorId === undefined) {
+    const user = createActiveUser(db, faker.internet.email());
+    creatorId = user.id;
+  }
+  const comment = templateComment(creatorId);
+  if (message !== undefined) comment.comentaries = message;
+  db.comments.push(comment);
+};
+
+export const createRandomComment = (db: DbData): void => {
+  createComment(db, faker.lorem.sentence());
+};
+
+export const createBannedReasons = (db: DbData): void => {
+  db.users.forEach((u) => {
+    if (u.is_banned) {
+      db.banned.push({
+        ...templateBanned("admin", u.id),
+      });
+    }
+  });
+};

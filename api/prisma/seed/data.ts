@@ -11,6 +11,8 @@ import {
 import {
   createActiveUser,
   createAdminUser,
+  createBannedReasons,
+  createRandomComment,
   createTournament,
   randomConcludedFinalTournament,
   randomIncomingQuarterTournament,
@@ -85,8 +87,10 @@ createTournament(db, randomIncomingQuarterTournament(creator.id));
 createTournament(db, randomIncomingQuarterTournament(creator.id));
 createTournament(db, randomConcludedFinalTournament(creator.id));
 createTournament(db, randomConcludedFinalTournament(creator.id));
+createTournament(db, randomIncomingQuarterTournament(creator.id, true));
 
-// TODO: Add private tournament
-// TODO: Add ongoing tournament
+createRandomComment(db);
+
+createBannedReasons(db);
 
 export default db;

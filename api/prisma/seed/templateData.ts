@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
 import {
   AuthProvider,
+  Banned,
+  Comments,
   Matches,
   MatchStage,
   Predictions,
@@ -98,4 +100,19 @@ export const templateMatch = (
   team_b_id: teamBId,
   tournament_id: tournamentId,
   code_stage: null,
+});
+
+export const templateComment = (userId: string): Comments => ({
+  id: faker.datatype.uuid(),
+  stars: faker.datatype.number({ min: 0, max: 5 }),
+  comentaries: faker.lorem.sentence(),
+  titulo: faker.lorem.sentence(),
+  user_id: userId,
+});
+
+export const templateBanned = (adminName: string, userId: string): Banned => ({
+  id: faker.datatype.number(),
+  admin_name: adminName,
+  reason: faker.lorem.sentence(),
+  user_id: userId,
 });
