@@ -15,51 +15,36 @@ import {
   templateUserTournament,
 } from "./templateData";
 
-const stageTeamsMap = (
-  length: number
-): { stage: MatchStage; codes: CodeStage[] } | null => {
-  if (length === 2) return { stage: "FINAL", codes: ["FINAL"] };
-  else if (length === 4)
-    return { stage: "SEMIFINAL", codes: ["SEMIFINALA1", "SEMIFINALB1"] };
-  else if (length === 8)
-    return {
-      stage: "QUARTERFINAL",
-      codes: [
-        "QUARTERFINALA1",
-        "QUARTERFINALA2",
-        "QUARTERFINALB1",
-        "QUARTERFINALB2",
-      ],
-    };
-  return null;
-};
-
 export const createTournament = (
   db: DbData,
   data: {
     tournament: Tournament;
-    teams: Teams[];
+    matches: {
+      team_a: Teams;
+      team_b: Teams;
+      stage: MatchStage;
+      code_stage: CodeStage;
+      score_a?: number;
+      score_b?: number;
+      date?: Date;
+    }[];
     userPredictions: number;
   }
 ): void => {
   const matches: Matches[] = [];
+  const teams: Teams[] = [];
 
-  const stages = stageTeamsMap(data.teams.length);
-  if (!stages) throw new Error("Wrong teams number");
-
-  let teamIndex = 0;
-  for (const code_stage of stages.codes) {
+  data.matches.forEach((m) => {
+    teams.push(m.team_a, m.team_b);
     matches.push({
-      ...templateMatch(
-        data.teams[teamIndex].id,
-        data.teams[teamIndex + 1].id,
-        data.tournament.id
-      ),
-      stage: stages.stage,
-      code_stage,
+      ...templateMatch(m.team_a.id, m.team_b.id, data.tournament.id),
+      score_a: m.score_a ? m.score_a : null,
+      score_b: m.score_b ? m.score_b : null,
+      date: m.date ? m.date : null,
+      stage: m.stage,
+      code_stage: m.code_stage,
     });
-    teamIndex += 2;
-  }
+  });
 
   for (let i = 0; i < data.userPredictions; i++) {
     const user = templateUser();
@@ -68,7 +53,7 @@ export const createTournament = (
       ...templateUserTournament(
         user.id,
         data.tournament.id,
-        getRandom(data.teams).id
+        getRandom(teams).id
       ),
       score: 0,
     });
@@ -79,7 +64,7 @@ export const createTournament = (
     );
   }
 
-  db.teams.push(...data.teams);
+  db.teams.push(...teams);
   db.matches.push(...matches);
   db.tournaments.push(data.tournament);
 };

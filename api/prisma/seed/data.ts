@@ -49,15 +49,31 @@ createTournament(db, {
     name: "Cuartos copa libertadores 2020",
     status: "INCOMING",
   },
-  teams: [
-    { ...templateTeam(), name: "Athletico paranaense" },
-    { ...templateTeam(), name: "Estudiantes la plata" },
-    { ...templateTeam(), name: "Atletico mineiro" },
-    { ...templateTeam(), name: "Palmeiras" },
-    { ...templateTeam(), name: "Flamengo" },
-    { ...templateTeam(), name: "Corinthians" },
-    { ...templateTeam(), name: "Velez sarsfield" },
-    { ...templateTeam(), name: "Talleres cordoba" },
+  matches: [
+    {
+      team_a: { ...templateTeam(), name: "Athletico paranaense" },
+      team_b: { ...templateTeam(), name: "Estudiantes la plata" },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALA1",
+    },
+    {
+      team_a: { ...templateTeam(), name: "Atletico mineiro" },
+      team_b: { ...templateTeam(), name: "Palmeiras" },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALA2",
+    },
+    {
+      team_a: { ...templateTeam(), name: "Flamengo" },
+      team_b: { ...templateTeam(), name: "Corinthians" },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALB1",
+    },
+    {
+      team_a: { ...templateTeam(), name: "Velez sarsfield" },
+      team_b: { ...templateTeam(), name: "Talleres cordoba" },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALB2",
+    },
   ],
   userPredictions: 30,
 });
