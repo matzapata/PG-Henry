@@ -3,10 +3,9 @@ import {
   Box,
   Container,
   Divider,
+  Flex,
   Grid,
   Heading,
-  Highlight,
-  IconButton,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -22,10 +21,9 @@ function About() {
       h="950px"
       p="0"
       bgSize="cover"
-      bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+      bgImage="url('/img/landing-wallpaper.jpg')"
     >
       <Box
-        /* bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" */
         h="80px"
         display="flex"
         flexDir="row"
@@ -33,19 +31,15 @@ function About() {
         justifyContent="space-between"
         p="20px"
       >
-        <Stack flexDir="row" alignItems="center">
+        <Flex alignItems="center">
           <Logo />
-          <Text fontSize="30px" fontWeight="bold" color="#F7F7F7" ml="40px">
-            Torneos
+          <Text fontSize="30px" fontWeight="bold" color="text" ml="4" mt="0">
+            ProdeMaster
           </Text>
-        </Stack>
-        {/* <Text fontSize="20px" pt="10px" p="20px" color="#F7F7F7">
-          Busca entre los mejores torneos mundiales y nacionales, o crea el tuyo
-          propio!
-        </Text> */}
+        </Flex>
         <Box display="flex" flexDir="row">
           <Link to="/">
-            <ArrowBackIcon color="#F7F7F7" fontSize="30px" pt="2px" />
+            <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
           </Link>
         </Box>
       </Box>
@@ -53,7 +47,7 @@ function About() {
         <Heading
           fontSize={["2xl", "5xl"]}
           fontWeight="800"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
         >
           Nosotros
@@ -63,7 +57,7 @@ function About() {
           textAlign="center"
           fontSize={["md", "lg"]}
           fontWeight="500"
-          color="#F7F7F7"
+          color="text"
         >
           En Prode Master podras encontrar multiples torneos renocidos, tanto
           nacionales como internacionales que te permitira completar
@@ -74,7 +68,7 @@ function About() {
         <Heading
           fontSize={["2xl", "5xl"]}
           fontWeight="800"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
         >
           Equipo de Desarrollo
@@ -85,7 +79,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"
@@ -142,7 +136,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"
@@ -199,7 +193,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"
@@ -256,7 +250,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"
@@ -313,7 +307,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"
@@ -370,7 +364,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"
@@ -427,7 +421,7 @@ function About() {
           p={5}
           shadow="md"
           borderWidth="1px"
-          color="#F7F7F7"
+          color="text"
           textAlign="center"
           transition="200ms ease"
           backgroundColor="rgba(57,91,100,0.7)"

@@ -19,12 +19,12 @@ function OwnerTournament() {
   return (
     <>
       <Heading color="text" size="lg" mb="4">
-        Torneos creados por tí
+        Torneos creados por ti
       </Heading>
       {ownerTournaments.tournaments.length === 0 && (
         <>
           <Text color="text" mb="2">
-            Aun no participas de ningun torneo
+            Aún no participas de ningún torneo
           </Text>
           <Button size="sm" as={ReactLink} to="/torneos">
             Explorar torneos

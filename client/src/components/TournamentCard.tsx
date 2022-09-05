@@ -44,7 +44,7 @@ function TournamentCard({
       <Link to={`/torneos/${id}`}>
         <Stack p="5px" spacing={2}>
           <Text fontSize="2xl" fontWeight="bold" color="#AEFEFF">
-            {name} {is_official === true ? <CheckCircleIcon /> : <Text></Text>}
+            {name} {is_official === true ? <CheckCircleIcon /> : null}
           </Text>
           <Flex>
             {status === "INPROGRESS" && <Tag mr="2">En progreso</Tag>}

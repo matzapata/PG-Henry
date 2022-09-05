@@ -22,7 +22,7 @@ function UserTournament() {
       {userTournaments.tournaments.length === 0 && (
         <>
           <Text color="text" mb="2">
-            Aun no participas de ningun torneo
+            Aún no participas de ningún torneo
           </Text>
           <Button size="sm" as={ReactLink} to="/torneos">
             Explorar torneos

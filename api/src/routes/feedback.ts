@@ -1,6 +1,7 @@
 import * as express from "express";
 import db from "../db";
 import "dotenv/config";
+import sendEmail from "../utils/sendEmail";
 
 const router: express.Router = express.Router();
 
@@ -59,6 +60,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
         comentario: comments[i].comentaries,
         stars: comments[i].stars,
         titulo: comments[i].titulo,
+        email: user?.email,
       };
       resultado.push(rev);
     }
@@ -68,5 +70,38 @@ router.get("/", async (req: express.Request, res: express.Response) => {
     return res.status(404).json({ status: "failed", msg: error.message });
   }
 });
+
+router.post(
+  "/denunciar",
+  async (req: express.Request, res: express.Response) => {
+    const { email, comentario } = req.body;
+    try {
+      if (!email) return res.send("No hay ningun feedback con ese correo...");
+
+      sendEmail(
+        process.env.EMAIL_USER as string,
+        "Alguien ha denunciado un feedback",
+        `Alguien ha encontrado que el comentario: "${comentario}" del usuario: ${email} no corresponde. \n
+        Por favor revisar y corregir lo antes posible.`
+      );
+      return res.send("Comentario denunciado correctamente !");
+    } catch (err: any) {
+      return res.status(400).send({ message: err });
+    }
+  }
+);
+
+router.delete(
+  "/deletereview",
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.body;
+    try {
+      const comment = await db.comments.delete({ where: { user_id: id } });
+      return res.send("Comentario eliminado correctamente!");
+    } catch (err: any) {
+      return res.status(400).send({ message: err });
+    }
+  }
+);
 
 export default router;

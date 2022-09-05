@@ -1,14 +1,22 @@
 import prisma from "../db";
 import * as express from "express";
-import { MatchStage, Status, TournamentType, CodeStage } from "@prisma/client";
+import {
+  MatchStage,
+  Status,
+  TournamentType,
+  CodeStage,
+  Matches,
+} from "@prisma/client";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
+import matchGenerator from "../utils/matchGenerator";
 
 type Team = {
   name: string;
   shield_url: string;
   key: number;
+  id: string;
 };
 
 type Match = {
@@ -22,6 +30,21 @@ type Match = {
 };
 
 const router: express.Router = express.Router();
+
+router.get(
+  "/mytournaments",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const userCreatedTournaments = await db.tournament.findMany({
+        where: { creator_user_id: req.user.id },
+      });
+      return res.send(userCreatedTournaments);
+    } catch (e) {
+      return res.status(500).send("ERROR");
+    }
+  }
+);
 
 router.get("/", async (req: express.Request, res: express.Response) => {
   try {
@@ -84,7 +107,7 @@ router.get("/tournamentOwner", protectedRoute, async (req, res) => {
     const userId = req.user.id;
     const page = req.query.page === undefined ? 1 : Number(req.query.page);
     const pageSize =
-      req.query.pageSize === undefined ? 1 : Number(req.query.pageSize);
+      req.query.pageSize === undefined ? 3 : Number(req.query.pageSize);
 
     const [tournaments, tournamentsCount] = await prisma.$transaction([
       db.tournament.findMany({
@@ -197,6 +220,42 @@ router.get(
 );
 
 router.get(
+  "/:id/allmatches",
+  protectedRoute,
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+
+    try {
+      const result = await prisma.matches.findMany({
+        where: {
+          tournament_id: id,
+        },
+        include: {
+          team_a: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+          team_b: {
+            select: {
+              name: true,
+              shield_url: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+);
+
+router.get(
   "/:id/allmatches/:user_id",
   protectedRoute,
   async (req: express.Request, res: express.Response) => {
@@ -283,85 +342,22 @@ router.post(
 );
 
 router.post(
-  "/checkTeams",
-  protectedRoute,
-  async (req: express.Request, res: express.Response) => {
-    try {
-      const { teams } = req.body;
-
-      const encontrados: string[] = [];
-      const teamsArray = teams.map(async (team: Team) => {
-        const teamName = await db.teams.findUnique({
-          where: { name: team.name },
-        });
-        if (teamName) {
-          encontrados.push(teamName.name);
-        }
-        return teamName;
-      });
-      await Promise.all(teamsArray);
-      if (!!encontrados.length) {
-        if (encontrados.length === 1)
-          return res.status(400).send({
-            message: "El equipo " + encontrados[0] + " ya está registrado.",
-          });
-        return res.status(400).send({
-          message:
-            "Los equipos " + encontrados.toString() + " ya están registrados.",
-        });
-      } else {
-        res.status(200).send({ message: "Equipos disponibles" });
-      }
-    } catch (e: any) {
-      res.status(400).send({ message: e.message });
-    }
-  }
-);
-
-router.post(
   "/create",
   protectedRoute,
   async (req: express.Request, res: express.Response) => {
     try {
       const { tournament, teams, matches } = req.body;
 
-      const {
-        name,
-        description,
-        user_limit,
-        creator_user_id,
-        type,
-        logo_url,
-        password,
-      } = tournament;
+      const { name, description, user_limit, type, logo_url, password } =
+        tournament;
+
+      const creator_user_id = req.user.id;
 
       if ([name, description, user_limit, type].includes(undefined))
         return res
           .status(400)
           .send({ message: "Missing required parameters." });
 
-      ///////CHEQUEO DE EQUIPOS PREXISTENTES///////
-      const encontrados: string[] = [];
-      const teamsArray = teams.map(async (team: Team) => {
-        const teamName = await db.teams.findUnique({
-          where: { name: team.name },
-        });
-        if (teamName) {
-          encontrados.push(teamName.name);
-        }
-        return teamName;
-      });
-      await Promise.all(teamsArray);
-      if (!!encontrados.length) {
-        if (encontrados.length === 1)
-          return res.status(400).send({
-            message: "El equipo " + encontrados[0] + " ya está registrado.",
-          });
-        return res.status(400).send({
-          message:
-            "Los equipos " + encontrados.toString() + " ya están registrados.",
-        });
-      }
       /////////CHEQUEO DE TORNEO PREXISTENTE///////////
       let torneo: any;
       torneo = await db.tournament.findUnique({
@@ -378,6 +374,7 @@ router.post(
         const user = await db.user.findUnique({
           where: { id: creator_user_id },
         });
+        console.log(user);
         torneo = await db.tournament.create({
           data: {
             name,
@@ -421,7 +418,9 @@ router.post(
 
           return newTeam;
         });
-        await Promise.all(teamsPromises);
+        const equipos: Team[] = await Promise.all(teamsPromises);
+
+        //////PROBLEM///////
         if (!matches.length) {
           return res
             .status(400)
@@ -429,11 +428,12 @@ router.post(
         } else {
           const matchesPromises = matches.map(async (match: Match) => {
             const newDate = match.date + "T00:00:00.000Z";
-            const team_a = await prisma.teams.findUnique({
-              where: { name: match.team_a_name },
+
+            const team_a: Team | undefined = equipos.find((team: Team) => {
+              return match.team_a_name === team.name;
             });
-            const team_b = await prisma.teams.findUnique({
-              where: { name: match.team_b_name },
+            const team_b: Team | undefined = equipos.find((team: Team) => {
+              return match.team_b_name === team.name;
             });
             if (team_a && team_b) {
               const newMatch = await db.matches.create({
@@ -467,7 +467,7 @@ router.post(
 router.post("/winner", async (req: express.Request, res: express.Response) => {
   try {
     const { id, userid, teamid } = req.query;
-    const response = await db.userTournament.update({
+    await db.userTournament.update({
       where: {
         user_id_tournament_id: {
           user_id: userid as string,
@@ -529,6 +529,9 @@ router.put(
       if ([score_a, score_b].includes(undefined))
         return res.status(400).send("Missing parameters");
 
+      if (score_a === score_b)
+        return res.status(400).send("Empates no permitidos en torneos llave");
+
       // validate authenticated user has permissions
       const tournament = await db.tournament.findUnique({
         where: { id: req.params.id },
@@ -552,6 +555,52 @@ router.put(
         data: { score_a, score_b },
       });
 
+      // Create next stage matches
+      const playedMatches = await db.matches.findMany({
+        where: {
+          tournament_id: tournament.id,
+          stage: match.stage,
+          score_a: { not: null },
+          score_b: { not: null },
+        },
+      });
+
+      const matchesPerStage = {
+        ROUNDOF32: 16,
+        ROUNDOF16: 8,
+        QUARTERFINAL: 4,
+        SEMIFINAL: 2,
+        FINAL: 1,
+      };
+
+      if (
+        playedMatches.length === matchesPerStage[match.stage] &&
+        match.stage !== "FINAL"
+      ) {
+        // Generate next stage matches
+        const newMatches = [];
+
+        playedMatches.sort();
+
+        for (let i = 0; i < playedMatches.length / 2; i = i + 2) {
+          const generatedMatch = matchGenerator(
+            playedMatches[i],
+            playedMatches[i + 1]
+          );
+
+          newMatches.push({
+            team_a_id: generatedMatch.team_a,
+            team_b_id: generatedMatch.team_b,
+            code_stage: generatedMatch.code_stage,
+            stage: generatedMatch.stage,
+            tournament_id: tournament.id,
+          });
+        }
+
+        await db.matches.createMany({ data: newMatches });
+      }
+
+      // Update user score
       const tournamentPredictions = await db.predictions.findMany({
         where: {
           match_id: req.params.match_id,
@@ -568,7 +617,24 @@ router.put(
         data: { score: { increment: 3 } },
       });
 
-      if (match.stage === "FINAL") {
+      if (
+        match.stage === "FINAL" &&
+        match.score_a !== null &&
+        match.score_b !== null
+      ) {
+        const winnerId =
+          match.score_a > match.score_b ? match.team_a_id : match.team_b_id;
+
+        await db.userTournament.updateMany({
+          where: {
+            tournament_id: tournament.id,
+            winner_team_id: winnerId,
+          },
+          data: {
+            score: { increment: 20 },
+          },
+        });
+
         const tournamentScores = await db.userTournament.findMany({
           where: { tournament_id: req.params.id },
           orderBy: { score: "desc" },
@@ -623,6 +689,7 @@ router.put(
 
       return res.send("OK");
     } catch (e) {
+      console.log(e);
       return res.status(500).send("ERROR");
     }
   }
