@@ -13,10 +13,7 @@ import {
   useColorModeValue,
   Flex,
   Heading,
-  SelectField,
 } from "@chakra-ui/react";
-import { current } from "@reduxjs/toolkit";
-import { BiCurrentLocation } from "react-icons/bi";
 
 type Match = {
   key: number;
@@ -378,7 +375,6 @@ export default function MatchAdd({
   useEffect(() => {
     setInput({ ...input, stage: _stage });
   }, [_stage]);
-  console.log(matches);
   return (
     <Container p="0px">
       <Box
@@ -878,8 +874,14 @@ export default function MatchAdd({
               </FormErrorMessage>
             </FormControl>
           </Flex>
-          <Button onClick={crear}>Siguiente </Button>
-          <Button onClick={volverPaso}>Anterior </Button>
+          <Stack
+            flexDirection={"row"}
+            spacing={"5.rem"}
+            justifyContent={"space-between"}
+          >
+            <Button onClick={volverPaso}>Anterior </Button>
+            <Button onClick={crear}>Siguiente </Button>
+          </Stack>
         </Stack>
       </Box>
     </Container>
