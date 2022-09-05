@@ -26,6 +26,14 @@ router.post("/", async (req, res) => {
             tournament_id: response.data.metadata.tournament_id,
           },
         });
+        await db.tournament.update({
+          where: {
+            id: response.data.metadata.tournament_id,
+          },
+          data: {
+            pool: { increment: 160 },
+          },
+        });
         await sendEmail(
           response.data.metadata.user_email,
           "PRODEMASTER",
