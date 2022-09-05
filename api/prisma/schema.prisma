@@ -20,7 +20,7 @@ model User {
   password           String? // Optional so we can work with auth0
   authProvider       AuthProvider @default(JWT)
   birth_date         DateTime? // Optional momentarily to work with auth0
-  alias_mp           String?      @unique
+  alias_mp           String?
   is_admin           Boolean      @default(false)
   is_active          Boolean      @default(false)
   is_banned          Boolean      @default(false)
@@ -46,6 +46,7 @@ model Tournament {
   pool        Int            @default(0)
   logo_url    String?
   is_official Boolean        @default(false)
+  is_active   Boolean        @default(true)
 
   creator         User             @relation(fields: [creator_user_id], references: [id])
   creator_user_id String
@@ -55,11 +56,44 @@ model Tournament {
 }
 
 enum MatchStage {
-  FASEGROUP
   ROUNDOF32
   ROUNDOF16
   QUARTERFINAL
   SEMIFINAL
+  FINAL
+}
+
+enum CodeStage {
+  ROUNDOF32A1
+  ROUNDOF32A2
+  ROUNDOF32A3
+  ROUNDOF32A4
+  ROUNDOF32A5
+  ROUNDOF32A6
+  ROUNDOF32A7
+  ROUNDOF32A8
+  ROUNDOF32B1
+  ROUNDOF32B2
+  ROUNDOF32B3
+  ROUNDOF32B4
+  ROUNDOF32B5
+  ROUNDOF32B6
+  ROUNDOF32B7
+  ROUNDOF32B8
+  ROUNDOF16A1
+  ROUNDOF16A2
+  ROUNDOF16A3
+  ROUNDOF16A4
+  ROUNDOF16B1
+  ROUNDOF16B2
+  ROUNDOF16B3
+  ROUNDOF16B4
+  QUARTERFINALA1
+  QUARTERFINALA2
+  QUARTERFINALB1
+  QUARTERFINALB2
+  SEMIFINALA1
+  SEMIFINALB1
   FINAL
 }
 
@@ -99,7 +133,7 @@ model UserTournament {
 
 model Teams {
   id         String  @unique @default(uuid())
-  name       String  @unique
+  name       String  
   shield_url String?
 
   id_team_a      Matches[]        @relation("team_a")
@@ -126,7 +160,7 @@ model Matches {
   id      String     @unique @default(uuid())
   score_a Int?
   score_b Int?
-  date    DateTime
+  date    DateTime?
   stage   MatchStage
 
   tournament    Tournament    @relation(fields: [tournament_id], references: [id])
@@ -136,6 +170,7 @@ model Matches {
   team_b        Teams         @relation(name: "team_b", fields: [team_b_id], references: [id])
   team_b_id     String
   match_id      Predictions[]
+  code_stage    CodeStage? //CAMBIAR EL ? cuando esté lista la ruta de creacion de torneos
 }
 
 model Comments {
@@ -148,9 +183,9 @@ model Comments {
 }
 
 model Banned {
-  id          Int             @id @default(autoincrement())
-  admin_name  String
-  reason      String?
-  user        User            @relation(fields:[user_id], references:[id])
-  user_id     String          @unique
+  id         Int     @id @default(autoincrement())
+  admin_name String
+  reason     String?
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String  @unique
 }

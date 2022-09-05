@@ -22,7 +22,7 @@ import UploadFiles from "./UploadFile";
 type Team = {
   name: string;
   shield_url: string;
-  key: number;
+  key: string;
 };
 
 const validateTeamNames = (teams: Team[], newName: string) => {
@@ -61,7 +61,7 @@ export default function TeamAdd({
   const [input, setInput] = useState<Team>({
     name: "",
     shield_url: "",
-    key: 0,
+    key: "",
   });
 
   const cambiosEnInput = (
@@ -91,18 +91,27 @@ export default function TeamAdd({
           setLogo(logo_a);
           finalShield_url = logo_a;
         }
-        if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
+        if (finalShield_url === "")
+          finalShield_url = "/img/team-shield-placeholder.jpg";
         setTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key },
+          {
+            name: input.name,
+            shield_url: finalShield_url,
+            key: input.key + input.name,
+          },
         ]);
         addTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key },
+          {
+            name: input.name,
+            shield_url: finalShield_url,
+            key: input.key + input.name,
+          },
         ]);
-        setInput({ name: "", shield_url: "", key: input.key + 1 });
+        setInput({ name: "", shield_url: "", key: "" });
         setError("");
       }
       setCreateError("");
@@ -119,15 +128,23 @@ export default function TeamAdd({
   };
 
   const crear = async () => {
-    if (teams.length < 2) {
+    const tl = teams.length;
+
+    if (tl < 2) {
       setCreateError("Debe haber al menos 2 equipos");
     } else {
-      try {
-        await api.post("/tournaments/checkTeams", { teams: teams });
-        addTeams(teams);
-        siguientePaso();
-      } catch (e: any) {
-        setCheckError(e.response.data.message);
+      if (tl !== 2 && tl !== 4 && tl !== 8 && tl !== 16 && tl !== 32) {
+        setCreateError(
+          "Este tipo de torneos solo acepta 2, 4, 8, 16 o 32 equipos"
+        );
+      } else {
+        try {
+          // await api.post("/tournaments/checkTeams", { teams: teams });
+          addTeams(teams);
+          siguientePaso();
+        } catch (e: any) {
+          setCheckError(e.response.data.message);
+        }
       }
     }
   };

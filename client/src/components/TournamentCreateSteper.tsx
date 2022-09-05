@@ -7,6 +7,7 @@ import {
   Box,
   Stack,
   useColorModeValue,
+  background,
 } from "@chakra-ui/react";
 import TeamAdd from "./TeamAdd";
 import TournamentForm from "./TournamentForm";
@@ -14,6 +15,7 @@ import MatchAdd from "./MatchAdd";
 import { useHistory } from "react-router-dom";
 import api from "../services/api";
 import { BsCircle } from "react-icons/bs";
+import { FontWeight } from "@cloudinary/url-gen/qualifiers";
 type Inputs = {
   tournament: Tournament;
   teams: Team[];
@@ -105,10 +107,32 @@ const Steper = () => {
     const teamsNames = input.teams.map((team) => {
       return team.name;
     });
+    const el = input.teams.length;
+    let newStage = "";
+
+    if (el === 2) {
+      newStage = "FINAL";
+    } else {
+      if (el === 4) {
+        newStage = "SEMIFINAL";
+      } else {
+        if (el === 8) {
+          newStage = "QUARTERFINAL";
+        } else {
+          if (el === 16) {
+            newStage = "ROUNDOF16";
+          } else {
+            newStage = "ROUNDOF32";
+          }
+        }
+      }
+    }
+
     const newMatches = input.matches.filter((match) => {
       return (
         teamsNames.includes(match.team_a_name) &&
-        teamsNames.includes(match.team_b_name)
+        teamsNames.includes(match.team_b_name) &&
+        match.stage === newStage
       );
     });
 
@@ -211,7 +235,7 @@ const Steper = () => {
                     pagina == 1
                       ? { color: "lightblue" }
                       : pagina == 0
-                      ? { color: "white" }
+                      ? { color: "black" }
                       : { color: "green" }
                   }
                 >
@@ -224,7 +248,7 @@ const Steper = () => {
                     pagina == 1
                       ? { color: "lightblue" }
                       : pagina == 0
-                      ? { color: "white" }
+                      ? { color: "Black" }
                       : { color: "green" }
                   }
                 />
@@ -243,7 +267,7 @@ const Steper = () => {
                     pagina == 2
                       ? { color: "lightblue" }
                       : pagina == 0 || pagina == 1
-                      ? { color: "white" }
+                      ? { color: "black" }
                       : { color: "green" }
                   }
                 >
@@ -256,7 +280,7 @@ const Steper = () => {
                     pagina == 2
                       ? { color: "lightblue" }
                       : pagina == 0 || pagina == 1
-                      ? { color: "white" }
+                      ? { color: "black" }
                       : { color: "green" }
                   }
                 />

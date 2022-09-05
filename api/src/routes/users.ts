@@ -3,9 +3,8 @@ import * as express from "express";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { isAdmin, protectedRoute } from "../middleware/auth";
-import { verifyAccessToken } from "../utils/jwt";
-import { JwtPayload } from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail";
+import "dotenv/config";
 
 const router: express.Router = express.Router();
 
@@ -259,8 +258,7 @@ router.put(
   async (req: express.Request, res: express.Response) => {
     const { email } = req.body;
     try {
-      if (!email)
-        return res.send("Faltan parametros requeridos");
+      if (!email) return res.send("Faltan parametros requeridos");
 
       await db.user.update({
         where: { email: email },
@@ -274,10 +272,61 @@ router.put(
         La mejor aplicacion de predicciones deportivas ✔`
       );
 
-      return res.status(200).send("Usuario asignado como administrador correctamente!");
+      return res
+        .status(200)
+        .send("Usuario asignado como administrador correctamente!");
     } catch (err: any) {
       return res.status(400).json({ msg: err.message });
     }
   }
 );
+
+router.post("/contact", async (req: express.Request, res: express.Response) => {
+  const { email, name, mensaje } = req.body;
+  try {
+    if (!email || !name || !mensaje)
+      return res.send("Faltan parametros requeridos...");
+
+    sendEmail(
+      process.env.EMAIL_USER as string,
+      `Has recibido una solicitud del usuario: ${name}`,
+      `${email} se ha puesto en contacto con el siguiente mensaje: \n ${mensaje}`
+    );
+    return res.send("Email enviado satisfactoriamente !");
+  } catch (err: any) {
+    return res.status(400).send({ message: err });
+  }
+});
+
+router.put(
+  "/resetpass",
+  async (req: express.Request, res: express.Response) => {
+    const { email } = req.body;
+    try {
+      if (!email) return res.send("No ingresaste ningun email...");
+      const user = await db.user.findUnique({ where: { email } });
+      if (!user) return res.send("No existe ninguna cuenta con ese correo...");
+
+      const new_pass = bcrypt.hashSync(user.id.slice(0, 10), 8);
+      await db.user.update({
+        where: { email },
+        data: { password: new_pass },
+      });
+
+      sendEmail(
+        user.email,
+        "Restablecimiento de contraseña",
+        `Tu nueva contraseña es: ${user.id.slice(
+          0,
+          10
+        )} \n Asegurate de cambiarla en tu perfil cuando entres nuevamente`
+      );
+
+      return res.send("Contraseña restablecida correctamente!");
+    } catch (err: any) {
+      return res.status(400).send({ message: err });
+    }
+  }
+);
+
 export default router;

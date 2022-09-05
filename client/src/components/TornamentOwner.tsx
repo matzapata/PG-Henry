@@ -1,25 +1,27 @@
 import React, { useEffect } from "react";
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { fetchUserTournaments } from "../redux/slices/userThunk";
+import { getOwnerTournament } from "../redux/slices/userThunk";
 import TournamentCard from "./TournamentCard";
 import { Link as ReactLink } from "react-router-dom";
 import Pagination from "./Pagination";
 
-function UserTournament() {
+function OwnerTournament() {
   const dispatch = useAppDispatch();
-  const userTournaments = useAppSelector((state) => state.user.userTournaments);
+  const ownerTournaments = useAppSelector(
+    (state) => state.user.ownerTournaments
+  );
 
   useEffect(() => {
-    dispatch(fetchUserTournaments({}));
+    dispatch(getOwnerTournament({}));
   }, []);
 
   return (
     <>
       <Heading color="text" size="lg" mb="4">
-        Tus torneos
+        Torneos creados por ti
       </Heading>
-      {userTournaments.tournaments.length === 0 && (
+      {ownerTournaments.tournaments.length === 0 && (
         <>
           <Text color="text" mb="2">
             Aún no participas de ningún torneo
@@ -30,7 +32,7 @@ function UserTournament() {
         </>
       )}
       <Box mb="6">
-        {userTournaments.tournaments.map((t, i) => (
+        {ownerTournaments.tournaments.map((t, i) => (
           <TournamentCard
             id={t.id}
             key={i}
@@ -42,11 +44,11 @@ function UserTournament() {
         ))}
       </Box>
       <Pagination
-        onPageChange={(page) => dispatch(fetchUserTournaments({ page }))}
-        lastPage={userTournaments.lastPage}
+        onPageChange={(page) => dispatch(getOwnerTournament({ page }))}
+        lastPage={ownerTournaments.lastPage}
       />
     </>
   );
 }
 
-export default UserTournament;
+export default OwnerTournament;

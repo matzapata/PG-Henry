@@ -113,6 +113,7 @@ export default function TournamentForm({
       validate({ ...input, [e.currentTarget.name]: e.currentTarget.value })
     );
   };
+
   const cambiosENUser_Limit = (e: React.FormEvent<HTMLInputElement>) => {
     setInput({
       ...input,
@@ -174,7 +175,7 @@ export default function TournamentForm({
           boxShadow={"lg"}
           bg={useColorModeValue("white", "gray.700")}
         >
-          <Stack alignItems="space-between;" spacing="9px">
+          <Stack alignItems="space-between" spacing="9px">
             textColor=
             {(errors.name === "Completado" || errors.name === "") &&
             (errors.description === "Completado" ||
@@ -183,7 +184,7 @@ export default function TournamentForm({
             (errors.password === "Completado" || errors.password === "")
               ? "gray.400"
               : "red.500"}
-            <Stack alignItems="space-between;" spacing="9px">
+            <Stack alignItems="space-between" spacing="9px">
               <Stack direction="row" spacing={4}>
                 {/* INPUT NAME */}
                 <FormControl
@@ -203,11 +204,13 @@ export default function TournamentForm({
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
                 {/* SELECT TYPE PRIVADO/PUBLICO */}
-                <Select name="type" onChange={cambiosEnInput}>
+                <Select
+                  name="type"
+                  onChange={cambiosEnInput}
+                  defaultValue="PUBLIC"
+                >
                   <option value="PRIVATE">Privado</option>
-                  <option value="PUBLIC" selected>
-                    Público
-                  </option>
+                  <option value="PUBLIC">Público</option>
                 </Select>
               </Stack>
               {/* CONTRASEÑA */}

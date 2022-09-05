@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchStats } from "./adminThunk";
+import {
+  fetchStats,
+  getActiveTournaments,
+  getAllComments,
+  getBannedUser,
+} from "./adminThunk";
 
 export type Stats = {
   tournaments: number;
@@ -16,6 +21,9 @@ export type InitialState = {
   stats: Stats;
   loading: boolean;
   error: string;
+  bannedUsers: [];
+  allComments: [];
+  activeTournaments: [];
 };
 
 const initialState: InitialState = {
@@ -31,6 +39,9 @@ const initialState: InitialState = {
   },
   loading: false,
   error: "",
+  bannedUsers: [],
+  allComments: [],
+  activeTournaments: [],
 };
 
 const adminSlice = createSlice({
@@ -59,6 +70,42 @@ const adminSlice = createSlice({
         banned: 0,
         revenue: 0,
       };
+    });
+    // Get banned users
+    builder.addCase(getBannedUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getBannedUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.bannedUsers = action.payload;
+    });
+    builder.addCase(getBannedUser.rejected, (state, action) => {
+      state.loading = false;
+      state.bannedUsers = [];
+    });
+    // Get all comments
+    builder.addCase(getAllComments.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getAllComments.fulfilled, (state, action) => {
+      state.loading = false;
+      state.allComments = action.payload;
+    });
+    builder.addCase(getAllComments.rejected, (state, action) => {
+      state.loading = false;
+      state.allComments = [];
+    });
+    // Get active tournaments
+    builder.addCase(getActiveTournaments.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getActiveTournaments.fulfilled, (state, action) => {
+      state.loading = false;
+      state.activeTournaments = action.payload;
+    });
+    builder.addCase(getActiveTournaments.rejected, (state, action) => {
+      state.loading = false;
+      state.activeTournaments = [];
     });
   },
 });
