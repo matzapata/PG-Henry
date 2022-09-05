@@ -43,11 +43,13 @@ function TournamentFilter(): JSX.Element {
 
   function handleFilter() {
     dispatch(fetchFilterTournaments(filter));
+    setCurrentPage(1);
   }
 
   function deleteFilter() {
     dispatch(fetchTournaments());
     setFilter(filterInitialState);
+    setCurrentPage(1);
   }
 
   return (
