@@ -61,7 +61,17 @@ function ModalReview() {
 
   return (
     <>
-      <Button onClick={onOpen}>Califícanos</Button>
+      <Button
+        onClick={onOpen}
+        bg="buttons"
+        color={"text"}
+        _hover={{
+          bg: "secondary",
+          color: "primary",
+        }}
+      >
+        Califícanos
+      </Button>
 
       <Modal
         initialFocusRef={initialRef}

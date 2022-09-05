@@ -30,7 +30,6 @@ function TournamentDetail() {
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
         <PrivatePassword />
-        {!isOwner && <Mercadopago id={id} />}
       </Box>
     </Box>
   );
