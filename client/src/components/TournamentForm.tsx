@@ -15,8 +15,6 @@ import {
   FormControl,
   InputGroup,
   InputLeftElement,
-  NumberInput,
-  NumberInputField,
   FormErrorMessage,
   Icon,
 } from "@chakra-ui/react";
@@ -28,7 +26,7 @@ import { FaExclamationCircle } from "react-icons/fa";
 type Inputs = {
   name: string;
   description: string;
-  user_limit: number;
+  user_limit: number | undefined;
   creator_user_id: string;
   type: string;
   logo_url: string;
@@ -52,9 +50,9 @@ function validate(input: Inputs, submit = false) {
   if (!!input.name.length) errors.name = "Completado";
 
   if (!!input.description.length) errors.description = "Completado";
-
-  if (input.user_limit >= 2 && input.user_limit <= 500)
-    errors.user_limit = "Completado";
+  if (input.user_limit)
+    if (input.user_limit >= 2 && input.user_limit <= 500)
+      errors.user_limit = "Completado";
 
   if (input.type === "PRIVATE") {
     if (!!input.password.length) errors.password = "Completado";
@@ -76,8 +74,13 @@ function validate(input: Inputs, submit = false) {
 
 export default function TournamentForm({
   siguientePaso,
-  addTornament,
-}: any): JSX.Element {
+  addTournament,
+  torneo,
+}: {
+  siguientePaso: any;
+  addTournament: any;
+  torneo: Inputs;
+}): JSX.Element {
   const userCreatorId = useAppSelector((state) => state.auth.decoded?.id);
   const logoTorneo = useAppSelector((state) => state.team.logo_b);
   const [logo, setLogo] = useState(logoTorneo);
@@ -92,7 +95,7 @@ export default function TournamentForm({
   const [input, setInput] = useState<Inputs>({
     name: "",
     description: "",
-    user_limit: 0,
+    user_limit: undefined,
     creator_user_id: "",
     type: "PUBLIC",
     logo_url: "",
@@ -128,13 +131,14 @@ export default function TournamentForm({
   };
 
   const crear = async () => {
-    setErrors(validate(input, true));
+    const newErrors = validate(input, true);
+    setErrors(newErrors);
 
     if (
-      errors.name === "Completado" &&
-      errors.description === "Completado" &&
-      errors.user_limit === "Completado" &&
-      errors.password === "Completado"
+      newErrors.name === "Completado" &&
+      newErrors.description === "Completado" &&
+      newErrors.user_limit === "Completado" &&
+      newErrors.password === "Completado"
     ) {
       try {
         await api.post("/tournaments/checkName", input);
@@ -144,7 +148,7 @@ export default function TournamentForm({
           finalLogo_url = logoTorneo;
         }
         if (finalLogo_url === "") finalLogo_url = "/img/torneo.jpg";
-        addTornament({
+        addTournament({
           ...input,
           creator_user_id: userCreatorId,
           logo_url: finalLogo_url,
@@ -157,8 +161,21 @@ export default function TournamentForm({
     }
   };
 
+  const setInputTorneo = () => {
+    setInput({
+      ...input,
+      name: torneo.name,
+      description: torneo.description,
+      user_limit: torneo.user_limit,
+      type: torneo.type,
+      logo_url: torneo.logo_url,
+      password: torneo.password,
+    });
+  };
+
   useEffect(() => {
     setLogo(logoTorneo);
+    setInputTorneo();
   }, []);
 
   return (
@@ -259,16 +276,15 @@ export default function TournamentForm({
                       : true
                   }
                 >
-                  <NumberInput>
-                    <NumberInputField
-                      inputMode="numeric"
-                      type="number"
-                      name="user_limit"
-                      value={input.user_limit}
-                      placeholder="Cantidad máx. de usuarios"
-                      onChange={cambiosENUser_Limit}
-                    />
-                  </NumberInput>
+                  <Input
+                    inputMode="numeric"
+                    type="number"
+                    name="user_limit"
+                    value={input.user_limit}
+                    placeholder="Cantidad máx. de usuarios"
+                    onChange={cambiosENUser_Limit}
+                  />
+
                   <FormErrorMessage fontSize="15px">
                     {errors.user_limit}
                   </FormErrorMessage>
