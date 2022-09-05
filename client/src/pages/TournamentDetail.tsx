@@ -5,7 +5,6 @@ import NavBar from "../components/NavBar";
 import { Box } from "@chakra-ui/react";
 import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
-import PrivatePassword from "../components/TournamentPrivate";
 import TournamentLoadResults from "../components/TournamentLoadResults";
 import api from "../services/api";
 
@@ -28,7 +27,6 @@ function TournamentDetail() {
         {isOwner && <TournamentLoadResults id={id} />}
         <TournamentMatches id={id} />
         <TournamentRanking id={id} />
-        <PrivatePassword />
       </Box>
     </Box>
   );
