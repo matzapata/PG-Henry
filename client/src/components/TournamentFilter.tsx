@@ -9,6 +9,8 @@ import {
   Select,
   Stack,
   Text,
+  Flex,
+  HStack,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
@@ -54,24 +56,30 @@ function TournamentFilter(): JSX.Element {
 
   return (
     <Box p="20px" backdropFilter="auto" backdropBrightness="0.5">
-      <Stack direction="row" spacing="10px">
-        <Input
-          name="name"
-          placeholder="Buscar torneo..."
-          value={filter.name}
-          color="text"
-          borderColor="buttons"
-          w="380px"
-          type="text"
-          onChange={(e) => setFilter({ ...filter, name: e.target.value })}
-        />
-        <IconButton
-          aria-label="Search database"
-          bgColor="buttons"
-          icon={<SearchIcon />}
-          type="submit"
-          onClick={handleFilter}
-        />
+      <Stack direction="row" spacing="10px" justifyContent={"space-between"}>
+        <HStack spacing={2}>
+          <Input
+            name="name"
+            placeholder="Buscar torneo..."
+            value={filter.name}
+            color="text"
+            borderColor="buttons"
+            type="text"
+            onChange={(e) => setFilter({ ...filter, name: e.target.value })}
+          />
+          <IconButton
+            _hover={{
+              color: "primary",
+              bg: "secondary",
+            }}
+            bgColor="buttons"
+            color="text"
+            aria-label="Search database"
+            icon={<SearchIcon />}
+            type="submit"
+            onClick={handleFilter}
+          />
+        </HStack>
         <Select
           w="280px"
           color="text"
@@ -121,47 +129,71 @@ function TournamentFilter(): JSX.Element {
           <option value="mostpopular">Más popular</option>
           <option value="leastpopular">Menos popular</option>
         </Select>
-        <Button
-          _hover={{
-            color: "#082032",
-          }}
+        <HStack>
+          <Button
+            _hover={{
+              color: "primary",
+              bg: "secondary",
+            }}
+            bgColor="buttons"
+            color="text"
+            size="md"
+            onClick={handleFilter}
+          >
+            Aplicar filtros
+          </Button>
+          <Button
+            _hover={{
+              color: "primary",
+              bg: "secondary",
+            }}
+            bgColor="buttons"
+            color="text"
+            size="md"
+            onClick={deleteFilter}
+          >
+            Cargar todos
+          </Button>
+          <Button
+            _hover={{
+              color: "primary",
+              bg: "secondary",
+            }}
+            bgColor="buttons"
+            color="text"
+            onClick={() =>
+              setCurrentPage(currentPage === 1 ? 1 : currentPage - 1)
+            }
+            name="backbutton"
+            disabled={currentPage === 1 ? true : false}
+          >
+            <ArrowBackIcon />
+          </Button>
+          {/* <Text
+          pl="4"
+          pr="4"
+          pt="2"
+          pb="2"
           bgColor="buttons"
           color="text"
-          size="md"
-          onClick={handleFilter}
+          borderRadius="6px"
         >
-          Aplicar filtros
-        </Button>
-        <Button
-          _hover={{
-            color: "#082032",
-          }}
-          bgColor="buttons"
-          color="text"
-          size="md"
-          onClick={deleteFilter}
-        >
-          Cargar todos
-        </Button>
-        <Button
-          onClick={() =>
-            setCurrentPage(currentPage === 1 ? 1 : currentPage - 1)
-          }
-          name="backbutton"
-          disabled={currentPage === 1 ? true : false}
-        >
-          <ArrowBackIcon />
-        </Button>
-        <Text pl="4" pr="4" pt="2" pb="2" bgColor="buttons" borderRadius="6px">
           {currentPage}
-        </Text>
-        <Button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          name="fowardbutton"
-          disabled={currentTournaments.tournaments.length < 10 ? true : false}
-        >
-          <ArrowForwardIcon />
-        </Button>
+        </Text> */}
+          <Button
+            _hover={{
+              color: "primary",
+              bg: "secondary",
+            }}
+            bgColor="buttons"
+            color="text"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            name="fowardbutton"
+            disabled={currentTournaments.tournaments.length < 12 ? true : false}
+          >
+            <ArrowForwardIcon />
+          </Button>
+        </HStack>
       </Stack>
     </Box>
   );

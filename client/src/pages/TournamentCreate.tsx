@@ -28,7 +28,7 @@ export default function TournamentCreate(): JSX.Element {
             p={"10px"}
             fontSize="30px"
             fontWeight="bold"
-            color="#F7F7F7"
+            color="text"
             ml="40px"
           >
             Crear torneo
@@ -37,10 +37,10 @@ export default function TournamentCreate(): JSX.Element {
 
         <Box display="flex" flexDir="row">
           <Link to="/torneos">
-            <ArrowBackIcon color="#F7F7F7" fontSize="30px" pt="2px" />
+            <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
           </Link>
           <Text
-            color="#F7F7F7"
+            color="text"
             mr="10px"
             fontSize="20px"
             fontWeight="bold"

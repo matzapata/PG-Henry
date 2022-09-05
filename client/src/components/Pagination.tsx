@@ -19,10 +19,25 @@ function Pagination({
 
   return (
     <Flex w="100%" justifyContent="space-between">
-      <Button onClick={() => setPage((page) => page - 1)} disabled={page === 1}>
+      <Button
+        onClick={() => setPage((page) => page - 1)}
+        disabled={page === 1}
+        _hover={{
+          color: "primary",
+          bg: "secondary",
+        }}
+        bgColor="buttons"
+        color="text"
+      >
         <ArrowBackIcon />
       </Button>
       <Button
+        _hover={{
+          color: "primary",
+          bg: "secondary",
+        }}
+        bgColor="buttons"
+        color="text"
         onClick={() => setPage((page) => page + 1)}
         disabled={
           lastPage !== undefined ? page === lastPage || lastPage === 0 : false

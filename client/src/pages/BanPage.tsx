@@ -67,7 +67,7 @@ export default function BanPage() {
   };
 
   return (
-    <Box textAlign="center" py={10} px={6} bgColor="#082032">
+    <Box textAlign="center" py={10} px={6} bgColor="primary">
       <Box display="inline-block">
         <Flex
           flexDirection="column"

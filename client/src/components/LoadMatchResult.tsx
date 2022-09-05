@@ -68,7 +68,7 @@ function LoadMatchResultCard({ match }: { match: Match }) {
 
   return (
     <form onSubmit={onSubmit}>
-      <Flex bg="secondary" borderRadius="1" p="4" flexDir="column">
+      <Flex bg="secondary" borderRadius="5" p="4" flexDir="column" my={1}>
         <Text fontSize="xs" mb="2" color="text" textAlign="center">
           {new Date(match.date).toLocaleDateString()} - {match.stage}
         </Text>

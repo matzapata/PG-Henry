@@ -24,7 +24,7 @@ export default function NavBar() {
         <Text
           fontSize="30px"
           fontWeight="bold"
-          color="#F7F7F7"
+          color="text"
           ml="2"
           mr={["4", "10"]}
         >
@@ -46,7 +46,7 @@ export default function NavBar() {
         {isLoggedIn && (
           <>
             <Link
-              color="#F7F7F7"
+              color="text"
               fontSize="20px"
               fontWeight="medium"
               mx="4"
@@ -58,7 +58,7 @@ export default function NavBar() {
           </>
         )}
         <Link
-          color="#F7F7F7"
+          color="text"
           fontSize="20px"
           fontWeight="medium"
           mx="4"
@@ -76,8 +76,12 @@ export default function NavBar() {
           <Box>
             <Button
               as={ReactLink}
-              bgColor="#4FBDBA"
-              color="#F7F7F7"
+              bgColor="buttons"
+              color="text"
+              _hover={{
+                bg: "secondary",
+                color: "primary",
+              }}
               size="md"
               mr={3}
               to="/auth/perfil"
@@ -92,8 +96,12 @@ export default function NavBar() {
           <Button
             as={ReactLink}
             to="/auth/signup"
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
+            bgColor="buttons"
+            color="text"
+            _hover={{
+              bg: "secondary",
+              color: "primary",
+            }}
             size="md"
             mr={3}
           >
@@ -102,8 +110,12 @@ export default function NavBar() {
           <Button
             as={ReactLink}
             to="/auth/login"
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
+            bgColor="buttons"
+            color="text"
+            _hover={{
+              bg: "secondary",
+              color: "primary",
+            }}
             size="md"
           >
             Ingresar

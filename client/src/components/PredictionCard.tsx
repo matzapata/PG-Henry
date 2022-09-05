@@ -11,7 +11,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
-import { Match } from "@testing-library/react";
 import { TournamentMatch } from "../redux/slices/tournament";
 export type Input = {
   scores_a: number | undefined;
@@ -107,133 +106,116 @@ function MatchForm({
   }, []);
 
   return (
-    <form action="" onSubmit={enviar}>
-      <Flex
-        flexDirection={"row"}
-        color={"white"}
-        justifyContent="space-around"
-        p={"10px"}
-        rounded={"xl"}
-        boxShadow={"lg"}
-        bg={useColorModeValue("whiteAlpha.500", "gray.700")}
-        alignItems={"center"}
-        margin={"10px"}
-      >
-        <Stack flexDirection={"row"} align-items={"center"}>
-          <Image
-            src={match.team_a.shield_url}
-            w={"3rem"}
-            h={"3rem"}
-            mr={"10px"}
-          />
-          <Box>
-            <Text
-              mr={"10px"}
-              fontSize="xl"
-              color={useColorModeValue("gray.700", "white")}
-            >
+    <form onSubmit={enviar}>
+      <Flex bg="secondary" borderRadius="1" p="4" flexDir="column">
+        <Flex justifyContent="space-between" alignItems="center">
+          <Flex alignItems="center">
+            <Image
+              src={
+                match.team_a.shield_url === ""
+                  ? "/img/team-shield-placeholder.jpg"
+                  : match.team_a.shield_url
+              }
+              borderRadius="1"
+              h="14"
+              w="14"
+            />
+            <Text color="text" ml="4" fontSize="lg" fontWeight="medium">
               {match.team_a.name}
             </Text>
-          </Box>
-          {input.scores_a === 999 ? (
-            <Input
-              marginLeft={"50px"}
-              w={"70px"}
-              readOnly
-              value={"X"}
-              bg={"red.500"}
-            ></Input>
-          ) : (
-            <FormControl isInvalid={errors.scores_a !== ""}>
+          </Flex>
+
+          <Flex alignItems="center">
+            {input.scores_a === 999 ? (
               <Input
-                marginLeft={"10px"}
-                isReadOnly={match.team_a.scores !== undefined || enviado}
-                w={"70px"}
-                type="number"
-                value={input.scores_a}
-                bg={
-                  match.match_result?.score_a === null
-                    ? "gray.500"
-                    : input.scores_a === match.match_result?.score_a
-                    ? "green.500"
-                    : "red.500"
-                }
-                name="scores_a"
-                onChange={cambiosInput}
-              />
-              <FormErrorMessage>{errors.scores_a}</FormErrorMessage>
-            </FormControl>
-          )}
-        </Stack>
-        <Stack>
-          <Text>VS</Text>
-        </Stack>
-        <Stack
-          display={"flex"}
-          flexDirection={"row"}
-          alignItems={"center"}
-          justifyContent={"space-around"}
-        >
-          {input.scores_b === 999 ? (
-            <Input
-              marginLeft={"20px"}
-              marginRight={"20px"}
-              w={"70px"}
-              readOnly
-              value={"X"}
-              bg={"red.500"}
-            ></Input>
-          ) : (
-            <FormControl isInvalid={errors.scores_b !== ""}>
+                w="14"
+                color="text"
+                textAlign="center"
+                readOnly
+                value={"X"}
+                bg={"red.500"}
+              ></Input>
+            ) : (
+              <FormControl isInvalid={errors.scores_a !== ""}>
+                <Input
+                  w="14"
+                  color="text"
+                  textAlign="center"
+                  isReadOnly={match.team_a.scores !== undefined || enviado}
+                  type="number"
+                  value={input.scores_a}
+                  bg={
+                    match.match_result?.score_a === null
+                      ? "gray.500"
+                      : input.scores_a === match.match_result?.score_a
+                      ? "green.500"
+                      : "red.500"
+                  }
+                  name="scores_a"
+                  onChange={cambiosInput}
+                />
+                <FormErrorMessage>{errors.scores_a}</FormErrorMessage>
+              </FormControl>
+            )}
+
+            <Text color="text" mx="4">
+              VS
+            </Text>
+
+            {input.scores_b === 999 ? (
               <Input
-                marginRight={"20px"}
-                isReadOnly={match.team_b.scores !== undefined || enviado}
-                w={"70px"}
+                w="14"
+                color="text"
                 type="number"
-                value={input.scores_b}
-                name="scores_b"
-                onChange={cambiosInput}
-                bg={
-                  match.match_result?.score_b === null
-                    ? "gray.500"
-                    : input.scores_b === match.match_result?.score_b
-                    ? "green.500"
-                    : "red.500"
-                }
-              />
-              <FormErrorMessage>{errors.scores_b}</FormErrorMessage>
-            </FormControl>
-          )}
-          <Box>
-            <Text
-              mr={"10px"}
-              fontSize="xl"
-              color={useColorModeValue("gray.700", "white")}
-            >
+                textAlign="center"
+                readOnly
+                value={"X"}
+                bg={"red.500"}
+              ></Input>
+            ) : (
+              <FormControl isInvalid={errors.scores_b !== ""}>
+                <Input
+                  w="14"
+                  color="text"
+                  type="number"
+                  textAlign="center"
+                  isReadOnly={match.team_b.scores !== undefined || enviado}
+                  value={input.scores_b}
+                  name="scores_b"
+                  onChange={cambiosInput}
+                  bg={
+                    match.match_result?.score_b === null
+                      ? "gray.500"
+                      : input.scores_b === match.match_result?.score_b
+                      ? "green.500"
+                      : "red.500"
+                  }
+                />
+                <FormErrorMessage>{errors.scores_b}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Flex>
+          <Flex alignItems="center">
+            <Text color="text" fontSize="lg" fontWeight="medium" mr="4">
               {match.team_b.name}
             </Text>
-          </Box>
+            <Image
+              src={
+                match.team_a.shield_url === ""
+                  ? "/img/team-shield-placeholder.jpg"
+                  : match.team_a.shield_url
+              }
+              borderRadius="1"
+              h="14"
+              w="14"
+            />
+          </Flex>
+        </Flex>
 
-          <Image
-            marginLeft={"20px"}
-            src={match.team_b.shield_url}
-            w={"3rem"}
-            h={"3rem"}
-          />
-        </Stack>
         {input.scores_a !== undefined &&
           input.scores_b !== undefined &&
           !enviado && (
-            <Button
-              width={"100px"}
-              height={"40px"}
-              type="submit"
-              fontSize="15px"
-              bg={"blue.400"}
-              _hover={{
-                bg: "blue.500",
-              }}
-            >
+            <Button type="submit" size="sm" mt="3" colorScheme="whiteAlpha">
               Guardar
             </Button>
           )}
