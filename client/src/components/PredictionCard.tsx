@@ -136,7 +136,13 @@ function MatchForm({
             </Text>
           </Box>
           {input.scores_a === 999 ? (
-            <Input marginLeft={"50px"} w={"70px"} readOnly value={"X"}></Input>
+            <Input
+              marginLeft={"50px"}
+              w={"70px"}
+              readOnly
+              value={"X"}
+              bg={"red.500"}
+            ></Input>
           ) : (
             <FormControl isInvalid={errors.scores_a !== ""}>
               <Input
@@ -169,10 +175,18 @@ function MatchForm({
           justifyContent={"space-around"}
         >
           {input.scores_b === 999 ? (
-            <Input marginLeft={"20px"} w={"70px"} readOnly value={"X"}></Input>
+            <Input
+              marginLeft={"20px"}
+              marginRight={"20px"}
+              w={"70px"}
+              readOnly
+              value={"X"}
+              bg={"red.500"}
+            ></Input>
           ) : (
             <FormControl isInvalid={errors.scores_b !== ""}>
               <Input
+                marginRight={"20px"}
                 isReadOnly={match.team_b.scores !== undefined || enviado}
                 w={"70px"}
                 type="number"

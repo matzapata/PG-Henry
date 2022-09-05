@@ -1,6 +1,7 @@
 import { Flex, Divider, Heading } from "@chakra-ui/react";
 import React from "react";
 import SideBar from "../components/admin/SideBar";
+import TournamentTable from "../components/admin/TournamentTable";
 
 function AdminTournaments() {
   return (
@@ -11,6 +12,7 @@ function AdminTournaments() {
         <Heading color={"gray.400"} fontWeight={"normal"} p={5}>
           Torneos
         </Heading>
+        <TournamentTable />
       </Flex>
     </Flex>
   );
