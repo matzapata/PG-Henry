@@ -2,97 +2,75 @@ import React, { useEffect } from "react";
 import {
   Box,
   Container,
-  Divider,
   Flex,
   Heading,
   HStack,
-  Image,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import PublicTournaments from "../components/PublicTournament";
 import Carousel from "../components/NewsCarousel";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import UserTournaments from "../components/UserTournaments";
+import OwnerTournament from "../components/TornamentOwner";
 import { IoTrophy } from "react-icons/io5";
+import ReviewCarousel from "../components/ReviewCarousel";
+import { useAuth0 } from "@auth0/auth0-react";
+import { loginAuth0 } from "../redux/slices/authThunk";
+import { getReviews } from "../redux/slices/userThunk";
+import { useHistory } from "react-router-dom";
 
 function Home() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const data = useAppSelector((state) => state.user.userComments);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, user } = useAuth0();
+  const infoUser = useAppSelector((state) => state.auth.decoded);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (isAuthenticated)
+      dispatch(
+        loginAuth0({
+          email: user?.email as string,
+          username: user?.nickname as string,
+          full_name: user?.name as string,
+          birth_date: user?.birthdate as string,
+          check: true,
+        })
+      );
+    dispatch(getReviews(null));
+  }, []);
+
+  useEffect(() => {
+    if (infoUser?.is_banned === true) history.push("/banned");
+  }, [infoUser]);
 
   return (
     <Container
       maxW="100vw"
       h="100vh"
-      p="0"
+      px="0"
+      pt="0"
+      pb="10"
       bgColor="DPrimary"
       bgSize="cover"
       bgImage="url('/img/bgImg.png')"
       bgPosition="center"
     >
       <NavBar />
-      {/* <HStack
-        mt={10}
-        justifyContent="space-between"
-        alignItems="flex-start"
-        spacing={3}
-      >
-        <Box
-          // px={["4", "24"]}
-          // py={["10", "24"]}
-          // mx={["4", "10"]}
-          // my="4"
-          // mt="15%"
-          width="65%"
-          borderRadius="20px"
-          opacity="95%"
-          backgroundColor="gray.600"
-        >
-          <Box maxWidth="3xl" mx={["4", "8", "auto"]}>
-            <Heading
-              fontSize={["2xl", "5xl"]}
-              fontWeight="800"
-              color="#F7F7F7"
-              textAlign="center"
-            >
-              Prode Master, la mejor página de pronósticos deportivos
-            </Heading>
-            <Text
-              mt="5%"
-              textAlign="center"
-              fontSize={["md", "lg"]}
-              fontWeight="500"
-              color="#F7F7F7"
-            >
-              Participá de los torneos mas famosos por premios en efectivo, o
-              creá el tuyo personalizado para competir con tus amigos
-            </Text>
-            <Divider mt="5%" />
-          </Box>
-          {isLoggedIn && (
-            <Box mt="8">
-              <UserTournaments />
-            </Box>
-          )}
-        </Box>
-        <VStack width="35%">
-          <Box bgColor="gray.600" borderRadius={20} height="50vh">
-            {!isLoggedIn && <Carousel />}
-          </Box>
-          <Box bgColor="gray.600" borderRadius={20}>
-            <PublicTournaments />
-          </Box>
-        </VStack>
-      </HStack> */}
       <Flex
-        backgroundColor="gray.800"
+        backgroundColor="primary"
         mt="90vh"
         pl="5%"
         borderTopWidth={5}
         borderTopColor="Dtext"
         justifyContent="space-between"
       >
-        <IoTrophy size="20em" color="#0096FF" />
+        <Box mt={10}>
+          <IoTrophy size="20em" color="#0096FF" />
+        </Box>
         <Box maxWidth="3xl" me={20} mt={10} mb={10}>
           <Heading
             fontSize={["2xl", "5xl"]}
@@ -117,24 +95,44 @@ function Home() {
           {/* <Divider mt="5%" /> */}
         </Box>
       </Flex>
-      <HStack
-        margin={"5%"}
-        alignItems="start"
-        spacing={10}
-        justifyContent="space-between"
-      >
-        <Box>
-          <PublicTournaments />
+      {/* <Box height="50vh" width={"50%"}> */}
+      {!isLoggedIn && (
+        <Box marginTop="75px" mx={20}>
+          <Box>
+            <PublicTournaments />
+          </Box>
+          <HStack height={"50vh"}>
+            <Carousel />
+            {data.length === 0 ? null : (
+              <Box width={"100%"} marginTop="75px" paddingLeft={"80px"}>
+                <ReviewCarousel />
+              </Box>
+            )}
+          </HStack>
         </Box>
-        <Box height="50vh" width={"50%"}>
-          {!isLoggedIn && <Carousel />}
-          {isLoggedIn && (
-            <Box mt="8">
-              <UserTournaments />
+      )}
+      {isLoggedIn && (
+        <VStack spacing={10} mx={20} alignSelf="baseline" mt={20}>
+          <Box width={"full"}>
+            <PublicTournaments />
+          </Box>
+          <Flex flexDir={"column"} width="full">
+            <Box>
+              <OwnerTournament />
+              {/* <Box width={"100%"} marginTop="100px" paddingLeft={"80px"}></Box> */}
             </Box>
-          )}
-        </Box>
-      </HStack>
+            <UserTournaments />
+            <Flex mt="12">
+              {data.length === 0 ? null : (
+                <Box width={"100%"}>
+                  <ReviewCarousel />
+                </Box>
+              )}
+            </Flex>
+          </Flex>
+        </VStack>
+      )}
+      {/*  </Box> */}
     </Container>
   );
 }

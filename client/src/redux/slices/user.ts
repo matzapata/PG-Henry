@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { changePassword, fetchUserTournaments, getUserInfo } from "./userThunk";
+import {
+  fetchUserTournaments,
+  getUserInfo,
+  updateProfile,
+  fetchUniqueUserTournament,
+  getReviews,
+  fetchUserTournamentWinner,
+  getOwnerTournament,
+} from "./userThunk";
 
 type UserTournament = {
   id: string;
@@ -10,27 +18,12 @@ type UserTournament = {
   type: string;
 };
 
-type InitialState = {
-  loading: boolean;
-  error: string;
-  message: string;
-  userDetail:
-    | {
-        id: string;
-        username: string;
-        full_name: string;
-        email: string;
-        is_admin: boolean;
-        banned: boolean;
-        avatar: string;
-        alias_mp: string;
-      }
-    | any;
-  userTournaments: {
-    page: number;
-    lastPage: number;
-    tournaments: UserTournament[];
-  };
+type OwnerTournaments = {
+  id: string;
+  name: string;
+  logo_url: string;
+  status: string;
+  type: string;
 };
 
 const initialState: {
@@ -45,7 +38,15 @@ const initialState: {
     page: number;
     lastPage: number;
     tournaments: UserTournament[];
+    is_attached: boolean;
+    winner: boolean;
   };
+  ownerTournaments: {
+    page: number;
+    lastPage: number;
+    tournaments: OwnerTournaments[];
+  };
+  userComments: any[];
 } = {
   token: null,
   decoded: null,
@@ -58,20 +59,16 @@ const initialState: {
     page: 1,
     lastPage: 1,
     tournaments: [],
+    is_attached: false,
+    winner: false,
+  },
+  userComments: [],
+  ownerTournaments: {
+    page: 1,
+    lastPage: 1,
+    tournaments: [],
   },
 };
-
-// const initialState: InitialState = {
-//   loading: false,
-//   error: "",
-//   message: "",
-//   userDetail: null,
-//   userTournaments: {
-//     page: 1,
-//     lastPage: 1,
-//     tournaments: [],
-//   },
-// };
 
 const userSlice = createSlice({
   name: "users",
@@ -93,16 +90,17 @@ const userSlice = createSlice({
       state.error = action.error.message || "Algo salio mal";
     });
 
-    // Change password
-    builder.addCase(changePassword.pending, (state) => {
+    // Edit profile
+    builder.addCase(updateProfile.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(changePassword.fulfilled, (state, action) => {
+    builder.addCase(updateProfile.fulfilled, (state, action) => {
+      console.log(action);
       state.loading = false;
       state.message = action.payload;
       state.error = "";
     });
-    builder.addCase(changePassword.rejected, (state) => {
+    builder.addCase(updateProfile.rejected, (state) => {
       state.loading = false;
       state.userDetail = null;
       state.error = "Ingresaste un email incorrecto.";
@@ -121,6 +119,72 @@ const userSlice = createSlice({
     builder.addCase(fetchUserTournaments.rejected, (state, action) => {
       state.userTournaments = initialState.userTournaments;
       state.error = action.payload as string;
+    });
+    // fetch owner tournaments
+    builder.addCase(getOwnerTournament.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getOwnerTournament.fulfilled, (state, action) => {
+      state.loading = false;
+      state.ownerTournaments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getOwnerTournament.rejected, (state, action) => {
+      state.ownerTournaments = initialState.ownerTournaments;
+      state.error = action.payload as string;
+    });
+    // fetch if user is attached tournaments
+    builder.addCase(fetchUniqueUserTournament.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(fetchUniqueUserTournament.fulfilled, (state, action) => {
+      if (typeof action.payload === "object") {
+        state.userTournaments.is_attached = true;
+      } else {
+        state.userTournaments.is_attached = false;
+      }
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(fetchUniqueUserTournament.rejected, (state, action) => {
+      state.userTournaments.is_attached = false;
+      state.loading = false;
+      state.error = "";
+    });
+    // fetch user comments
+    builder.addCase(getReviews.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getReviews.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userComments = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getReviews.rejected, (state, action) => {
+      state.userComments = [];
+      state.error = action.payload as string;
+    });
+    //fetch winner?
+    builder.addCase(fetchUserTournamentWinner.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournamentWinner.fulfilled, (state, action) => {
+      if (typeof action.payload === "object") {
+        state.userTournaments.winner = true;
+      } else {
+        state.userTournaments.winner = false;
+      }
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(fetchUserTournamentWinner.rejected, (state, action) => {
+      state.loading = true;
+      state.error = "";
+      state.userTournaments.winner = false;
     });
   },
 });

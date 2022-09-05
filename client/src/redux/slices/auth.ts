@@ -3,7 +3,13 @@ import { login, loginAuth0, refreshToken, signOut } from "./authThunk";
 
 type InitialState = {
   token: null | string;
-  decoded: null | { id: string; username: string; email: string };
+  decoded: null | {
+    id: string;
+    username: string;
+    email: string;
+    is_admin: boolean;
+    is_banned: boolean;
+  };
   loading: boolean;
   error: string;
 };

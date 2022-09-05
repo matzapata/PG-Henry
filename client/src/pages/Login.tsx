@@ -25,6 +25,8 @@ import { Link as ReactLink, useHistory } from "react-router-dom";
 import { isEmail } from "../utils/validations";
 import { useAuth0 } from "@auth0/auth0-react";
 import Auth0SignInButton from "../components/Auth0SignInButton";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import ResetPassword from "../components/ResetPassword";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -63,7 +65,6 @@ function Login() {
   useEffect(() => {
     if (isAuthenticated) history.push("/");
     else if (isAuth0Authenticated) {
-      console.log(user);
       dispatch(
         loginAuth0({
           email: user?.email as string,
@@ -87,6 +88,21 @@ function Login() {
       justifyContent="center"
       alignItems="center"
     >
+      <Box
+        h="80px"
+        display="flex"
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        p="20px"
+      >
+        <Box display="flex" flexDir="row">
+          <Link as={ReactLink} color="teal.400" to="/">
+            <ArrowBackIcon fontSize="30px" />
+          </Link>
+        </Box>
+      </Box>
+
       <Stack
         mb="2"
         flexDir="column"
@@ -149,14 +165,19 @@ function Login() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <Checkbox
-                  onChange={() => {
-                    setCheck(!check);
-                  }}
-                  mt="2"
-                >
-                  Mantener sesión iniciada
-                </Checkbox>
+                <Flex justifyContent={"space-between"}>
+                  <Checkbox
+                    onChange={() => {
+                      setCheck(!check);
+                    }}
+                    mt="2"
+                  >
+                    Mantener sesión iniciada
+                  </Checkbox>
+                  <Flex mt={"0.5rem"}>
+                    <ResetPassword />
+                  </Flex>
+                </Flex>
               </FormControl>
               <Button
                 width="full"

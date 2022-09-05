@@ -11,6 +11,16 @@ import {
   FormErrorMessage,
   Select,
   useColorModeValue,
+  Flex,
+  Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  Image,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 type Match = {
@@ -19,6 +29,7 @@ type Match = {
   team_b_name: string;
   date: string;
   stage: string;
+  code_stage: string;
 };
 
 type Team = {
@@ -26,29 +37,27 @@ type Team = {
   shield_url: string;
   key: number;
 };
-type props = {
-  cb: any;
-  equipos: Team[];
-};
+
 function validate(input: Match, matches: Match[], agregar = false) {
   const errors = {
     teams: "",
     stage: "",
     date: "",
     matches: "",
+    code_stage: "",
   };
-  if (input.team_a_name != "Equipo A" && input.team_b_name != "Equipo B") {
+  if (input.team_a_name != "Equipo A" && input.team_b_name != "Equipo B")
     if (input.team_a_name !== input.team_b_name) {
       errors.teams = "Completado";
     } else {
       errors.teams = "Partido Inválido";
     }
-  }
+
   const tiempoTranscurrido = Date.now();
   const hoyN = new Date(tiempoTranscurrido);
 
   const hoy = hoyN.toLocaleDateString();
-  const yyyy = Number(hoy.slice(5)).toString();
+  const yyyy = Number(hoy.slice(4)).toString();
 
   if (!!input.date.length) {
     errors.date = "Completado";
@@ -62,6 +71,7 @@ function validate(input: Match, matches: Match[], agregar = false) {
       errors.date = " Año inválido";
     }
   }
+  if (!!input.code_stage.length) errors.code_stage = "Completado";
   matches.map((match: Match) => {
     if (
       (match.team_a_name === input.team_a_name &&
@@ -93,32 +103,40 @@ function validate(input: Match, matches: Match[], agregar = false) {
     }
   });
 
-  if (!!input.stage.length) errors.stage = "Completado";
-
   if (agregar) {
     if (errors.teams === "") errors.teams = "Campo Requerido";
-    if (errors.stage === "") errors.stage = "Campo Requerido";
     if (errors.date === "") errors.date = "Campo Requerido";
+    if (errors.code_stage === "") errors.code_stage = "Campo Requerido";
   }
   return errors;
 }
-export default function MatchAdd(props: props): JSX.Element {
-  const { equipos } = props;
-  const { cb } = props;
+export default function MatchAdd({
+  equipos,
+  partidos,
+  addMatches,
+  siguientePaso,
+  volverPaso,
+}: any): JSX.Element {
+  const [createError, setCreateError] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [matches, setMatches] = useState<Match[]>([]);
   const [input, setInput] = useState<Match>({
-    key: 0,
+    key: 1000,
     team_a_name: "",
     team_b_name: "",
     date: "",
     stage: "",
+    code_stage: "",
   });
   const [errors, setErrors] = useState({
     teams: "",
     stage: "",
     date: "",
     matches: "",
+    code_stage: "",
   });
+  const [_stage, set_stage] = useState("");
+  const [codeSelected, setCodeSelected] = useState([""]);
 
   const cambiosEnInput = (
     e:
@@ -130,7 +148,7 @@ export default function MatchAdd(props: props): JSX.Element {
       e.currentTarget.name === "team_a_name" ||
       e.currentTarget.name === "team_b_name"
     ) {
-      llenarSelect(equipos, true, e.currentTarget.name, e.currentTarget.value);
+      llenarSelect(equipos);
     }
     setInput({
       ...input,
@@ -153,8 +171,8 @@ export default function MatchAdd(props: props): JSX.Element {
     setErrors(newErrors);
     if (
       newErrors.date === "Completado" &&
-      newErrors.stage === "Completado" &&
       newErrors.teams === "Completado" &&
+      newErrors.code_stage === "Completado" &&
       newErrors.matches === ""
     ) {
       setMatches([
@@ -165,10 +183,28 @@ export default function MatchAdd(props: props): JSX.Element {
           date: input.date,
           key: input.key,
           stage: input.stage,
+          code_stage: input.code_stage,
         },
       ]);
-      setInput({ ...input, key: input.key + 1 });
+      addMatches([
+        ...matches,
+        {
+          team_a_name: input.team_a_name,
+          team_b_name: input.team_b_name,
+          date: input.date,
+          key: input.key,
+          stage: input.stage,
+          code_stage: input.code_stage,
+        },
+      ]);
+      setInput({ ...input, key: input.key + 1, code_stage: "" });
+      selectReset();
+      setCreateError("");
     }
+  };
+  const selectReset = () => {
+    const selectA: any = document.getElementsByName("code_stage");
+    selectA[0][0].selected = true;
   };
   const quitarPartido = (e: any) => {
     const newInputMatch = matches.filter((el) => {
@@ -176,13 +212,9 @@ export default function MatchAdd(props: props): JSX.Element {
     });
     setErrors(validate(input, newInputMatch, false));
     setMatches(newInputMatch);
+    addMatches(newInputMatch);
   };
-  const llenarSelect = (
-    teams: Team[],
-    vieneDelinput = false,
-    targ_name = "", //team_a_name
-    targ_value = "" //A
-  ) => {
+  const llenarSelect = (teams: Team[]) => {
     const selectA: any = document.getElementById("team_a");
     const selectB: any = document.getElementById("team_b");
     let teamsA: Team[] = teams;
@@ -249,27 +281,109 @@ export default function MatchAdd(props: props): JSX.Element {
     });
   };
   function actualizarMatches() {
-    const teamsNames = equipos.map((team) => {
+    const teamsNames = equipos.map((team: Team) => {
       return team.name;
     });
+    const el = equipos.length;
+    let newStage = "";
+
+    if (el === 2) {
+      newStage = "FINAL";
+    } else {
+      if (el === 4) {
+        newStage = "SEMIFINAL";
+      } else {
+        if (el === 8) {
+          newStage = "QUARTERFINAL";
+        } else {
+          if (el === 16) {
+            newStage = "ROUNDOF16";
+          } else {
+            newStage = "ROUNDOF32";
+          }
+        }
+      }
+    }
+
     const newMatches = matches.filter((match) => {
       return (
         teamsNames.includes(match.team_a_name) &&
-        teamsNames.includes(match.team_b_name)
+        teamsNames.includes(match.team_b_name) &&
+        match.stage === newStage
       );
     });
 
     if (newMatches.length != matches.length) setMatches(newMatches);
   }
+  const crear = async () => {
+    const ml = matches.length;
+    if (!ml) {
+      setCreateError("Debe haber al menos 1 partido");
+    } else {
+      if (
+        (_stage === "FINAL" && ml !== 1) ||
+        (_stage === "SEMIFINAL" && ml !== 2) ||
+        (_stage === "QUARTERFINAL" && ml !== 4) ||
+        (_stage === "ROUNDOF16" && ml !== 8) ||
+        (_stage === "ROUNDOF32" && ml !== 16)
+      ) {
+        setCreateError("Faltan partidos por asignar");
+      } else {
+        addMatches(matches);
+        siguientePaso();
+      }
+    }
+  };
+
+  const llenar_stage = () => {
+    const el = equipos.length;
+    let newStage = "";
+
+    if (el === 2) {
+      newStage = "FINAL";
+    } else {
+      if (el === 4) {
+        newStage = "SEMIFINAL";
+      } else {
+        if (el === 8) {
+          newStage = "QUARTERFINAL";
+        } else {
+          if (el === 16) {
+            newStage = "ROUNDOF16";
+          } else {
+            newStage = "ROUNDOF32";
+          }
+        }
+      }
+    }
+    set_stage(newStage);
+  };
+  const setcodeselected = () => {
+    const seleccionados = matches.map((match) => {
+      return match.code_stage;
+    });
+    setCodeSelected(seleccionados);
+  };
+
+  useEffect(() => {
+    setMatches(partidos);
+    llenar_stage();
+    actualizarMatches();
+  }, []);
 
   useEffect(() => {
     llenarSelect(equipos);
     actualizarMatches();
+    llenar_stage;
   }, [equipos]);
+
   useEffect(() => {
-    cb(matches);
+    setcodeselected();
   }, [matches]);
 
+  useEffect(() => {
+    setInput({ ...input, stage: _stage });
+  }, [_stage]);
   return (
     <Container p="0px">
       <Box
@@ -280,31 +394,43 @@ export default function MatchAdd(props: props): JSX.Element {
         justifyContent="space-between"
         p="12px"
         bg={useColorModeValue("white", "gray.700")}
+        rounded={"xl"}
+        boxShadow={"lg"}
       >
         <Stack spacing="9px">
           <form onSubmit={agregaPartido}>
             <Stack direction="column" spacing={4} alignItems="space-between">
-              <Stack direction="row" spacing={4} alignItems="center">
-                <Select
-                  id="team_a"
-                  name="team_a_name"
-                  onChange={cambiosEnInput}
-                >
-                  <option value="" selected disabled hidden>
-                    Equipo A
-                  </option>
-                </Select>
-                <Text>Vs.</Text>
-                <Select
-                  id="team_b"
-                  name="team_b_name"
-                  onChange={cambiosEnInput}
-                >
-                  <option value="" selected disabled hidden>
-                    Equipo B
-                  </option>
-                </Select>
-              </Stack>
+              <FormControl
+                isInvalid={
+                  errors.teams === "Completado" || errors.teams === ""
+                    ? false
+                    : true
+                }
+              >
+                <Heading marginBottom={"55px"}>{_stage}</Heading>
+                <Stack direction="row" spacing={4} alignItems="center">
+                  <Select
+                    id="team_a"
+                    name="team_a_name"
+                    onChange={cambiosEnInput}
+                  >
+                    <option value="" selected disabled hidden>
+                      Equipo A
+                    </option>
+                  </Select>
+                  <Text>Vs.</Text>
+                  <Select
+                    id="team_b"
+                    name="team_b_name"
+                    onChange={cambiosEnInput}
+                  >
+                    <option value="" selected disabled hidden>
+                      Equipo B
+                    </option>
+                  </Select>
+                </Stack>
+                <FormErrorMessage>{errors.teams}</FormErrorMessage>
+              </FormControl>
 
               <Stack direction="row" spacing={4}>
                 <FormControl
@@ -322,26 +448,387 @@ export default function MatchAdd(props: props): JSX.Element {
                   />
                   <FormErrorMessage>{errors.date}</FormErrorMessage>
                 </FormControl>
+
                 <FormControl
                   isInvalid={
-                    errors.stage === "Completado" || errors.stage === ""
+                    errors.code_stage === "Completado" ||
+                    errors.code_stage === ""
                       ? false
                       : true
                   }
                 >
-                  <Select name="stage" onChange={cambiosEnInput}>
-                    <option selected value="">
-                      Instacia
+                  <Select name="code_stage" onChange={cambiosEnInput}>
+                    <option hidden={_stage !== "FINAL" ? false : true} value="">
+                      Código
                     </option>
-                    <option value={"FASEGROUP"}>Fase de Grupo</option>
-                    <option value={"ROUNDOF32"}>Ronda de 32</option>
-                    <option value={"QUARTERFINAL"}>Cuartos de final</option>
-                    <option value={"SEMIFINAL"}>Semifinal</option>
-                    <option value={"FINAL"}>Final</option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A1")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A1"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A2")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A2"}
+                    >
+                      A2
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A3")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A3"}
+                    >
+                      A3
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A4")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A4"}
+                    >
+                      A4
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A5")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A5"}
+                    >
+                      A5
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A6")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A6"}
+                    >
+                      A6
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A7")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A7"}
+                    >
+                      A7
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32A8")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32A8"}
+                    >
+                      A8
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B1")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B1"}
+                    >
+                      B1
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B2")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B2"}
+                    >
+                      B2
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B3")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B3"}
+                    >
+                      B3
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B4")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B4"}
+                    >
+                      B4
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B5")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B5"}
+                    >
+                      B5
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B6")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B6"}
+                    >
+                      B6
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B7")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B7"}
+                    >
+                      B7
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF32" &&
+                        !codeSelected.includes("ROUNDOF32B8")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF32B8"}
+                    >
+                      B8
+                    </option>
+
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16A1")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16A1"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16A2")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16A2"}
+                    >
+                      A2
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16A3")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16A3"}
+                    >
+                      A3
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16A4")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16A4"}
+                    >
+                      A4
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16B1")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16B1"}
+                    >
+                      B1
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16B2")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16B2"}
+                    >
+                      B2
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16B3")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16B3"}
+                    >
+                      B3
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "ROUNDOF16" &&
+                        !codeSelected.includes("ROUNDOF16B4")
+                          ? false
+                          : true
+                      }
+                      value={"ROUNDOF16B4"}
+                    >
+                      B4
+                    </option>
+
+                    <option
+                      hidden={
+                        _stage === "QUARTERFINAL" &&
+                        !codeSelected.includes("QUARTERFINALA1")
+                          ? false
+                          : true
+                      }
+                      value={"QUARTERFINALA1"}
+                    >
+                      A1
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "QUARTERFINAL" &&
+                        !codeSelected.includes("QUARTERFINALA2")
+                          ? false
+                          : true
+                      }
+                      value={"QUARTERFINALA2"}
+                    >
+                      A2
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "QUARTERFINAL" &&
+                        !codeSelected.includes("QUARTERFINALB1")
+                          ? false
+                          : true
+                      }
+                      value={"QUARTERFINALB1"}
+                    >
+                      B1
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "QUARTERFINAL" &&
+                        !codeSelected.includes("QUARTERFINALB2")
+                          ? false
+                          : true
+                      }
+                      value={"QUARTERFINALB2"}
+                    >
+                      B2
+                    </option>
+
+                    <option
+                      hidden={
+                        _stage === "SEMIFINAL" &&
+                        !codeSelected.includes("SEMIFINALA1")
+                          ? false
+                          : true
+                      }
+                      value={"SEMIFINALA1"}
+                    >
+                      A
+                    </option>
+                    <option
+                      hidden={
+                        _stage === "SEMIFINAL" &&
+                        !codeSelected.includes("SEMIFINALB1")
+                          ? false
+                          : true
+                      }
+                      value={"SEMIFINALB1"}
+                    >
+                      B
+                    </option>
+
+                    <option
+                      hidden={_stage === "FINAL" ? false : true}
+                      value={"FINAL"}
+                    >
+                      Final
+                    </option>
                   </Select>
-                  <FormErrorMessage>{errors.stage}</FormErrorMessage>
+                  <FormErrorMessage>{errors.code_stage}</FormErrorMessage>
                 </FormControl>
+                <Button
+                  paddingLeft={"2rem"}
+                  paddingRight={"2rem"}
+                  onClick={onOpen}
+                >
+                  Fixture
+                </Button>
               </Stack>
+              <Box>
+                <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Image src="/img/Esquema_1.png" />
+                    </ModalBody>
+
+                    <ModalFooter justifyContent={"center"}>
+                      <Button onClick={onClose} colorScheme="blue" mr={3}>
+                        Cerrar
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              </Box>
 
               {errors.matches != "Completado" && (
                 <Text color="red.500">{errors.matches}</Text>
@@ -368,7 +855,7 @@ export default function MatchAdd(props: props): JSX.Element {
                   borderRadius="20px"
                   display={"flex"}
                   flexDirection="column"
-                  p="5px"
+                  p="10px"
                   w="auto"
                   margin="5px"
                 >
@@ -390,9 +877,7 @@ export default function MatchAdd(props: props): JSX.Element {
                     <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
                       {el.team_b_name}
                     </Text>
-                    <Text fontSize="15px" fontWeight="bold" color="#AEFEFF">
-                      {el.stage}
-                    </Text>
+
                     <Button
                       value={el.key}
                       onClick={quitarPartido}
@@ -407,6 +892,27 @@ export default function MatchAdd(props: props): JSX.Element {
                 </GridItem>
               </Box>
             ))}
+          <Flex mt="4" alignItems="center">
+            <FormControl
+              isInvalid={
+                createError === "Completado" || createError === ""
+                  ? false
+                  : true
+              }
+            >
+              <FormErrorMessage justifyContent="center">
+                {createError}
+              </FormErrorMessage>
+            </FormControl>
+          </Flex>
+          <Stack
+            flexDirection={"row"}
+            spacing={"5.rem"}
+            justifyContent={"space-between"}
+          >
+            <Button onClick={volverPaso}>Anterior </Button>
+            <Button onClick={crear}>Siguiente </Button>
+          </Stack>
         </Stack>
       </Box>
     </Container>

@@ -1,14 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 
-type ChangePassword = {
-  email: string;
-  password: string;
-};
-
 type DeleteUser = {
   is_active: boolean;
   id: string;
+};
+
+type UpdateProfile = {
+  alias_mp: string;
+  id: string;
+  email: string;
+  password: string;
 };
 
 export const getUserInfo = createAsyncThunk(
@@ -23,14 +25,20 @@ export const getUserInfo = createAsyncThunk(
   }
 );
 
-export const changePassword = createAsyncThunk(
-  "change/password",
-  async (payload: ChangePassword, { rejectWithValue }) => {
+export const updateProfile = createAsyncThunk(
+  "update/profile",
+  async (payload: UpdateProfile, { rejectWithValue }) => {
     try {
-      const response = await api.put("/users/changepsw", payload);
-      return response.data.msg;
+      const { id, alias_mp, email, password } = payload;
+      const response = await api.put(`/users/${id}/editProfile`, {
+        alias_mp,
+        email,
+        password,
+      });
+      console.log(response.data);
+      if (response.status === 200) return response.data.msg;
     } catch (err: any) {
-      return rejectWithValue(err.response.data.error);
+      return rejectWithValue(err.response.error);
     }
   }
 );
@@ -66,6 +74,78 @@ export const fetchUserTournaments = createAsyncThunk(
       return response.data;
     } catch (e: any) {
       return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const fetchUniqueUserTournament = createAsyncThunk(
+  "user/fetchUniqueUserTournament",
+  async (id: { tournamentid: any; userid: any }, { rejectWithValue }) => {
+    try {
+      const result = await api.get(
+        `/users/findTournament?${
+          id.tournamentid ? "tournamentid=" + id.tournamentid : ""
+        }&${id.userid ? "userid=" + id.userid : ""}`
+      );
+      return result.data;
+    } catch (e: any) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const getReviews = createAsyncThunk(
+  "all/reviews",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/feedback");
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const postUserTournamentWinner = createAsyncThunk(
+  "userTournaments/postUserTournamentWinner",
+  async (id: { tournamentid: any; userid: any; teamid: any }) => {
+    const response = await api.post(
+      `tournaments/winner?${id.tournamentid ? "id=" + id.tournamentid : ""}&${
+        id.userid ? "userid=" + id.userid : ""
+      }&${id.teamid ? "teamid=" + id.teamid : ""}`
+    );
+    return response.data;
+  }
+);
+
+export const fetchUserTournamentWinner = createAsyncThunk(
+  "userTournaments/fetchUserTournamentWinner",
+  async (id: { tournamentid: any; userid: any }) => {
+    const response = await api.get(
+      `tournaments/fetchwinner?${
+        id.tournamentid ? "id=" + id.tournamentid : ""
+      }&${id.userid ? "userid=" + id.userid : ""}`
+    );
+    return response.data;
+  }
+);
+
+export const getOwnerTournament = createAsyncThunk(
+  "owner/torunaments",
+  async (
+    { page, pageSize }: { page?: number; pageSize?: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.get("/tournaments/tournamentOwner", {
+        params: {
+          page,
+          pageSize,
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
     }
   }
 );

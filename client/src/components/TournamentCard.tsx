@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Flex, Image, Stack, Tag, Text } from "@chakra-ui/react";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 
 interface CardProps {
   id: string;
@@ -8,6 +9,7 @@ interface CardProps {
   status: string;
   type: string;
   logo: string;
+  is_official?: boolean;
 }
 
 function TournamentCard({
@@ -16,6 +18,7 @@ function TournamentCard({
   status,
   type,
   logo,
+  is_official,
 }: CardProps): JSX.Element {
   return (
     <Flex
@@ -24,24 +27,22 @@ function TournamentCard({
       }}
       boxShadow="dark-lg"
       transition="200ms ease"
-      backgroundColor="rgba(57,91,100,0.7)"
-      borderRadius="20px"
+      backgroundColor="rgba(57,91,100,0.3)"
+      borderRadius={5}
       p="5px"
       w="auto"
       mb="2"
     >
-      <Image
-        src={logo}
-        w="6rem"
-        h="6rem"
-        fit="cover"
-        mr="2"
-        borderRadius={"20px"}
-      />
+      <Image src={logo} w="6rem" h="6rem" fit="cover" mr="2" borderRadius={5} />
       <Link to={`/torneos/${id}`}>
         <Stack p="5px" spacing={2}>
-          <Text fontSize="2xl" fontWeight="bold" color="#AEFEFF">
-            {name}
+          <Text
+            fontSize="2xl"
+            fontWeight="bold"
+            fontFamily={"heading"}
+            color="#AEFEFF"
+          >
+            {name} {is_official === true ? <CheckCircleIcon /> : null}
           </Text>
           <Flex>
             {status === "INPROGRESS" && <Tag mr="2">En progreso</Tag>}

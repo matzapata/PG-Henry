@@ -5,6 +5,7 @@ import {
   IconButton,
   Button,
   Heading,
+  Flex,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
@@ -45,41 +46,37 @@ function PublicTournaments(): JSX.Element {
   }
 
   return (
-    <>
-      <Heading
-        size="lg"
-        color="DText"
-        fontFamily="heading"
-        fontWeight="thin"
-        textTransform={"uppercase"}
-      >
+    <Flex flexDir={"column"}>
+      <Heading size="lg" color="text" fontFamily="heading">
         Torneos Publicos
       </Heading>
 
-      <Stack direction="row" spacing="5px" my="4">
+      <Stack direction="row" spacing="5px" my="4" width={"50%"}>
         <Input
           name="searchname"
           placeholder="Buscar torneo..."
           value={search}
           color="text"
           borderColor="buttons"
-          w="30%"
           type="text"
           onChange={(e) => setSearch(e.target.value)}
         />
         <IconButton
           aria-label="Search database"
           bgColor="buttons"
+          width={"5%"}
           icon={<SearchIcon />}
           type="submit"
           onClick={handleSubmit}
         />
+
         <Button
           _hover={{
             color: "primary",
           }}
           bgColor="buttons"
           color="text"
+          width={"30%"}
           size="md"
           onClick={deleteFilter}
         >
@@ -98,9 +95,10 @@ function PublicTournaments(): JSX.Element {
           status={el.status}
           type={el.type}
           logo={el.logo_url}
+          is_official={el.is_official}
         />
       ))}
-    </>
+    </Flex>
   );
 }
 export default PublicTournaments;

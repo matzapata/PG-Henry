@@ -6,23 +6,46 @@ import TournamentsPage from "./pages/Tournaments";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import Perfil from "./pages/Perfil";
-import { useAppDispatch } from "./redux/hooks";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/slices/authThunk";
 import PrivateRoute from "./utils/routePrivate";
 import TournamentCreate from "./pages/TournamentCreate";
 import TournamentDetailPage from "./pages/TournamentDetail";
 import About from "./pages/About";
+import PaymentSuccess from "./pages/SuccessPayment";
+import Admin from "./pages/Admin";
+import AdminUsers from "./pages/AdminUsers";
+import AdminTournaments from "./pages/AdminTournaments";
+import AdminMatches from "./pages/AdminMatches";
+import BanPage from "./pages/BanPage";
+import BannedUsers from "./pages/BannedUsers";
+import Predictions from "./pages/Predictions";
+import error from "./components/PaginaError";
+import Reviews from "./pages/ReviewUsers";
 
 function App() {
   const dispatch = useAppDispatch();
+  const jwtToken = useAppSelector((state) => state.auth.token);
+
   useEffect(() => {
-    dispatch(refreshToken());
+    if (!jwtToken) dispatch(refreshToken());
   }, []);
 
   return (
     <Switch>
+      <PrivateRoute exact path="/admin/partidos" component={AdminMatches} />
+      <PrivateRoute exact path="/admin/torneos" component={AdminTournaments} />
+      <PrivateRoute exact path="/admin/usuarios" component={AdminUsers} />
+      <PrivateRoute exact path="/admin/bannedusers" component={BannedUsers} />
+      <PrivateRoute exact path="/admin/allreviews" component={Reviews} />
+      <PrivateRoute exact path="/admin" component={Admin} />
       <PrivateRoute exact path="/torneos/crear" component={TournamentCreate} />
+      <PrivateRoute
+        exact
+        path="/torneos/:id/predicciones"
+        component={Predictions}
+      />
       <PrivateRoute
         exact
         path="/torneos/:id"
@@ -34,6 +57,9 @@ function App() {
       <PrivateRoute exact path="/auth/perfil" component={Perfil} />
       <Route exact path="/" component={HomePage} />
       <Route exact path="/about" component={About} />
+      <Route path="/success/:id" component={PaymentSuccess} />
+      <Route path="/error" component={error} />
+      <Route path="/banned" component={BanPage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
   );

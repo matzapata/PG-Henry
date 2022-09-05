@@ -5,6 +5,7 @@ import {
   fetchTournamentDetail,
   fetchTournamentMatches,
   fetchTournamentRanking,
+  fetchTournamentAllMatches,
 } from "./tournamentThunk";
 
 export type TournamentRanking = {
@@ -19,6 +20,16 @@ export type Tournament = {
   status: string;
   type: string;
   logo_url: string;
+  is_official: boolean;
+};
+
+export type Prediction = {
+  id: string;
+  score_a: number;
+  score_b: number;
+  match_id: string;
+  user_id: string;
+  tournament_id: string;
 };
 
 export type TournamentDetail = {
@@ -30,16 +41,21 @@ export type TournamentDetail = {
   user_limit: number;
   pool: number;
   logo_url: string;
+  creator_user_id: string;
+  is_official: boolean;
 };
 
 export type TournamentMatch = {
+  team_b_id: number;
+  team_a_id: number;
   id: string;
-  score_a: number;
-  score_b: number;
+  score_a: number | undefined;
+  score_b: number | undefined;
   date: string;
   stage: string;
   team_a: Team;
   team_b: Team;
+  match_id: Prediction[];
 };
 
 export type Team = {
@@ -49,6 +65,7 @@ export type Team = {
 
 export type InitialState = {
   tournamentDetail: TournamentDetail | null;
+  tournamentAllMatches: TournamentMatch[] | null;
   tournamentMatches: {
     page: number;
     lastPage: number;
@@ -66,6 +83,7 @@ export type InitialState = {
 
 const initialState: InitialState = {
   tournamentDetail: null,
+  tournamentAllMatches: null,
   tournamentMatches: {
     page: 1,
     lastPage: 1,
@@ -161,6 +179,19 @@ const tournamentSlice = createSlice({
         lastPage: 1,
         ranking: null,
       };
+    });
+    //Fetch tournament ALL matches
+    builder.addCase(fetchTournamentAllMatches.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchTournamentAllMatches.fulfilled, (state, action) => {
+      state.loading = false;
+      state.tournamentAllMatches = action.payload;
+    });
+    builder.addCase(fetchTournamentAllMatches.rejected, (state, action) => {
+      state.loading = false;
+      (state.tournamentAllMatches = null),
+        (state.error = action.error.message || "Algo salio mal");
     });
   },
 });

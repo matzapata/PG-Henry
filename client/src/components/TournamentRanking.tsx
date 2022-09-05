@@ -1,4 +1,4 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { fetchTournamentRanking } from "../redux/slices/tournamentThunk";
@@ -16,7 +16,7 @@ function TournamentRanking({ id }: { id: string }) {
   }, []);
 
   return (
-    <Box>
+    <Box mb="10">
       <Heading mb="4" mt="8" size="md" color="text">
         Ranking del torneo
       </Heading>
@@ -28,14 +28,18 @@ function TournamentRanking({ id }: { id: string }) {
           username={r.username}
         />
       ))}
-      <Box my="4">
-        <Pagination
-          lastPage={tournamentRanking.lastPage}
-          onPageChange={(page) => {
-            dispatch(fetchTournamentRanking({ id, page, pageSize: 5 }));
-          }}
-        />
-      </Box>
+      {tournamentRanking.ranking?.length !== 0 ? (
+        <Box my="4">
+          <Pagination
+            lastPage={tournamentRanking.lastPage}
+            onPageChange={(page) => {
+              dispatch(fetchTournamentRanking({ id, page, pageSize: 5 }));
+            }}
+          />
+        </Box>
+      ) : (
+        <Text color="text">No hay competidores en el torneo</Text>
+      )}
     </Box>
   );
 }

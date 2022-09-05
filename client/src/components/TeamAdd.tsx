@@ -11,15 +11,18 @@ import {
   FormControl,
   FormErrorMessage,
   useColorModeValue,
+  Icon,
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { FaExclamationCircle } from "react-icons/fa";
+import { useAppSelector } from "../redux/hooks";
+import api from "../services/api";
 import UploadFiles from "./UploadFile";
 type Team = {
   name: string;
   shield_url: string;
-  key: number;
+  key: string;
 };
 
 const validateTeamNames = (teams: Team[], newName: string) => {
@@ -43,15 +46,22 @@ const validateName = (input: Team, agregar = false) => {
   return error;
 };
 
-export default function TeamAdd({ cb }: any): JSX.Element {
+export default function TeamAdd({
+  equipos,
+  addTeams,
+  siguientePaso,
+  volverPaso,
+}: any): JSX.Element {
   const logo_a = useAppSelector((state) => state.team.logo_a);
   const [logo, setLogo] = useState(logo_a);
   const [error, setError] = useState("");
+  const [checkError, setCheckError] = useState("");
+  const [createError, setCreateError] = useState("");
   const [teams, setTeams] = useState<Team[]>([]);
   const [input, setInput] = useState<Team>({
     name: "",
     shield_url: "",
-    key: 0,
+    key: "",
   });
 
   const cambiosEnInput = (
@@ -81,15 +91,30 @@ export default function TeamAdd({ cb }: any): JSX.Element {
           setLogo(logo_a);
           finalShield_url = logo_a;
         }
-        if (finalShield_url === "") finalShield_url = "/img/Escudo_vacío.png";
+        if (finalShield_url === "")
+          finalShield_url = "/img/team-shield-placeholder.jpg";
         setTeams([
           ...teams,
 
-          { name: input.name, shield_url: finalShield_url, key: input.key },
+          {
+            name: input.name,
+            shield_url: finalShield_url,
+            key: input.key + input.name,
+          },
         ]);
-        setInput({ name: "", shield_url: "", key: input.key + 1 });
+        addTeams([
+          ...teams,
+
+          {
+            name: input.name,
+            shield_url: finalShield_url,
+            key: input.key + input.name,
+          },
+        ]);
+        setInput({ name: "", shield_url: "", key: "" });
         setError("");
       }
+      setCreateError("");
     }
   };
 
@@ -99,14 +124,41 @@ export default function TeamAdd({ cb }: any): JSX.Element {
     });
 
     setTeams(newInputTeam);
+    addTeams(newInputTeam);
+  };
+
+  const crear = async () => {
+    const tl = teams.length;
+
+    if (tl < 2) {
+      setCreateError("Debe haber al menos 2 equipos");
+    } else {
+      if (tl !== 2 && tl !== 4 && tl !== 8 && tl !== 16 && tl !== 32) {
+        setCreateError(
+          "Este tipo de torneos solo acepta 2, 4, 8, 16 o 32 equipos"
+        );
+      } else {
+        try {
+          // await api.post("/tournaments/checkTeams", { teams: teams });
+          addTeams(teams);
+          siguientePaso();
+        } catch (e: any) {
+          setCheckError(e.response.data.message);
+        }
+      }
+    }
   };
 
   useEffect(() => {
-    cb(teams);
-  }, [teams]);
-  useEffect(() => {
     setLogo(logo_a);
+    setTeams(equipos);
+    setCreateError("");
   }, []);
+  useEffect(() => {
+    setCreateError("");
+    setCheckError("");
+  }, [equipos]);
+
   return (
     <Container p="0px">
       <Box
@@ -117,6 +169,8 @@ export default function TeamAdd({ cb }: any): JSX.Element {
         justifyContent="space-between"
         p="12px"
         bg={useColorModeValue("white", "gray.700")}
+        rounded={"xl"}
+        boxShadow={"lg"}
       >
         <Stack spacing="9px">
           <Stack direction="column" spacing={4}>
@@ -164,7 +218,7 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                   display={"flex"}
                   justifyContent="space-between"
                   alignItems="center"
-                  p="5px"
+                  p="10px"
                   w="100%"
                   margin="5px"
                 >
@@ -195,6 +249,35 @@ export default function TeamAdd({ cb }: any): JSX.Element {
                 </GridItem>
               </Box>
             ))}
+          <Flex mt="4" alignItems="center">
+            <FormControl
+              isInvalid={
+                createError === "Completado" || createError === ""
+                  ? false
+                  : true
+              }
+            >
+              <FormErrorMessage justifyContent="center">
+                {createError}
+              </FormErrorMessage>
+            </FormControl>
+          </Flex>
+          {checkError && (
+            <Flex mt="4" alignItems="center" justifyContent="center">
+              <Icon as={FaExclamationCircle} color="red.500" mr="2" />
+              <Text as="span" color="red.500" fontWeight="500" fontSize="20px">
+                {checkError}
+              </Text>
+            </Flex>
+          )}
+          <Stack
+            flexDirection={"row"}
+            spacing={"5.rem"}
+            justifyContent={"space-between"}
+          >
+            <Button onClick={volverPaso}>Anterior </Button>
+            <Button onClick={crear}>Siguiente </Button>
+          </Stack>
         </Stack>
       </Box>
     </Container>

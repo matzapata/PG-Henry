@@ -4,9 +4,11 @@ import { Link as ReactLink } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks";
 import Logo from "./Logo";
 import SignOutButton from "./SignOutButton";
+import ModalReview from "./ModalReview";
 
 export default function NavBar() {
   const isLoggedIn = useAppSelector((state) => state.auth.token);
+  const data = useAppSelector((state) => state.auth.decoded);
 
   return (
     <Flex
@@ -22,16 +24,29 @@ export default function NavBar() {
         <Text
           fontSize="30px"
           fontWeight="bold"
-          color="#F7F7F7"
+          color="text"
           ml="2"
           mr={["4", "10"]}
         >
           ProdeMaster
         </Text>
+        {data?.is_admin && (
+          <Link
+            as={ReactLink}
+            to={"/admin"}
+            color="text"
+            fontSize="20px"
+            fontWeight="medium"
+            mx="4"
+          >
+            Admin
+          </Link>
+        )}
+
         {isLoggedIn && (
           <>
             <Link
-              color="#F7F7F7"
+              color="text"
               fontSize="20px"
               fontWeight="medium"
               mx="4"
@@ -43,7 +58,7 @@ export default function NavBar() {
           </>
         )}
         <Link
-          color="#F7F7F7"
+          color="text"
           fontSize="20px"
           fontWeight="medium"
           mx="4"
@@ -54,26 +69,39 @@ export default function NavBar() {
         </Link>
       </Flex>
       {isLoggedIn ? (
-        <Box width="150px" display="flex" justifyContent="space-evenly">
-          <Button
-            as={ReactLink}
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
-            size="md"
-            mr={3}
-            to="/auth/perfil"
-          >
-            Perfil
-          </Button>
-          <SignOutButton />
+        <Box width="325px" display="flex" justifyContent="space-evenly">
+          <Box>
+            <ModalReview />
+          </Box>
+          <Box>
+            <Button
+              as={ReactLink}
+              bgColor="buttons"
+              color="text"
+              _hover={{
+                bg: "secondary",
+                color: "primary",
+              }}
+              size="md"
+              mr={3}
+              to="/auth/perfil"
+            >
+              Perfil
+            </Button>
+            <SignOutButton />
+          </Box>
         </Box>
       ) : (
         <Box width="200px" display="flex" justifyContent="space-evenly">
           <Button
             as={ReactLink}
             to="/auth/signup"
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
+            bgColor="buttons"
+            color="text"
+            _hover={{
+              bg: "secondary",
+              color: "primary",
+            }}
             size="md"
             mr={3}
           >
@@ -82,8 +110,12 @@ export default function NavBar() {
           <Button
             as={ReactLink}
             to="/auth/login"
-            bgColor="#4FBDBA"
-            color="#F7F7F7"
+            bgColor="buttons"
+            color="text"
+            _hover={{
+              bg: "secondary",
+              color: "primary",
+            }}
             size="md"
           >
             Ingresar

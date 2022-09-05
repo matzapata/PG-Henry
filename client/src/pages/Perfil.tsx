@@ -15,15 +15,23 @@ import {
   Icon,
   Text,
   Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import UploadFiles from "../components/UploadFile";
 import {
-  changePassword,
   deleteActiveUser,
   getUserInfo,
+  updateProfile,
 } from "../redux/slices/userThunk";
 import history from "../utils/history";
 import { signOut } from "../redux/slices/authThunk";
@@ -32,14 +40,41 @@ import NavBar from "../components/NavBar";
 
 export default function UserProfileEdit(): JSX.Element {
   const { user, isAuthenticated, logout } = useAuth0();
-  const isLoggedIn = useAppSelector((state) => state.auth.token);
-  const error = useAppSelector((state) => state.user.error);
-  const success = useAppSelector((state) => state.user.message);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const isLoggedIn = useAppSelector((state: any) => state.auth.token);
+  const [error, setError] = useState("");
+  const success = useAppSelector((state: any) => state.user.message);
+  const [input, setInput] = useState({
+    username: "",
+    email: "",
+    password: "",
+    alias: "",
+  });
   const dispatch = useAppDispatch();
   const user_detail = useAppSelector((state) => state.user.userDetail);
   const userid: any = useAppSelector((state) => state.auth.decoded?.id);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  function editProfile() {
+    if (input.email && input.password && input.alias) {
+      dispatch(
+        updateProfile({
+          id: userid,
+          email: input.email,
+          password: input.password,
+          alias_mp: input.alias,
+        })
+      );
+    } else if (input.email && input.password) {
+      dispatch(
+        updateProfile({
+          id: userid,
+          email: input.email,
+          password: input.password,
+          alias_mp: "",
+        })
+      );
+    } else setError("Faltan parametros requeridos");
+  }
 
   function onDeleteUser() {
     if (isLoggedIn) dispatch(deleteActiveUser({ id: userid, is_active: true }));
@@ -47,6 +82,14 @@ export default function UserProfileEdit(): JSX.Element {
     else if (isAuthenticated) logout();
     history.push("/");
   }
+
+  const handleChange = (e: any) => {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
+    setError("");
+  };
 
   useEffect(() => {
     if (isLoggedIn) dispatch(getUserInfo(null));
@@ -56,7 +99,7 @@ export default function UserProfileEdit(): JSX.Element {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-  }, [user_detail.avatar, success]);
+  }, [success]);
 
   return (
     <>
@@ -76,29 +119,23 @@ export default function UserProfileEdit(): JSX.Element {
               spacing={4}
               w={"full"}
               maxW={"md"}
-              bg={useColorModeValue("white", "gray.700")}
+              bg={useColorModeValue("primary", "text")}
               rounded={"xl"}
               boxShadow={"lg"}
               p={6}
               my={12}
             >
-              <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
+              <Heading
+                lineHeight={1.1}
+                fontSize={{ base: "2xl", sm: "3xl" }}
+                color="text"
+              >
                 Editar Perfil
               </Heading>
               <FormControl id="userName">
                 <Stack direction={["column", "row"]} spacing={6}>
                   <Center>
-                    <Avatar size="xl" src={user_detail.avatar}>
-                      <AvatarBadge
-                        as={IconButton}
-                        size="sm"
-                        rounded="full"
-                        top="-10px"
-                        colorScheme="red"
-                        aria-label="remove Image"
-                        icon={<SmallCloseIcon />}
-                      />
-                    </Avatar>
+                    <Avatar size="xl" src={user_detail?.avatar}></Avatar>
                   </Center>
                   <Center w="full">
                     <UploadFiles
@@ -109,43 +146,55 @@ export default function UserProfileEdit(): JSX.Element {
                   </Center>
                 </Stack>
               </FormControl>
-              <FormControl id="userName" isRequired>
-                <FormLabel>Usuario</FormLabel>
+              <FormControl id="userName">
+                <FormLabel color={"text"}>Usuario</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Nombre de usuario"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
                 />
               </FormControl>
               <FormControl id="email" isRequired>
-                <FormLabel>Correo Electronico</FormLabel>
+                <FormLabel color={"text"}>Correo Electronico</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="No disponible al ingresar con Auth0"
                   _placeholder={{ color: "gray.500" }}
                   type="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
                   disabled
                 />
               </FormControl>
               <FormControl id="password" isRequired>
-                <FormLabel>Contraseña</FormLabel>
+                <FormLabel color={"text"}>Contraseña</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="No disponible al ingresar con Auth0"
                   _placeholder={{ color: "gray.500" }}
                   type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
                   disabled
+                />
+              </FormControl>
+              <FormControl id="alias">
+                <FormLabel color={"text"}>Alias Mercado Pago</FormLabel>
+                <Input
+                  color={"text"}
+                  placeholder="Alias"
+                  _placeholder={{ color: "gray.500" }}
+                  type="text"
+                  name="alias"
+                  onChange={handleChange}
+                  value={input.alias}
                 />
               </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
                   onClick={() => {
                     history.push("/");
@@ -154,16 +203,15 @@ export default function UserProfileEdit(): JSX.Element {
                   Cancelar
                 </Button>
                 <Button
-                  bg={"blue.400"}
-                  color={"white"}
+                  bg="buttons"
+                  color="text"
                   w="full"
                   _hover={{
-                    bg: "blue.500",
+                    bg: "secondary",
+                    color: "primary",
                   }}
-                  onClick={async () => {
-                    await dispatch(changePassword({ email, password }));
-                    setEmail("");
-                    setPassword("");
+                  onClick={() => {
+                    editProfile();
                   }}
                 >
                   Confirmar
@@ -171,21 +219,50 @@ export default function UserProfileEdit(): JSX.Element {
               </Stack>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
-                  onClick={onDeleteUser}
+                  onClick={onOpen}
                 >
                   Eliminar Cuenta
                 </Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Advertencia!</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Text>
+                        Seguro que queres eliminar tu cuenta ? Este cambio es
+                        irreversible y perderas todo lo que tengas dentro de
+                        ella.
+                      </Text>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={onClose}>
+                        Cancelar
+                      </Button>
+                      <Button
+                        fontSize={"12.5px"}
+                        onClick={() => {
+                          onDeleteUser();
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </Stack>
               {error ? (
                 <Flex mt="4" alignItems="center" justifyContent="center">
-                  <Icon as={FaExclamationCircle} color="red.500" mr="2" />
-                  <Text as="span" color="red.500" fontWeight="500">
+                  <Icon as={CheckIcon} color="green.500" mr="2" />
+                  <Text as="span" color="green.500" fontWeight="500">
                     {error}
                   </Text>
                 </Flex>
@@ -213,29 +290,23 @@ export default function UserProfileEdit(): JSX.Element {
               spacing={4}
               w={"full"}
               maxW={"md"}
-              bg={useColorModeValue("white", "gray.700")}
+              bg={useColorModeValue("primary", "text")}
               rounded={"xl"}
               boxShadow={"lg"}
               p={6}
               my={12}
             >
-              <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
+              <Heading
+                lineHeight={1.1}
+                fontSize={{ base: "2xl", sm: "3xl" }}
+                color={"text"}
+              >
                 Editar Perfil
               </Heading>
               <FormControl id="userName">
                 <Stack direction={["column", "row"]} spacing={6}>
                   <Center>
-                    <Avatar size="xl" src={user_detail.avatar}>
-                      <AvatarBadge
-                        as={IconButton}
-                        size="sm"
-                        rounded="full"
-                        top="-10px"
-                        colorScheme="red"
-                        aria-label="remove Image"
-                        icon={<SmallCloseIcon />}
-                      />
-                    </Avatar>
+                    <Avatar size="xl" src={user_detail?.avatar}></Avatar>
                   </Center>
                   <Center w="full">
                     <UploadFiles
@@ -246,41 +317,62 @@ export default function UserProfileEdit(): JSX.Element {
                   </Center>
                 </Stack>
               </FormControl>
-              <FormControl id="userName" isRequired>
-                <FormLabel>Usuario</FormLabel>
+              <FormControl id="userName">
+                <FormLabel color={"text"}>Usuario</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Nombre de usuario"
                   _placeholder={{ color: "gray.500" }}
                   type="text"
+                  name="username"
+                  onChange={handleChange}
+                  value={input.username}
                 />
               </FormControl>
               <FormControl id="email" isRequired>
-                <FormLabel>Correo Electronico</FormLabel>
+                <FormLabel color={"text"}>Correo Electronico</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Email"
                   _placeholder={{ color: "gray.500" }}
                   type="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
+                  name="email"
+                  onChange={handleChange}
+                  value={input.email}
                 />
               </FormControl>
               <FormControl id="password" isRequired>
-                <FormLabel>Contraseña</FormLabel>
+                <FormLabel color={"text"}>Contraseña</FormLabel>
                 <Input
+                  color={"text"}
                   placeholder="Contraseña"
                   _placeholder={{ color: "gray.500" }}
                   type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
+                  name="password"
+                  onChange={handleChange}
+                  value={input.password}
+                />
+              </FormControl>
+              <FormControl id="alias">
+                <FormLabel color={"text"}>Alias Mercado Pago</FormLabel>
+                <Input
+                  color={"text"}
+                  placeholder="Alias"
+                  _placeholder={{ color: "gray.500" }}
+                  type="text"
+                  name="alias"
+                  onChange={handleChange}
+                  value={input.alias}
                 />
               </FormControl>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
                   onClick={() => {
                     history.push("/");
@@ -289,16 +381,15 @@ export default function UserProfileEdit(): JSX.Element {
                   Cancelar
                 </Button>
                 <Button
-                  bg={"blue.400"}
-                  color={"white"}
+                  bg={"buttons"}
+                  color={"text"}
                   w="full"
                   _hover={{
-                    bg: "blue.500",
+                    bg: "secondary",
+                    color: "primary",
                   }}
                   onClick={() => {
-                    dispatch(changePassword({ email, password }));
-                    setEmail("");
-                    setPassword("");
+                    editProfile();
                   }}
                 >
                   Confirmar
@@ -306,19 +397,47 @@ export default function UserProfileEdit(): JSX.Element {
               </Stack>
               <Stack spacing={6} direction={["column", "row"]}>
                 <Button
-                  bg={"red.400"}
-                  color={"white"}
+                  bg={"warning"}
+                  color={"text"}
                   w="full"
                   _hover={{
                     bg: "red.500",
+                    color: "primary",
                   }}
-                  onClick={onDeleteUser}
+                  onClick={onOpen}
                 >
                   Eliminar Cuenta
                 </Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Advertencia!</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Text>
+                        Seguro que queres eliminar tu cuenta ? Este cambio es
+                        irreversible, y perderas todo lo que tengas dentro de
+                        ella.
+                      </Text>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={onClose}>
+                        Cancelar
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          onDeleteUser();
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </Stack>
 
-              {error ? (
+              {error !== "" ? (
                 <Flex mt="4" alignItems="center" justifyContent="center">
                   <Icon as={FaExclamationCircle} color="red.500" mr="2" />
                   <Text as="span" color="red.500" fontWeight="500">
