@@ -45,7 +45,7 @@ export const templateTournament = (
   type: "PUBLIC" as TournamentType,
   password: bcrypt.hashSync(password, 8),
   pool: 0,
-  logo_url: null,
+  logo_url: faker.image.abstract(),
   is_official: false,
   creator_user_id: creatorId,
 });

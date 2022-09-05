@@ -12,6 +12,8 @@ import {
   createActiveUser,
   createAdminUser,
   createTournament,
+  randomConcludedFinalTournament,
+  randomIncomingQuarterTournament,
 } from "./generators";
 import { templateTeam, templateTournament } from "./templateData";
 
@@ -77,5 +79,14 @@ createTournament(db, {
   ],
   userPredictions: 30,
 });
+
+createTournament(db, randomIncomingQuarterTournament(creator.id));
+createTournament(db, randomIncomingQuarterTournament(creator.id));
+createTournament(db, randomIncomingQuarterTournament(creator.id));
+createTournament(db, randomConcludedFinalTournament(creator.id));
+createTournament(db, randomConcludedFinalTournament(creator.id));
+
+// TODO: Add private tournament
+// TODO: Add ongoing tournament
 
 export default db;

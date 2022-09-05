@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import {
   User,
   Teams,
@@ -11,26 +12,27 @@ import { getRandom } from "./randomUtilities";
 import {
   templateMatch,
   templatePrediction,
+  templateTeam,
+  templateTournament,
   templateUser,
   templateUserTournament,
 } from "./templateData";
 
-export const createTournament = (
-  db: DbData,
-  data: {
-    tournament: Tournament;
-    matches: {
-      team_a: Teams;
-      team_b: Teams;
-      stage: MatchStage;
-      code_stage: CodeStage;
-      score_a?: number;
-      score_b?: number;
-      date?: Date;
-    }[];
-    userPredictions: number;
-  }
-): void => {
+type TournamentData = {
+  tournament: Tournament;
+  matches: {
+    team_a: Teams;
+    team_b: Teams;
+    stage: MatchStage;
+    code_stage: CodeStage;
+    score_a?: number;
+    score_b?: number;
+    date?: Date;
+  }[];
+  userPredictions: number;
+};
+
+export const createTournament = (db: DbData, data: TournamentData): void => {
   const matches: Matches[] = [];
   const teams: Teams[] = [];
 
@@ -38,8 +40,8 @@ export const createTournament = (
     teams.push(m.team_a, m.team_b);
     matches.push({
       ...templateMatch(m.team_a.id, m.team_b.id, data.tournament.id),
-      score_a: m.score_a ? m.score_a : null,
-      score_b: m.score_b ? m.score_b : null,
+      score_a: m.score_a !== undefined ? m.score_a : null,
+      score_b: m.score_b !== undefined ? m.score_b : null,
       date: m.date ? m.date : null,
       stage: m.stage,
       code_stage: m.code_stage,
@@ -48,20 +50,29 @@ export const createTournament = (
 
   for (let i = 0; i < data.userPredictions; i++) {
     const user = templateUser();
-    db.users.push(user);
-    db.userTournaments.push({
+    const userTournament = {
       ...templateUserTournament(
         user.id,
         data.tournament.id,
         getRandom(teams).id
       ),
       score: 0,
+    };
+    matches.forEach((m) => {
+      const prediction = templatePrediction(m.id, user.id, data.tournament.id);
+      if (
+        prediction.score_a === m.score_a &&
+        prediction.score_b === m.score_b
+      ) {
+        userTournament.score += 3;
+      }
+
+      db.predictions.push(prediction);
     });
-    matches.forEach((m) =>
-      db.predictions.push({
-        ...templatePrediction(m.id, user.id, data.tournament.id),
-      })
-    );
+
+    db.users.push(user);
+    db.userTournaments.push(userTournament);
+    data.tournament.pool += 160;
   }
 
   db.teams.push(...teams);
@@ -95,3 +106,66 @@ export const createActiveUser = (db: DbData, email: string): User => {
   db.users.push(user);
   return user;
 };
+
+export const randomIncomingQuarterTournament = (
+  creatorId: string
+): TournamentData => ({
+  tournament: {
+    ...templateTournament(creatorId),
+    name: faker.company.name(),
+    status: "INCOMING",
+  },
+  matches: [
+    {
+      team_a: { ...templateTeam(), name: faker.company.name() },
+      team_b: { ...templateTeam(), name: faker.company.name() },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALA1",
+      date: faker.date.soon(),
+    },
+    {
+      team_a: { ...templateTeam(), name: faker.company.name() },
+      team_b: { ...templateTeam(), name: faker.company.name() },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALA2",
+      date: faker.date.soon(),
+    },
+    {
+      team_a: { ...templateTeam(), name: faker.company.name() },
+      team_b: { ...templateTeam(), name: faker.company.name() },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALB1",
+      date: faker.date.soon(),
+    },
+    {
+      team_a: { ...templateTeam(), name: faker.company.name() },
+      team_b: { ...templateTeam(), name: faker.company.name() },
+      stage: "QUARTERFINAL",
+      code_stage: "QUARTERFINALB2",
+      date: faker.date.soon(),
+    },
+  ],
+  userPredictions: faker.datatype.number({ min: 30, max: 50 }),
+});
+
+export const randomConcludedFinalTournament = (
+  creatorId: string
+): TournamentData => ({
+  tournament: {
+    ...templateTournament(creatorId),
+    name: faker.company.name(),
+    status: "CONCLUDED",
+  },
+  matches: [
+    {
+      team_a: { ...templateTeam(), name: faker.company.name() },
+      team_b: { ...templateTeam(), name: faker.company.name() },
+      score_a: 5,
+      score_b: 0,
+      stage: "FINAL",
+      code_stage: "FINAL",
+      date: faker.date.recent(),
+    },
+  ],
+  userPredictions: faker.datatype.number({ min: 30, max: 50 }),
+});
