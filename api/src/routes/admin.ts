@@ -2,6 +2,7 @@ import * as express from "express";
 import db from "../db";
 import "dotenv/config";
 import { isAdmin, protectedRoute } from "../middleware/auth";
+import { brotliDecompress } from "zlib";
 
 const router: express.Router = express.Router();
 
@@ -113,6 +114,39 @@ router.get(
       return res.send(resultado);
     } catch (err: any) {
       console.error(err);
+    }
+  }
+);
+
+router.get(
+  "/tournaments",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const tournaments = await db.tournament.findMany({
+        where: {
+          is_active: true,
+        },
+      });
+      res.status(200).send(tournaments);
+    } catch (error) {
+      res.status(404).send(error);
+    }
+  }
+);
+
+router.put(
+  "/tournaments",
+  async (req: express.Request, res: express.Response) => {
+    const { id } = req.body;
+    try {
+      await db.tournament.update({
+        where: { id },
+        data: { is_active: false },
+      });
+
+      return res.send("El torneo ha sido eliminado!");
+    } catch (err: any) {
+      return res.status(400).send({ message: "Intenta nuevamente" });
     }
   }
 );
