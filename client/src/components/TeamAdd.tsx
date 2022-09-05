@@ -270,8 +270,14 @@ export default function TeamAdd({
               </Text>
             </Flex>
           )}
-          <Button onClick={crear}>Siguiente </Button>
-          <Button onClick={volverPaso}>Anterior </Button>
+          <Stack
+            flexDirection={"row"}
+            spacing={"5.rem"}
+            justifyContent={"space-between"}
+          >
+            <Button onClick={volverPaso}>Anterior </Button>
+            <Button onClick={crear}>Siguiente </Button>
+          </Stack>
         </Stack>
       </Box>
     </Container>
