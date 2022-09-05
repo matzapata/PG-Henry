@@ -28,6 +28,26 @@ export const getAllComments = createAsyncThunk("get/allComments", async () => {
   return response.data;
 });
 
+export const getActiveTournaments = createAsyncThunk(
+  "admin/tournamets",
+  async () => {
+    const response = await api.get("/admin/tournaments");
+    return response.data;
+  }
+);
+
+export const deleteTournament = createAsyncThunk(
+  "put/tornaments",
+  async (payload: { id: string }, { rejectWithValue }) => {
+    try {
+      const response = await api.put("/admin/tournaments", payload);
+      /* console.log(response.data); */
+    } catch (err: any) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
 export const deleteComment = createAsyncThunk(
   "delete/Comment",
   async (payload: any, { rejectWithValue }) => {

@@ -7,6 +7,14 @@ import {
   Box,
   Stack,
   useColorModeValue,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 import TeamAdd from "./TeamAdd";
 import TournamentForm from "./TournamentForm";
@@ -23,7 +31,7 @@ type Inputs = {
 type Tournament = {
   name: string;
   description: string;
-  user_limit: number;
+  user_limit: number | undefined;
   creator_user_id: string;
   type: string;
   logo_url: string;
@@ -52,13 +60,14 @@ const steps = [
 
 const Steper = () => {
   const history = useHistory();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [CrearError, setCrearError] = useState("");
   const [pagina, setPagina] = useState(0);
   const [input, setInput] = useState<Inputs>({
     tournament: {
       name: "",
       description: "",
-      user_limit: 0,
+      user_limit: undefined,
       creator_user_id: "",
       type: "PUBLIC",
       logo_url: "",
@@ -88,7 +97,7 @@ const Steper = () => {
       setCrearError(e.response.data.message);
     }
   };
-  function addTornament(inputTournamnet: Tournament) {
+  function addTournament(inputTournamnet: Tournament) {
     setInput({ ...input, tournament: inputTournamnet });
   }
   function addTeams(newTeams: Team[]) {
@@ -99,16 +108,52 @@ const Steper = () => {
     setInput({ ...input, matches: newMatch });
   }
   function reset() {
+    setInput({
+      tournament: {
+        name: "",
+        description: "",
+        user_limit: undefined,
+        creator_user_id: "",
+        type: "PUBLIC",
+        logo_url: "",
+        password: "",
+      },
+      teams: [],
+      matches: [],
+    });
+    onClose();
     setPagina(0);
   }
   function actualizarMatches() {
     const teamsNames = input.teams.map((team) => {
       return team.name;
     });
+    const el = input.teams.length;
+    let newStage = "";
+
+    if (el === 2) {
+      newStage = "FINAL";
+    } else {
+      if (el === 4) {
+        newStage = "SEMIFINAL";
+      } else {
+        if (el === 8) {
+          newStage = "QUARTERFINAL";
+        } else {
+          if (el === 16) {
+            newStage = "ROUNDOF16";
+          } else {
+            newStage = "ROUNDOF32";
+          }
+        }
+      }
+    }
+
     const newMatches = input.matches.filter((match) => {
       return (
         teamsNames.includes(match.team_a_name) &&
-        teamsNames.includes(match.team_b_name)
+        teamsNames.includes(match.team_b_name) &&
+        match.stage === newStage
       );
     });
 
@@ -120,7 +165,8 @@ const Steper = () => {
     <TournamentForm
       key={"0"}
       siguientePaso={siguientePaso}
-      addTornament={addTornament}
+      addTournament={addTournament}
+      torneo={input.tournament}
     />,
 
     <TeamAdd
@@ -140,8 +186,11 @@ const Steper = () => {
     />,
     <Box key={"3"}>
       <Flex px={4} py={4} width="100%" flexDirection="column">
-        <Button mx="auto" mt={6} onClick={reset} margin={"2rem"}>
-          Reseterar
+        <Button mx="auto" mt={"0"} onClick={onOpen} margin={"1rem"}>
+          Reseterar formulario
+        </Button>
+        <Button mx="auto" mt={"0px"} onClick={volverPaso} margin={"1rem"}>
+          Atras
         </Button>
         {CrearError && (
           <Heading fontSize="xxl" textAlign="center" color={"red.500"}>
@@ -156,9 +205,31 @@ const Steper = () => {
             bg: "blue.500",
           }}
           onClick={crear}
+          marginTop={"1rem"}
         >
           Crear Torneo
         </Button>
+        <Box>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Resetear formulario</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                ¿Estás seguro? ¡Perderás la información ya ingresada!
+              </ModalBody>
+
+              <ModalFooter>
+                <Button onClick={reset} mr={3}>
+                  Resetear
+                </Button>
+                <Button onClick={onClose} colorScheme="blue" mr={3}>
+                  Cerrar
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </Box>
       </Flex>
     </Box>,
   ];
@@ -211,7 +282,7 @@ const Steper = () => {
                     pagina == 1
                       ? { color: "lightblue" }
                       : pagina == 0
-                      ? { color: "white" }
+                      ? { color: "black" }
                       : { color: "green" }
                   }
                 >
@@ -224,7 +295,7 @@ const Steper = () => {
                     pagina == 1
                       ? { color: "lightblue" }
                       : pagina == 0
-                      ? { color: "white" }
+                      ? { color: "Black" }
                       : { color: "green" }
                   }
                 />
@@ -243,7 +314,7 @@ const Steper = () => {
                     pagina == 2
                       ? { color: "lightblue" }
                       : pagina == 0 || pagina == 1
-                      ? { color: "white" }
+                      ? { color: "black" }
                       : { color: "green" }
                   }
                 >
@@ -256,7 +327,7 @@ const Steper = () => {
                     pagina == 2
                       ? { color: "lightblue" }
                       : pagina == 0 || pagina == 1
-                      ? { color: "white" }
+                      ? { color: "black" }
                       : { color: "green" }
                   }
                 />
