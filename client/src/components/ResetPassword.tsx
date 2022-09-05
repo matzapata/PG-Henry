@@ -29,6 +29,9 @@ function ResetPassword() {
   const submit = async () => {
     try {
       const response = await api.put("/users/resetpass", { email: email });
+      setEmail("");
+      alert("Solicitud exitosa, revisa tu correo!");
+      onClose();
     } catch (err: any) {
       console.error(err);
     }
