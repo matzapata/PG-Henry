@@ -4,6 +4,8 @@ import seedData from "./seed/data";
 const db = new PrismaClient();
 
 async function dropDb() {
+  await db.comments.deleteMany({});
+  await db.banned.deleteMany({});
   await db.userTournament.deleteMany({});
   await db.predictions.deleteMany({});
   await db.matches.deleteMany({});
