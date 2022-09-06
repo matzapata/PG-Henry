@@ -9,6 +9,7 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Tr,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
@@ -80,6 +81,9 @@ function TournamentMatches({ id }: { id: string }) {
                   </HStack>
                 </Td>
                 <Td textAlign="center" fontSize="md" color="white">
+                  <Text color={"buttons"} fontSize={"x-small"}>
+                    {e.date}
+                  </Text>
                   {e.score_a} - {e.score_b}
                 </Td>
                 <Td pr={0}>

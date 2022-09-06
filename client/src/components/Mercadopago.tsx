@@ -78,7 +78,15 @@ function Mercadopago({ id }: { id: string }) {
   ) {
     return (
       <Box>
-        <Button onClick={onOpen} mr={3}>
+        <Button
+          onClick={onOpen}
+          mr={3}
+          _hover={{
+            color: "primary",
+          }}
+          bgColor="buttons"
+          color="text"
+        >
           Unirse
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -143,7 +151,15 @@ function Mercadopago({ id }: { id: string }) {
   ) {
     return (
       <Box>
-        <Button onClick={onOpen} mr={3}>
+        <Button
+          onClick={onOpen}
+          mr={3}
+          _hover={{
+            color: "primary",
+          }}
+          bgColor="buttons"
+          color="text"
+        >
           Unirse
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>

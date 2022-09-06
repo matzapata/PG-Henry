@@ -135,6 +135,7 @@ export default function AddPrediction({ id }: { id: string }) {
                   {matches &&
                     newMatches?.map((match, index) => (
                       <Box key={match.id + "B1"}>
+                        <Text color={"text"}>{match.date}</Text>
                         {(match.score_a === undefined ||
                           match.score_b === undefined) && (
                           <MatchForm
@@ -166,7 +167,7 @@ export default function AddPrediction({ id }: { id: string }) {
 
               <Box marginTop="6">
                 <Heading size="md" color="text" mb="4">
-                  Prediciones que hiciste
+                  Predicciones que hiciste
                 </Heading>
                 <Box marginTop={"5px"}>
                   <Box margin={"5px"} borderRadius="4">
@@ -174,6 +175,7 @@ export default function AddPrediction({ id }: { id: string }) {
                       matches &&
                       newMatches.map((match, index) => (
                         <Box key={match.id + "B2"}>
+                          <Text color={"text"}>{match.date}</Text>
                           {(match.score_a !== undefined ||
                             match.score_b !== undefined) && (
                             <MatchForm
