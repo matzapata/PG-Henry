@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Flex,
-  Heading,
-  ListItem,
-  Stack,
-  Text,
-  UnorderedList,
-} from "@chakra-ui/react";
+import { Flex, Heading, Stack, Text, UnorderedList } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import AddPrediction from "../components/AddPrediction";
@@ -41,9 +34,8 @@ function Predictions() {
           >
             <Heading color={"text"}>Sistema de puntos</Heading>
             <UnorderedList mt={5}>
-              <Text color={"text"}>Acertar ganador: 20 puntos</Text>
-              <Text color={"text"}>Acertar resultado: 10 puntos</Text>
-              <Text color={"text"}>Acertar goles: 5 puntos</Text>
+              <Text color={"text"}>Acertar campeon: 20 puntos</Text>
+              <Text color={"text"}>Acertar resultado: 3 puntos</Text>
             </UnorderedList>
           </Flex>
         </Stack>
