@@ -349,8 +349,14 @@ router.post(
     try {
       const { tournament, teams, matches } = req.body;
 
-      const { name, description, user_limit, type, logo_url, password } =
-        tournament;
+      const {
+        name,
+        description,
+        user_limit,
+        type,
+        logo_url,
+        password,
+      } = tournament;
 
       const creator_user_id = req.user.id;
 
@@ -618,13 +624,8 @@ router.put(
         data: { score: { increment: 3 } },
       });
 
-      if (
-        match.stage === "FINAL" &&
-        match.score_a !== null &&
-        match.score_b !== null
-      ) {
-        const winnerId =
-          match.score_a > match.score_b ? match.team_a_id : match.team_b_id;
+      if (match.stage === "FINAL" && score_a !== null && score_b !== null) {
+        const winnerId = score_a > score_b ? match.team_a_id : match.team_b_id;
 
         await db.userTournament.updateMany({
           where: {
@@ -644,50 +645,51 @@ router.put(
         });
 
         // Money compensation calculation
-        const [firstCount, secondCount, thirdCount] = await Promise.all([
-          db.userTournament.count({
+        if (tournamentScores[0] !== undefined) {
+          const firstCount = await db.userTournament.count({
             where: { score: tournamentScores[0].score },
-          }),
-          db.userTournament.count({
-            where: { score: tournamentScores[1].score },
-          }),
-          db.userTournament.count({
-            where: { score: tournamentScores[2].score },
-          }),
-        ]);
-        const firstComp = Math.floor((tournament.pool * 0.5) / firstCount);
-        const secondComp = Math.floor((tournament.pool * 0.35) / secondCount);
-        const thirdComp = Math.floor((tournament.pool * 0.15) / thirdCount);
-
-        await Promise.all([
-          db.userTournament.updateMany({
+          });
+          const firstComp = Math.floor((tournament.pool * 0.5) / firstCount);
+          await db.userTournament.updateMany({
             where: {
               tournament_id: req.params.id,
               score: tournamentScores[0].score,
             },
             data: { position: "FIRST", compensation: firstComp },
-          }),
-          db.userTournament.updateMany({
+          });
+        }
+        if (tournamentScores[1] !== undefined) {
+          const secondCount = await db.userTournament.count({
+            where: { score: tournamentScores[1].score },
+          });
+          const secondComp = Math.floor((tournament.pool * 0.35) / secondCount);
+          await db.userTournament.updateMany({
             where: {
               tournament_id: req.params.id,
               score: tournamentScores[1].score,
             },
             data: { position: "SECOND", compensation: secondComp },
-          }),
-          db.userTournament.updateMany({
+          });
+        }
+        if (tournamentScores[2] !== undefined) {
+          const thirdCount = await db.userTournament.count({
+            where: { score: tournamentScores[2].score },
+          });
+          const thirdComp = Math.floor((tournament.pool * 0.15) / thirdCount);
+          await db.userTournament.updateMany({
             where: {
               tournament_id: req.params.id,
               score: tournamentScores[2].score,
             },
             data: { position: "THIRD", compensation: thirdComp },
-          }),
-          db.tournament.update({
-            where: { id: req.params.id },
-            data: { status: "CONCLUDED" },
-          }),
-        ]);
-      }
+          });
+        }
 
+        await db.tournament.update({
+          where: { id: req.params.id },
+          data: { status: "CONCLUDED" },
+        });
+      }
       return res.send("OK");
     } catch (e) {
       console.log(e);
