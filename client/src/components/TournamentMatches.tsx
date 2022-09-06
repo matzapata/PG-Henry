@@ -9,12 +9,14 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Tr,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { fetchTournamentMatches } from "../redux/slices/tournamentThunk";
 import Pagination from "./Pagination";
+import formatTime from "../utils/timeFormatter";
 
 function TournamentMatches({ id }: { id: string }) {
   const [stage, setStage] = useState("");
@@ -80,6 +82,9 @@ function TournamentMatches({ id }: { id: string }) {
                   </HStack>
                 </Td>
                 <Td textAlign="center" fontSize="md" color="white">
+                  <Text color={"buttons"} fontSize={"x-small"}>
+                    {formatTime(e.date)}
+                  </Text>
                   {e.score_a} - {e.score_b}
                 </Td>
                 <Td pr={0}>

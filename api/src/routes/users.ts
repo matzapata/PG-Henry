@@ -18,24 +18,31 @@ router.get(
       req.query.pageSize === undefined ? 10 : Number(req.query.pageSize);
 
     try {
-      const [tournaments, tournamentsCount] = await prisma.$transaction([
-        db.userTournament.findMany({
-          where: { user_id: userId },
-          include: {
-            tournament: {
-              select: { name: true, logo_url: true, status: true, type: true },
+      const [userTournaments, userTournamentsCount] = await prisma.$transaction(
+        [
+          db.userTournament.findMany({
+            where: { user_id: userId },
+            include: {
+              tournament: {
+                select: {
+                  name: true,
+                  logo_url: true,
+                  status: true,
+                  type: true,
+                },
+              },
             },
-          },
-          take: pageSize,
-          skip: pageSize * (page - 1),
-        }),
-        prisma.userTournament.count({ where: { user_id: userId } }),
-      ]);
+            take: pageSize,
+            skip: pageSize * (page - 1),
+          }),
+          prisma.userTournament.count({ where: { user_id: userId } }),
+        ]
+      );
 
       res.send({
         page,
-        lastPage: Math.ceil(tournamentsCount / pageSize),
-        tournaments: tournaments.map((t) => {
+        lastPage: Math.ceil(userTournamentsCount / pageSize),
+        tournaments: userTournaments.map((t) => {
           return {
             id: t.tournament_id,
             score: t.score,
@@ -61,7 +68,7 @@ router.get("/findTournament", async (req, res) => {
         tournament_id: tournamentid as string,
       },
     });
-    res.send(result);
+    res.send(!(result === null));
   } catch (e: any) {
     res.status(400).send("No existe el torneo");
   }
@@ -287,7 +294,7 @@ router.post("/contact", async (req: express.Request, res: express.Response) => {
     if (!email || !name || !mensaje)
       return res.send("Faltan parametros requeridos...");
 
-    sendEmail(
+    await sendEmail(
       process.env.EMAIL_USER as string,
       `Has recibido una solicitud del usuario: ${name}`,
       `${email} se ha puesto en contacto con el siguiente mensaje: \n ${mensaje}`
@@ -313,7 +320,7 @@ router.put(
         data: { password: new_pass },
       });
 
-      sendEmail(
+      await sendEmail(
         user.email,
         "Restablecimiento de contraseña",
         `Tu nueva contraseña es: ${user.id.slice(

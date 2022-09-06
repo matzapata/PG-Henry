@@ -3,6 +3,7 @@ import {
   Divider,
   Flex,
   Heading,
+  HStack,
   Icon,
   Link,
   Text,
@@ -27,6 +28,7 @@ import BanForm from "./BanForm";
 import AdminFormulary from "./AdminForm";
 import { useAuth0 } from "@auth0/auth0-react";
 import ReviewsTable from "./UserReviews";
+import Logo from "../Logo";
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -35,11 +37,18 @@ function SideBar() {
 
   return (
     <VStack flex={1} backgroundColor={"primary"}>
-      <Box p="5px">
-        <Heading fontSize={"2xl"} fontWeight={"medium"} color={"buttons"} p={5}>
+      <HStack p="5px">
+        <Logo />
+        <Heading
+          fontSize={"2xl"}
+          fontWeight={"medium"}
+          color={"buttons"}
+          px={1}
+          py={5}
+        >
           Prode Master
         </Heading>
-      </Box>
+      </HStack>
       <Divider />
       <VStack spacing={10} alignItems={"baseline"}>
         <Flex alignItems={"center"} mt={10}>
