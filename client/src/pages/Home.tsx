@@ -2,10 +2,14 @@ import React, { useEffect } from "react";
 import {
   Box,
   Container,
+  Divider,
   Flex,
   Heading,
   HStack,
+  List,
+  ListItem,
   Text,
+  UnorderedList,
   VStack,
 } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
@@ -63,9 +67,12 @@ function Home() {
       <Flex
         backgroundColor="primary"
         mt="90vh"
+        pb={5}
         pl="5%"
         borderTopWidth={5}
         borderTopColor="Dtext"
+        borderBottomWidth={5}
+        borderBottomColor="Dtext"
         justifyContent="space-between"
       >
         <Box mt={10}>
@@ -96,30 +103,31 @@ function Home() {
       </Flex>
       {!isLoggedIn && (
         <Box marginTop="75px" mx={20}>
-          <Box>
+          <Box mt={10}>
             <PublicTournaments />
           </Box>
-          <HStack height={"50vh"}>
+          <Flex mt="12">
             <Carousel />
             {data.length === 0 ? null : (
-              <Box width={"100%"} marginTop="75px" paddingLeft={"80px"}>
+              <Box width={"100%"} mb="10" ml={20}>
                 <ReviewCarousel />
               </Box>
             )}
-          </HStack>
+          </Flex>
         </Box>
       )}
       {isLoggedIn && (
         <VStack spacing={10} mx={20} alignSelf="baseline">
-          <Box width={"full"}>
+          <Box width={"full"} mt={10}>
             <PublicTournaments />
           </Box>
           <Flex flexDir={"column"} width="full">
             <OwnerTournament />
             <UserTournaments />
             <Flex mt="12">
+              <Carousel />
               {data.length === 0 ? null : (
-                <Box width={"100%"} mb="10">
+                <Box width={"100%"} mb="10" ml={20}>
                   <ReviewCarousel />
                 </Box>
               )}

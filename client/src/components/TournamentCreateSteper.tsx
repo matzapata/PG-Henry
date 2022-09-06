@@ -238,7 +238,7 @@ const Steper = () => {
     <>
       <Box
         p="20px"
-        rounded={"xl"}
+        rounded={5}
         boxShadow={"lg"}
         bg={useColorModeValue("white", "gray.700")}
       >

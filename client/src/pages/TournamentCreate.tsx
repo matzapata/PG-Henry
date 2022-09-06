@@ -1,6 +1,14 @@
 import React from "react";
 
-import { Container, Box, Text, Stack, Divider, Flex } from "@chakra-ui/react";
+import {
+  Container,
+  Box,
+  Text,
+  Stack,
+  Divider,
+  Flex,
+  Heading,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Logo from "../components/Logo";
@@ -42,12 +50,17 @@ export default function TournamentCreate(): JSX.Element {
       <Container
         display="flex"
         flexDir="column"
-        justifyContent="start"
+        justifyContent="center"
         alignItems="center"
-        maxW={"60%"}
-        h={"800px"}
-        mt="40px"
+        backgroundColor="rgba(8, 32, 50,0.5)"
+        borderRadius={5}
+        maxW={"35%"}
+        h={"60%"}
+        mt="5%"
       >
+        <Heading color={"text"} mb={2}>
+          Creá tu torneo
+        </Heading>
         <Steper />
       </Container>
     </Container>
