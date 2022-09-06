@@ -294,7 +294,7 @@ router.post("/contact", async (req: express.Request, res: express.Response) => {
     if (!email || !name || !mensaje)
       return res.send("Faltan parametros requeridos...");
 
-    sendEmail(
+    await sendEmail(
       process.env.EMAIL_USER as string,
       `Has recibido una solicitud del usuario: ${name}`,
       `${email} se ha puesto en contacto con el siguiente mensaje: \n ${mensaje}`
@@ -320,7 +320,7 @@ router.put(
         data: { password: new_pass },
       });
 
-      sendEmail(
+      await sendEmail(
         user.email,
         "Restablecimiento de contraseña",
         `Tu nueva contraseña es: ${user.id.slice(
