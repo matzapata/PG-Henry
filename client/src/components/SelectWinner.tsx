@@ -60,7 +60,7 @@ function SelectWinner() {
 
   if (tournamentDetail?.status === "INCOMING" && unido === true) {
     return (
-      <Box>
+      <Box mb="4">
         {!winner && !selected ? (
           <Flex>
             <Select
