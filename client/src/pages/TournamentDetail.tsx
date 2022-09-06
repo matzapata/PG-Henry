@@ -7,16 +7,21 @@ import TournamentMatches from "../components/TournamentMatches";
 import TournamentRanking from "../components/TournamentRanking";
 import TournamentLoadResults from "../components/TournamentLoadResults";
 import api from "../services/api";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { fetchUniqueUserTournament } from "../redux/slices/userThunk";
 
 function TournamentDetail() {
+  const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const [isOwner, setIsOwner] = useState(false);
+  const user_id = useAppSelector((state) => state.auth.decoded?.id);
 
   useEffect(() => {
     (async () => {
       const resMyTournaments = await api.get(`/tournaments/mytournaments`);
       setIsOwner(resMyTournaments.data.find((t: any) => t.id === id));
     })();
+    dispatch(fetchUniqueUserTournament({ tournamentid: id, userid: user_id }));
   }, []);
 
   return (
