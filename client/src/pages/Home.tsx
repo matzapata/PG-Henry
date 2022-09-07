@@ -55,9 +55,7 @@ function Home() {
     <Container
       maxW="100vw"
       h="100vh"
-      px="0"
-      pt="0"
-      pb="0"
+      p="0"
       bgColor="DPrimary"
       bgSize="cover"
       bgImage="url('/img/bgImg.png')"
@@ -102,7 +100,7 @@ function Home() {
         </Box>
       </Flex>
       {!isLoggedIn && (
-        <Box marginTop="75px" mx={20}>
+        <Box marginTop="75px" mx={{ base: "4", md: "10", lg: "20" }}>
           <Box mt={10}>
             <PublicTournaments />
           </Box>

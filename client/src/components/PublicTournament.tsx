@@ -51,7 +51,13 @@ function PublicTournaments(): JSX.Element {
         Torneos Publicos
       </Heading>
 
-      <Stack direction="row" spacing="5px" my="4" width={"50%"}>
+      <Stack
+        direction="row"
+        spacing="5px"
+        my="4"
+        width={{ base: "full" }}
+        maxW="md"
+      >
         <Input
           name="searchname"
           placeholder="Buscar torneo..."

@@ -82,27 +82,12 @@ function Login() {
   return (
     <Flex
       flexDirection="column"
-      width="100wh"
-      height="100vh"
+      minH="100vh"
       bgColor="primary"
       justifyContent="center"
       alignItems="center"
+      px="4"
     >
-      <Box
-        h="80px"
-        display="flex"
-        flexDir="row"
-        alignItems="center"
-        justifyContent="space-between"
-        p="20px"
-      >
-        <Box display="flex" flexDir="row">
-          <Link as={ReactLink} color="teal.400" to="/">
-            <ArrowBackIcon fontSize="30px" />
-          </Link>
-        </Box>
-      </Box>
-
       <Stack
         mb="2"
         flexDir="column"
@@ -110,16 +95,20 @@ function Login() {
         alignItems="center"
         width="100%"
       >
-        <Avatar size="lg" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
+        <Avatar
+          size={{ base: "md", md: "lg" }}
+          bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+        />
         <Text
           bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
           bgClip="text"
-          fontSize="5xl"
+          fontSize={{ base: "3xl", md: "4xl" }}
           fontWeight="bold"
+          pb="4"
         >
           Iniciar Sesión
         </Text>
-        <Box minW={{ base: "90%", md: "468px" }}>
+        <Box w="full" maxW="md">
           <form onSubmit={onSubmit}>
             <Stack
               p="4"
@@ -165,7 +154,10 @@ function Login() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <Flex justifyContent={"space-between"}>
+                <Flex
+                  flexDir={{ base: "column", md: "row" }}
+                  justifyContent={"space-between"}
+                >
                   <Checkbox
                     onChange={() => {
                       setCheck(!check);
@@ -208,6 +200,20 @@ function Login() {
           </Text>
         </Flex>
       )}
+      <Box
+        display="flex"
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        pt="5"
+      >
+        <Box display="flex" flexDir="row">
+          <Link as={ReactLink} color="teal.400" to="/" fontSize="lg">
+            <ArrowBackIcon mr="2" />
+            Volver
+          </Link>
+        </Box>
+      </Box>
     </Flex>
   );
 }
