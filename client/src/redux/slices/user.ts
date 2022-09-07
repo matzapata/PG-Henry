@@ -141,11 +141,7 @@ const userSlice = createSlice({
       state.error = "";
     });
     builder.addCase(fetchUniqueUserTournament.fulfilled, (state, action) => {
-      if (typeof action.payload === "object") {
-        state.userTournaments.is_attached = true;
-      } else {
-        state.userTournaments.is_attached = false;
-      }
+      state.userTournaments.is_attached = action.payload;
       state.loading = false;
       state.error = "";
     });

@@ -239,8 +239,6 @@ export default function MatchAdd({
     }
     const EA = document.createElement("option");
     const EB = document.createElement("option");
-    EA.setAttribute("A", "");
-    EB.setAttribute("B", "");
 
     EA.innerHTML = "Equipo A";
     EB.innerHTML = "Equipo B";
@@ -249,7 +247,6 @@ export default function MatchAdd({
     selectB?.appendChild(EB);
     for (let i = 0; i < teamsA.length; i++) {
       const aTag = document.createElement("option");
-      aTag.setAttribute("a" + teamsA[i].key, teamsA[i].name);
       aTag.innerHTML = teamsA[i].name;
       selectA?.appendChild(aTag);
 
@@ -259,7 +256,6 @@ export default function MatchAdd({
     }
     for (let j = 0; j < teamsB.length; j++) {
       const aTag2 = document.createElement("option");
-      aTag2.setAttribute("b" + teamsB[j].key, teamsB[j].name);
       aTag2.innerHTML = teamsB[j].name;
       selectB?.appendChild(aTag2);
       if (teamsB[j].name === NameselectedB) {
