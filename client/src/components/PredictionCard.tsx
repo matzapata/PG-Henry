@@ -204,9 +204,9 @@ function MatchForm({
             </Text>
             <Image
               src={
-                match.team_a.shield_url === ""
+                match.team_b.shield_url === ""
                   ? "/img/team-shield-placeholder.jpg"
-                  : match.team_a.shield_url
+                  : match.team_b.shield_url
               }
               borderRadius="1"
               h="14"
