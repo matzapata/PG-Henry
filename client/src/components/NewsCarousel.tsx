@@ -44,8 +44,9 @@ export default function NewsCarousel(props: any) {
   return (
     <Box
       position={"relative"}
-      height={"400px"}
-      width={"50%"}
+      minH={"450px"}
+      h="full"
+      w="full"
       overflow={"hidden"}
       bg={"rgba(57,91,100,0.7)"}
       borderRadius="15px"

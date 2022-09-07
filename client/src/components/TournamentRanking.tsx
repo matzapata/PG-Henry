@@ -23,7 +23,7 @@ function _TournamentRanking({
   const [winnerScore, setWinnerScore] = useState(0);
 
   const _setWinerScore = () => {
-    if (ranking && !!ranking.length) {
+    if (ranking && !!ranking.length && winnerScore < ranking[0].score) {
       setWinnerScore(ranking[0].score);
     }
   };
@@ -36,6 +36,8 @@ function _TournamentRanking({
   useEffect(() => {
     if (tournamentDetail?.status === "CONCLUDED") _setWinerScore();
   }, [tournamentRanking.ranking]);
+  console.log(tournamentDetail?.status);
+  console.log(winnerScore);
   return (
     <Box mb="10">
       <Heading mb="4" mt="8" size="md" color="text">

@@ -8,6 +8,7 @@ import {
   HStack,
   List,
   ListItem,
+  Stack,
   Text,
   UnorderedList,
   VStack,
@@ -121,17 +122,21 @@ function Home() {
           <Box width={"full"} mt={10}>
             <PublicTournaments />
           </Box>
-          <Flex flexDir={"column"} width="full">
+          <Flex flexDir={"column"} width="full" pb="10">
             <OwnerTournament />
             <UserTournaments />
-            <Flex mt="12">
+            <Stack
+              direction={{ base: "column", md: "row" }}
+              mt="12"
+              spacing={4}
+            >
               <Carousel />
               {data.length === 0 ? null : (
-                <Box width={"100%"} mb="10" ml={20}>
+                <Box minW="50%" mb="10">
                   <ReviewCarousel />
                 </Box>
               )}
-            </Flex>
+            </Stack>
           </Flex>
         </VStack>
       )}
@@ -141,7 +146,7 @@ function Home() {
         textAlign="right"
         display={"block"}
         position="fixed"
-        top="93%"
+        top="75%"
         right="13px"
       >
         <a

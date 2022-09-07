@@ -46,8 +46,8 @@ export default function Carousel(props: any) {
   return (
     <Box
       position={"relative"}
-      height={"400px"}
-      width={"50%"}
+      minH={"450px"}
+      w={"full"}
       overflow={"hidden"}
       bg={"rgba(57,91,100,0.7)"}
       borderRadius="15px"
