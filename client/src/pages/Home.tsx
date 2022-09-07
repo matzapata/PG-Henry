@@ -126,9 +126,9 @@ function Home() {
             <OwnerTournament />
             <UserTournaments />
             <Stack
-              direction={{ base: "column", md: "row" }}
               mt="12"
-              spacing={4}
+              spacing="4"
+              direction={{ base: "column", md: "row" }}
             >
               <Carousel />
               {data.length === 0 ? null : (
