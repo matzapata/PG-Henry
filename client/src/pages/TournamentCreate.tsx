@@ -19,7 +19,7 @@ export default function TournamentCreate(): JSX.Element {
       maxW="100vw"
       h="950px"
       bgSize="cover"
-      bgImage="url('https://www.xtrafondos.com/wallpapers/uefa-champions-league-estadio-2932.jpg')"
+      bgImage="url('/img/landing-wallpaper.jpg')"
       p="0"
     >
       <Box
@@ -32,7 +32,12 @@ export default function TournamentCreate(): JSX.Element {
       >
         <Flex alignItems="center">
           <Logo />
-          <Text fontSize="30px" fontWeight="bold" color="text" ml="2">
+          <Text
+            fontSize={{ base: "xl", md: "2xl" }}
+            fontWeight="bold"
+            color="text"
+            ml="2"
+          >
             Crear torneo
           </Text>
         </Flex>
@@ -54,8 +59,8 @@ export default function TournamentCreate(): JSX.Element {
         alignItems="center"
         backgroundColor="rgba(8, 32, 50,0.5)"
         borderRadius={5}
-        maxW={"35%"}
-        h={"60%"}
+        maxW={"lg"}
+        pt="5"
         mt="5%"
       >
         <Heading color={"text"} mb={2}>

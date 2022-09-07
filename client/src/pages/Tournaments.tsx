@@ -9,9 +9,9 @@ import {
   Button,
   Box,
   Divider,
-  Stack,
   Grid,
   Flex,
+  Hide,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
@@ -38,12 +38,16 @@ function Tournaments(): JSX.Element {
           </Text>
         </Flex>
         <Box display="flex" flexDir="row" alignItems={"center"}>
-          <Link to="/">
-            <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
-          </Link>
-          <Text color="text" mr="10px" fontSize="20px" fontWeight="bold">
-            Inicio
-          </Text>
+          <Hide below="md">
+            <Link to="/">
+              <Flex alignItems="center">
+                <ArrowBackIcon color="text" fontSize="30px" pt="2px" />
+                <Text color="text" mr="10px" fontSize="20px" fontWeight="bold">
+                  Inicio
+                </Text>
+              </Flex>
+            </Link>
+          </Hide>
           <Button
             onClick={() => history.push("torneos/crear")}
             _hover={{
@@ -69,9 +73,9 @@ function Tournaments(): JSX.Element {
           "repeat(2, 2fr)",
           "repeat(3, 3fr)",
         ]}
-        gap={[4, 4, 4, 10]}
-        m="20px"
-        pt="50px"
+        gap="4"
+        m="5"
+        py="10"
       >
         {!currentTournaments.loading &&
           showingTournaments.map((el) => (

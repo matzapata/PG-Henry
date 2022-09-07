@@ -132,39 +132,28 @@ function FormSignUp() {
 
   return (
     <Flex
-      width="100wh"
-      height="100vh"
+      minH="100vh"
       alignItems="center"
       flexDirection="column"
       justifyContent="center"
       bgColor="primary"
-      py="20"
+      px="4"
+      py="8"
     >
-      <Box
-        h="80px"
-        display="flex"
-        flexDir="row"
-        alignItems="center"
-        justifyContent="space-between"
-        p="20px"
-      >
-        <Box display="flex" flexDir="row">
-          <Link as={ReactLink} color="teal.400" to="/">
-            <ArrowBackIcon fontSize="30px" />
-          </Link>
-        </Box>
-      </Box>
-      <Avatar size="lg" bgGradient="linear(to-r, #4FBDBA, #AEFEFF)" />
+      <Avatar
+        size={{ base: "md", md: "lg" }}
+        bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
+      />
       <Heading
         bgGradient="linear(to-r, #4FBDBA, #AEFEFF)"
         bgClip="text"
-        fontSize="5xl"
+        fontSize={{ base: "3xl", md: "4xl" }}
         fontWeight="bold"
         mb="4"
       >
         Crear cuenta
       </Heading>
-      <Box minW={{ base: "90%", md: "468px" }}>
+      <Box w="full" maxW="md">
         <form onSubmit={handleSubmit}>
           <Stack p="4" spacing="4" bgColor="white" borderRadius="4">
             <FormControl
@@ -275,6 +264,20 @@ function FormSignUp() {
             Ingresar
           </Link>
         </Text>
+        <Box
+          display="flex"
+          flexDir="row"
+          alignItems="center"
+          justifyContent="center"
+          pt="5"
+        >
+          <Box display="flex" flexDir="row">
+            <Link as={ReactLink} color="teal.400" to="/" fontSize="lg">
+              <ArrowBackIcon mr="2" />
+              Volver
+            </Link>
+          </Box>
+        </Box>
       </Box>
     </Flex>
   );

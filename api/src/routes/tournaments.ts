@@ -1,12 +1,6 @@
 import prisma from "../db";
 import * as express from "express";
-import {
-  MatchStage,
-  Status,
-  TournamentType,
-  CodeStage,
-  Matches,
-} from "@prisma/client";
+import { MatchStage, Status, TournamentType, CodeStage } from "@prisma/client";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
@@ -53,7 +47,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
     const paginado = page ? pageN * 12 : 0;
 
     const result = await prisma.tournament.findMany({
-      take: 12,
+      take: 13,
       skip: paginado,
       where: {
         name: {

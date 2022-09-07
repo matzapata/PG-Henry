@@ -267,7 +267,6 @@ export default function TournamentForm({
               )}
               <Stack direction="row" spacing={4}>
                 {/* ////USER_LIMIT */}
-
                 <FormControl
                   isInvalid={
                     errors.user_limit === "Completado" ||

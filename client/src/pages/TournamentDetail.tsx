@@ -9,10 +9,7 @@ import TournamentLoadResults from "../components/TournamentLoadResults";
 import api from "../services/api";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { fetchUniqueUserTournament } from "../redux/slices/userThunk";
-import {
-  fetchTournamentDetail,
-  fetchTournamentRanking,
-} from "../redux/slices/tournamentThunk";
+import { fetchTournamentRanking } from "../redux/slices/tournamentThunk";
 
 function TournamentDetail() {
   const dispatch = useAppDispatch();

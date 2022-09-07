@@ -1,7 +1,5 @@
 import prisma from "../db";
 import * as express from "express";
-import db from "../db";
-import { protectedRoute } from "../middleware/auth";
 
 const router: express.Router = express.Router();
 

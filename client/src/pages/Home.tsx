@@ -2,15 +2,10 @@ import React, { useEffect } from "react";
 import {
   Box,
   Container,
-  Divider,
   Flex,
   Heading,
-  HStack,
-  List,
-  ListItem,
   Stack,
   Text,
-  UnorderedList,
   VStack,
 } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
@@ -56,9 +51,7 @@ function Home() {
     <Container
       maxW="100vw"
       h="100vh"
-      px="0"
-      pt="0"
-      pb="0"
+      p="0"
       bgColor="DPrimary"
       bgSize="cover"
       bgImage="url('/img/bgImg.png')"
@@ -75,6 +68,7 @@ function Home() {
         borderBottomWidth={5}
         borderBottomColor="Dtext"
         justifyContent="space-between"
+        flexDir={{ base: "column", md: "row" }}
       >
         <Box mt={10}>
           <IoTrophy size="20em" color="#0096FF" />
@@ -103,7 +97,7 @@ function Home() {
         </Box>
       </Flex>
       {!isLoggedIn && (
-        <Box marginTop="75px" mx={20}>
+        <Box marginTop="75px" mx={{ base: "4", md: "10", lg: "20" }}>
           <Box mt={10}>
             <PublicTournaments />
           </Box>
@@ -118,7 +112,7 @@ function Home() {
         </Box>
       )}
       {isLoggedIn && (
-        <VStack spacing={10} mx={20} alignSelf="baseline">
+        <VStack spacing={10} mx={{ base: "4", md: "10" }} alignSelf="baseline">
           <Box width={"full"} mt={10}>
             <PublicTournaments />
           </Box>
