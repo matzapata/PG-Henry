@@ -5,10 +5,14 @@ function RankingCard({
   score,
   username,
   fullName,
+  tournament_status,
+  winner_score,
 }: {
   score: number;
   username: string;
   fullName: string;
+  tournament_status: string | undefined;
+  winner_score: number;
 }) {
   return (
     <Flex
@@ -26,6 +30,11 @@ function RankingCard({
           {username}
         </Text>
       </Flex>
+      {score === winner_score && (
+        <Text fontSize="xl" color="Text">
+          ¡¡GANADOR!!
+        </Text>
+      )}
       <Text color="text">{score}</Text>
     </Flex>
   );
