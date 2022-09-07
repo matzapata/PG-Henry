@@ -85,7 +85,7 @@ export default function TeamAdd({
     e.preventDefault();
     setError(validateName(input, true));
     if (error === "Completado") {
-      if (validateTeamNames(teams, input.name)) {
+      if (validateTeamNames(teams, input.name.trim())) {
         let finalShield_url = "";
         if (logo != logo_a) {
           setLogo(logo_a);
@@ -97,18 +97,18 @@ export default function TeamAdd({
           ...teams,
 
           {
-            name: input.name,
+            name: input.name.trim(),
             shield_url: finalShield_url,
-            key: input.key + input.name,
+            key: input.key + input.name.trim(),
           },
         ]);
         addTeams([
           ...teams,
 
           {
-            name: input.name,
+            name: input.name.trim(),
             shield_url: finalShield_url,
-            key: input.key + input.name,
+            key: input.key + input.name.trim(),
           },
         ]);
         setInput({ name: "", shield_url: "", key: "" });
