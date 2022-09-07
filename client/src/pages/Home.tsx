@@ -73,6 +73,7 @@ function Home() {
         borderBottomWidth={5}
         borderBottomColor="Dtext"
         justifyContent="space-between"
+        flexDir={{ base: "column", md: "row" }}
       >
         <Box mt={10}>
           <IoTrophy size="20em" color="#0096FF" />
@@ -116,7 +117,7 @@ function Home() {
         </Box>
       )}
       {isLoggedIn && (
-        <VStack spacing={10} mx={20} alignSelf="baseline">
+        <VStack spacing={10} mx={{ base: "4", md: "10" }} alignSelf="baseline">
           <Box width={"full"} mt={10}>
             <PublicTournaments />
           </Box>
