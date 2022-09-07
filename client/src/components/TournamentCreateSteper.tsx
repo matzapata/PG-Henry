@@ -237,19 +237,23 @@ const Steper = () => {
   return (
     <>
       <Box
-        p="20px"
+        p="5"
         rounded={5}
         boxShadow={"lg"}
         bg={useColorModeValue("white", "gray.700")}
       >
-        <Stack justifyContent="center" alignItems={"space-arrown"}>
-          <Box display={"flex"} flexDir={"row"} alignItems={"start"}>
+        <Stack justifyContent="center" alignItems={"space-around"}>
+          <Box
+            display={"flex"}
+            flexDir={{ base: "column", md: "row" }}
+            alignItems={"start"}
+            justifyContent="space-around"
+          >
             <Stack
-              flexDir={"row"}
+              flexDir="row"
               spacing="9px"
               justifyContent="center"
               alignItems={"center"}
-              margin={"2rem"}
             >
               <Stack p={"0.5rem"}>
                 <label
@@ -274,7 +278,6 @@ const Steper = () => {
               spacing="9px"
               justifyContent="center"
               alignItems={"center"}
-              margin={"2rem"}
             >
               <Stack p={"0.5rem"}>
                 <label
@@ -306,7 +309,6 @@ const Steper = () => {
               spacing="9px"
               justifyContent="center"
               alignItems={"center"}
-              margin={"2rem"}
             >
               <Stack p={"0.5rem"}>
                 <label
