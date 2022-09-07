@@ -69,6 +69,7 @@ function TournamentFilter(): JSX.Element {
             color="text"
             borderColor="buttons"
             type="text"
+            minW="150px"
             onChange={(e) => setFilter({ ...filter, name: e.target.value })}
           />
           <IconButton

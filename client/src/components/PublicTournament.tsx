@@ -82,7 +82,7 @@ function PublicTournaments(): JSX.Element {
           }}
           bgColor="buttons"
           color="text"
-          width={"30%"}
+          minW="auto"
           size="md"
           onClick={deleteFilter}
         >
