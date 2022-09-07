@@ -2,15 +2,10 @@ import React, { useEffect } from "react";
 import {
   Box,
   Container,
-  Divider,
   Flex,
   Heading,
-  HStack,
-  List,
-  ListItem,
   Stack,
   Text,
-  UnorderedList,
   VStack,
 } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";

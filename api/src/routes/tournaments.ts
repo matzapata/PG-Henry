@@ -1,12 +1,6 @@
 import prisma from "../db";
 import * as express from "express";
-import {
-  MatchStage,
-  Status,
-  TournamentType,
-  CodeStage,
-  Matches,
-} from "@prisma/client";
+import { MatchStage, Status, TournamentType, CodeStage } from "@prisma/client";
 import db from "../db";
 import * as bcrypt from "bcryptjs";
 import { protectedRoute } from "../middleware/auth";
