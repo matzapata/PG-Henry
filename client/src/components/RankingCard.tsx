@@ -30,7 +30,7 @@ function RankingCard({
           {username}
         </Text>
       </Flex>
-      {score === winner_score && (
+      {score === winner_score && tournament_status === "CONCLUDED" && (
         <Text fontSize="xl" color="Text">
           ¡¡GANADOR!!
         </Text>
