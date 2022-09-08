@@ -47,7 +47,7 @@ router.get("/", async (req: express.Request, res: express.Response) => {
     const paginado = page ? pageN * 12 : 0;
 
     const result = await prisma.tournament.findMany({
-      take: 12,
+      take: 13,
       skip: paginado,
       where: {
         name: {

@@ -186,7 +186,7 @@ function TournamentFilter(): JSX.Element {
               onClick={() => setCurrentPage(currentPage + 1)}
               name="fowardbutton"
               disabled={
-                currentTournaments.tournaments.length < 12 ? true : false
+                currentTournaments.tournaments.length < 13 ? true : false
               }
             >
               <ArrowForwardIcon />
