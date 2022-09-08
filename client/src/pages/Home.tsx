@@ -96,44 +96,19 @@ function Home() {
           </Text>
         </Box>
       </Flex>
-      {!isLoggedIn && (
-        <Box marginTop="75px" mx={{ base: "4", md: "10", lg: "20" }}>
-          <Box mt={10}>
-            <PublicTournaments />
-          </Box>
-          <Flex mt="12">
-            <Carousel />
-            {data.length === 0 ? null : (
-              <Box width={"100%"} mb="10" ml={20}>
-                <ReviewCarousel />
-              </Box>
-            )}
-          </Flex>
+      <VStack spacing={10} mx={{ base: "4", md: "10" }} alignSelf="baseline">
+        <Box width={"full"} mt={10}>
+          <PublicTournaments />
         </Box>
-      )}
-      {isLoggedIn && (
-        <VStack spacing={10} mx={{ base: "4", md: "10" }} alignSelf="baseline">
-          <Box width={"full"} mt={10}>
-            <PublicTournaments />
-          </Box>
-          <Flex flexDir={"column"} width="full" pb="10">
-            <OwnerTournament />
-            <UserTournaments />
-            <Stack
-              mt="12"
-              spacing="4"
-              direction={{ base: "column", md: "row" }}
-            >
-              <Carousel />
-              {data.length === 0 ? null : (
-                <Box minW="50%" mb="10">
-                  <ReviewCarousel />
-                </Box>
-              )}
-            </Stack>
-          </Flex>
-        </VStack>
-      )}
+        <Flex flexDir={"column"} width="full" pb="10">
+          <OwnerTournament />
+          <UserTournaments />
+          <Stack mt="12" spacing="4" direction={{ base: "column", md: "row" }}>
+            <Carousel />
+            {data.length === 0 ? null : <ReviewCarousel />}
+          </Stack>
+        </Flex>
+      </VStack>
       <Box
         p={5}
         color="text"
