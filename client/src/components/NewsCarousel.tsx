@@ -45,7 +45,6 @@ export default function NewsCarousel(props: any) {
     <Box
       position={"relative"}
       minH={"450px"}
-      minW="50%"
       h="full"
       w="full"
       overflow={"hidden"}
