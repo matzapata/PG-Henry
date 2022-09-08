@@ -101,8 +101,8 @@ function Home() {
           <PublicTournaments />
         </Box>
         <Flex flexDir={"column"} width="full" pb="10">
-          <OwnerTournament />
-          <UserTournaments />
+          {isLoggedIn && <OwnerTournament />}
+          {isLoggedIn && <UserTournaments />}
           <Stack mt="12" spacing="4" direction={{ base: "column", md: "row" }}>
             <Carousel />
             {data.length === 0 ? null : <ReviewCarousel />}
